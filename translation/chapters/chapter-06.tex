@@ -1,0 +1,385 @@
+% Source: printed 155 / PDF 169
+\chapter{Statecharts: Một hệ hình thức để mô hình hóa, mô phỏng và tổng hợp các hệ thống phản ứng, tự chủ có yếu tố thời gian}
+\chapterauthors{Simon Van Mierlo và Hans Vangheluwe}
+
+\begin{quote}\small
+Simon Van Mierlo --- University of Antwerp -- Flanders Make, Bỉ; e-mail: \url{simon.vanmierlo@uantwerpen.be}.\\
+Hans Vangheluwe --- University of Antwerp -- Flanders Make, Bỉ; McGill University, Canada; e-mail: \url{hans.vangheluwe@uantwerpen.be}.\\
+© Các tác giả 2020. P. Carreira và cộng sự (biên tập), \emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+\url{https://doi.org/10.1007/978-3-030-43946-0_6}
+\end{quote}
+
+\section*{Tóm tắt}
+Statecharts (biểu đồ trạng thái), được David Harel giới thiệu năm 1987, là một hệ hình thức dùng để đặc tả hành vi của các hệ thống có yếu tố thời gian, tự chủ và phản ứng bằng cách trừu tượng hóa theo sự kiện rời rạc. Nó mở rộng ô-tô-mát trạng thái hữu hạn có yếu tố thời gian (Timed Finite State Automata) bằng chiều sâu, tính trực giao, truyền thông quảng bá và lịch sử. Biểu diễn trực quan của nó dựa trên higraph, một dạng kết hợp đồ thị và sơ đồ Euler. Nhiều công cụ hỗ trợ biên tập trực quan, mô phỏng và tổng hợp mã cho hệ hình thức Statecharts. Ví dụ có STATEMATE, Rhapsody, Yakindu và Stateflow, mỗi công cụ hiện thực hóa những biến thể khác nhau của ngữ nghĩa gốc do Harel đề xuất. Bài hướng dẫn này giới thiệu việc mô hình hóa, mô phỏng và kiểm thử bằng Statecharts. Ví dụ xuyên suốt là việc mô hình hóa hành vi của một đồng hồ điện tử, một hệ thống có yếu tố thời gian, tự chủ và phản ứng tuy đơn giản nhưng đủ phức tạp. Chúng tôi bắt đầu từ các khái niệm cơ bản về trạng thái và chuyển tiếp, rồi giải thích những khái niệm nâng cao hơn của Statecharts bằng cách mở rộng ví dụ từng bước. Chúng tôi thảo luận một số biến thể ngữ nghĩa, chẳng hạn STATEMATE và Rhapsody. Chúng tôi sử dụng Yakindu để mô hình hóa hệ thống ví dụ.
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi kỳ vọng bạn có thể:
+\begin{itemize}
+\item Đặc tả hành vi của một hệ thống tự chủ và phản ứng bằng Statecharts.
+\item Hiểu ngữ nghĩa của một mô hình Statecharts.
+\item Triển khai một mô hình Statecharts lên một nền tảng phần mềm bằng các công cụ phù hợp.
+\end{itemize}
+
+\section{Giới thiệu}
+Các hệ thống mà chúng ta phân tích, thiết kế và xây dựng ngày nay có đặc trưng là độ phức tạp không ngừng tăng. Độ phức tạp này bắt nguồn từ nhiều yếu tố, chẳng hạn sự tương tác phức tạp của các thành phần vật lý (cảm biến và cơ cấu chấp hành) với phần mềm (thời gian thực), lượng dữ liệu lớn mà các hệ thống phải xử lý, và sự tương tác với một môi trường không tất định. Tuy nhiên, gần như lúc nào các hệ thống phức tạp cũng thể hiện một dạng \emph{tính phản ứng} (reactivity) đối với môi trường: hệ thống \emph{phản ứng} với các kích thích từ môi trường (dưới dạng \emph{sự kiện đầu vào}) bằng cách thay đổi trạng thái bên trong, và có thể tác động đến môi trường thông qua \emph{sự kiện đầu ra}. Các hệ thống phản ứng như vậy khác biệt căn bản với các hệ thống phần mềm truyền thống, vốn có tính \emph{biến đổi} (transformational), tức nhận một số tham số đầu vào, thực hiện tính toán và trả lại kết quả dưới dạng đầu ra. Các hệ thống phản ứng
+% Source: printed 156 / PDF 170
+chạy liên tục, thường có nhiều thành phần thực thi đồng thời, phản ứng với môi trường và có thể chủ động hành động bằng cách tự đưa ra quyết định. Một ví dụ là ô tô hiện đại, trong đó các hệ thống ngày càng được điều khiển bằng phần mềm. Nhiều thành phần phần mềm chạy đồng thời diễn giải các tín hiệu từ môi trường (các thao tác điều khiển của người lái cũng như các cảm biến diễn giải điều kiện lái xe hiện tại) và đưa ra những quyết định tự chủ để tạo tín hiệu cho các cơ cấu chấp hành của xe.
+
+Hành vi có yếu tố thời gian, phản ứng và tự chủ như vậy cần được đặc tả bằng một ngôn ngữ phù hợp để thẩm định hành vi so với đặc tả của nó (bằng các kỹ thuật kiểm chứng và thẩm định như kiểm chứng hình thức, kiểm tra mô hình, cũng như các kỹ thuật kiểm thử), và cuối cùng triển khai phần mềm lên các thành phần phần cứng của hệ thống. Các ngôn ngữ lập trình truyền thống được thiết kế cho những hệ thống có tính biến đổi, và không phù hợp để mô tả hành vi có yếu tố thời gian, tự chủ, phản ứng và đồng thời. Thực tế, việc mô tả hệ thống phức tạp bằng luồng và semaphore nhanh chóng dẫn đến mã chương trình khó đọc, khó hiểu và không thể kiểm chứng [181]. Một phần nguyên nhân là khoảng cách nhận thức giữa các cơ chế trừu tượng hóa do ngôn ngữ cung cấp với độ phức tạp của đặc tả, cùng với ngữ nghĩa đôi khi được xác định không rõ của ngôn ngữ lập trình, làm cản trở việc hiểu chương trình. Như một lựa chọn thay thế, chương này mô tả hệ hình thức Statecharts, được David Harel giới thiệu năm 1987 [134]. Cú pháp và ngữ nghĩa của Statecharts được xác định rõ và có thể trực tiếp mô tả hành vi có yếu tố thời gian, tự chủ, phản ứng và đồng thời của một hệ thống. Các khối cấu thành cơ bản là trạng thái và chuyển tiếp giữa những trạng thái đó. Trạng thái có thể được kết hợp theo phân cấp thành các trạng thái phức hợp, hoặc theo tính trực giao thành những vùng đồng thời. Có nhiều công cụ mô hình hóa trực quan hỗ trợ toàn bộ vòng đời mô hình hóa hành vi hệ thống bằng Statecharts: từ thiết kế đến kiểm chứng và thẩm định, rồi cuối cùng triển khai (sinh mã).
+
+Xuyên suốt các mục của chương, chúng tôi giới thiệu các cấu trúc của hệ hình thức Statecharts bằng cách từng bước xây dựng mô hình hành vi của một hệ thống ví dụ. Chúng tôi giải thích cả cú pháp lẫn ngữ nghĩa của từng cấu trúc. Các ví dụ được mô hình hóa trong công cụ Yakindu (\url{https://www.itemis.com/en/yakindu/state-machine/}), nhưng các kỹ thuật có thể được chuyển sang bất kỳ công cụ mô hình hóa và mô phỏng Statecharts nào có chức năng tương đương.
+
+Mục~6.2 cung cấp kiến thức nền cho phần còn lại của chương: giải thích cách xem hành vi hệ thống thông qua trừu tượng hóa theo sự kiện rời rạc, giải thích hành vi của hệ thống đồng hồ điện tử mà chúng ta sẽ mô hình hóa, và giới thiệu một mô hình quy trình có thể sử dụng để xây dựng hệ thống bằng Statecharts, từ yêu cầu, qua thiết kế, đến triển khai. Mục~6.3 giải thích từng cấu trúc Statecharts, bắt đầu từ trạng thái và chuyển tiếp cơ bản, rồi dần giới thiệu các cấu trúc nâng cao hơn. Mục~6.4 giải thích chi tiết ngữ nghĩa của Statecharts như được hiện thực hóa trong STATEMATE. Mục~6.5 giải thích cách kiểm thử mô hình Statecharts để kiểm tra xem chúng có đáp ứng yêu cầu hệ thống hay không. Mục~6.6 giải thích cách sinh mã từ một mô hình Statecharts và triển khai lên nền tảng đích. Mục~6.7 đi vào một số chủ đề nâng cao. Mục~6.8 tổng kết chương.
+
+\section{Kiến thức nền}
+Chương này cung cấp kiến thức nền cho phần còn lại của chương. Trong Mục~8.4, chúng tôi giải thích ví dụ xuyên suốt sẽ được mô hình hóa bằng Statecharts ở mục tiếp theo. Trong Mục~6.2.2, chúng tôi xem xét hành vi hệ thống thông qua trừu tượng hóa theo sự kiện rời rạc. Cuối cùng, trong Mục~6.2.3, chúng tôi trình bày một mô hình quy trình có thể được sử dụng để mô hình hóa hệ thống bằng Statecharts, kiểm chứng rằng nó đáp ứng yêu cầu thông qua mô phỏng và kiểm thử, rồi cuối cùng triển khai nó.
+
+\subsection{Ví dụ xuyên suốt}
+Hệ thống ví dụ dùng trong chương này để minh họa khả năng của hệ hình thức Statecharts là một đồng hồ điện tử. Biểu diễn trực quan của đồng hồ được trình bày trong Hình~6.1. Đồng hồ chủ yếu được dùng để theo dõi thời gian, nhưng còn có các chức năng khác như bấm giờ, báo thức và đèn chiếu sáng. Người dùng có thể tương tác với đồng hồ bằng cách nhấn các nút để chuyển giữa những chế độ khác nhau, chỉnh giờ hiện tại, bật đèn, \ldots{} Bản chất của nó có yếu tố thời gian và tự chủ, vì nó thay đổi trạng thái bên trong mà không cần đầu vào nào từ người dùng.
+
+% Source: printed 157 / PDF 171
+\sourcefigure{6.1}{171}{Ứng dụng đồng hồ điện tử được dùng làm ví dụ xuyên suốt.}
+
+Một dạng tính trực giao cũng hiện diện; chẳng hạn hệ thống phải bảo đảm giờ vẫn được cập nhật trong khi bộ bấm giờ đang chạy.
+
+Đặc tả đầy đủ các yêu cầu được trình bày dưới đây:
+\begin{itemize}
+\item Giá trị thời gian phải được cập nhật mỗi giây, ngay cả khi không được hiển thị, chẳng hạn khi bộ bấm giờ đang chạy. Tuy nhiên, thời gian không được cập nhật khi đang được chỉnh sửa.
+\item Nhấn nút trên bên phải sẽ bật đèn Indiglo. Đèn sáng chừng nào nút còn được giữ. Kể từ lúc nhả nút, đèn tiếp tục sáng thêm 2 giây, sau đó tắt.
+\item Nhấn nút trên bên trái sẽ lần lượt chuyển giữa chế độ hiển thị giờ, hiển thị bấm giờ và hiển thị báo thức. Hệ thống bắt đầu ở chế độ hiển thị giờ. Trong chế độ này, giờ (HH:MM:SS) và ngày (MM/DD/YY) được hiển thị.
+\item Trong chế độ hiển thị bấm giờ, thời gian đã trôi qua được hiển thị dưới dạng MM:SS:FF, trong đó FF là phần trăm giây. Ban đầu, bộ bấm giờ bắt đầu ở 00:00:00. Nút dưới bên phải được dùng để khởi động bộ bấm giờ. Khi đang chạy, bộ bấm giờ cập nhật theo bước $1/100$ giây. Những lần nhấn nút dưới bên phải tiếp theo sẽ tạm dừng/tiếp tục bộ bấm giờ. Nhấn nút dưới bên trái đặt lại bộ bấm giờ về 00:00:00. Bộ bấm giờ tiếp tục chạy khi ở chế độ chạy, hoặc giữ nguyên giá trị khi ở chế độ tạm dừng, ngay cả khi đồng hồ ở một chế độ hiển thị khác, chẳng hạn khi giờ được hiển thị.
+\item Trong chế độ hiển thị báo thức, thời điểm đặt báo thức được hiển thị. Giờ báo thức mặc định là 12:00:00.
+\item Trong chế độ hiển thị giờ hoặc báo thức, đồng hồ chuyển sang chế độ chỉnh sửa khi nút dưới bên phải được giữ ít nhất 1,5 giây.
+\item Trong chế độ hiển thị giờ hoặc báo thức, có thể bật hoặc tắt báo thức bằng cách nhấn nút dưới bên trái.
+\item Báo thức được kích hoạt khi giờ báo thức bằng với giờ trong chế độ hiển thị. Khi được kích hoạt, màn hình nhấp nháy trong 4 giây, rồi báo thức tắt. Nhấp nháy nghĩa là chuyển sang/từ nền được chiếu sáng (Indiglo) hai lần mỗi giây. Có thể tắt báo thức trước khi hết 4 giây bằng một ngắt do người dùng, tức khi bất kỳ nút nào được nhấn. Sau khi báo thức tắt, hoạt động tiếp tục chính xác từ chỗ đã dừng. Lưu ý rằng sau khi báo thức kết thúc, tức việc nhấp nháy chấm dứt, báo thức được vô hiệu hóa để không kêu vào cùng thời điểm ngày hôm sau.
+\item Trong chế độ chỉnh sửa giờ hoặc báo thức, nhấn nhanh nút dưới bên trái sẽ tăng giá trị đang được chọn. Lưu ý rằng chỉ có thể tăng giá trị đang chọn; không có cách giảm hoặc đặt lại giá trị này. Nếu giữ nút dưới bên trái, giá trị đang chọn được tự động tăng sau mỗi 0,3 giây. Phải thoát chế độ chỉnh sửa nếu không có sự kiện chỉnh sửa nào trong 5 giây. Giữ nút dưới bên phải trong 2 giây cũng sẽ thoát chế độ chỉnh sửa. Nhấn nút dưới bên phải trong thời gian ngắn hơn 2 giây sẽ chuyển sang mục lựa chọn tiếp theo, chẳng hạn từ chỉnh giờ sang chỉnh phút.
+\end{itemize}
+
+Các yêu cầu này giờ cần được chuyển thành một thiết kế của hệ thống. Có nhiều lựa chọn: vì chúng ta đang nói đến phần mềm điều khiển, một lựa chọn có thể là ngôn ngữ lập trình bậc cao. Nhưng như đã lập luận
+% Source: printed 158 / PDF 172
+trước đó trong chương, một lựa chọn phù hợp hơn để mô tả hành vi có yếu tố thời gian, phản ứng và tự chủ này là ngôn ngữ Statecharts.
+
+\sourcefigure{6.2}{172}{Trừu tượng hóa theo sự kiện rời rạc của một trò chơi ví dụ ``tank wars''.}
+\sourcefigure{6.3}{172}{Một mô hình hành vi có thể có của trò chơi ví dụ ``tank wars''.}
+
+\subsection{Trừu tượng hóa theo sự kiện rời rạc}
+Một số hành vi hệ thống, đặc biệt là hành vi của phần mềm điều khiển, có thể được mô tả thông qua trừu tượng hóa theo sự kiện rời rạc (discrete-event abstraction). Hình~6.2 trình bày một góc nhìn về hành vi của hệ thống ví dụ; trong trường hợp này, hệ thống là trò chơi ``tank wars'', trong đó một xe tăng di chuyển trên bản đồ ảo bằng cách phản ứng với đầu vào từ bàn phím của người chơi. Xe tăng có thể bắn theo lệnh người chơi và có thể cạn nhiên liệu; khi đó nó chuyển sang chế độ chỉ có thể di chuyển về phía trạm tiếp nhiên liệu và không còn có thể bắn.
+
+Như thấy rõ từ mô tả trực quan này, hệ thống phản ứng với \emph{đầu vào} từ môi trường và tạo ra \emph{đầu ra} cho môi trường. Những tín hiệu đầu vào/đầu ra như vậy có thể được mô tả bằng \emph{sự kiện}. Ở phía trên Hình~6.2 là một \emph{đoạn sự kiện đầu vào} (input event segment). Một đoạn là một khoảng thời gian hữu hạn trong đó xảy ra một số sự kiện. Trong một khoảng hữu hạn như vậy, chỉ có thể xảy ra hữu hạn sự kiện; điều này phân biệt hệ thống sự kiện rời rạc với hệ thống liên tục, trong đó có thể phóng to hành vi đầu vào và đầu ra vô hạn vì chúng là các hàm liên tục. Hệ thống \emph{phản ứng} với đoạn sự kiện đầu vào bằng cách tạo một đoạn sự kiện đầu ra, được trình bày ở phía dưới Hình~6.2. Môi trường, tức các thực thể tương tác với hệ thống, có thể xem hệ thống như một hộp đen có \emph{giao diện}, được xác định bởi các sự kiện đầu vào nó chấp nhận cũng như các sự kiện đầu ra nó tạo ra. Trong trường hợp này, người chơi tương tác với hệ thống bằng cách gửi các sự kiện đầu vào tương ứng với thao tác nhấn phím: người chơi điều khiển xe tăng bằng các phím \emph{up}, \emph{down} và \emph{enter}. Kết quả là hệ thống tạo đầu ra mô tả phản ứng của nó với đầu vào nhận được. Trong trường hợp này có thể tạo bốn sự kiện đầu ra: \texttt{move\_up}, \texttt{move\_down} và \texttt{shoot}, lần lượt biểu thị xe tăng bắt đầu di chuyển lên, bắt đầu di chuyển xuống hoặc bắn; và \texttt{low\_fuel}, biểu thị xe tăng sắp hết nhiên liệu.
+
+Hệ thống có trạng thái bên trong, thay đổi theo thời gian do nhận đầu vào và do hệ thống tự chủ thay đổi. Một quỹ đạo trạng thái có thể có của hệ thống ví dụ được trình bày ở giữa Hình~6.2. Ba trạng thái được xác định: \texttt{shooting}, \texttt{moving} và \texttt{low\_fuel}. Hai sự kiện đầu vào đầu tiên không làm thay đổi trạng thái hệ thống, nhưng khiến hệ thống phát ra hai sự kiện đầu ra tương ứng. Sự kiện đầu vào thứ ba thay đổi trạng thái hệ thống từ \texttt{moving} sang \texttt{shooting}. Và tại một thời điểm nào đó sau đó,
+% Source: printed 159 / PDF 173
+hệ thống tự chủ chuyển trạng thái sang \texttt{low\_fuel}. Từ vết đầu vào, đầu ra và trạng thái, có thể suy ra hệ thống \emph{có yếu tố thời gian} vì hành vi bao gồm các thời hạn chờ, \emph{phản ứng} với đầu vào từ môi trường, và \emph{tự chủ} vì có thể thay đổi trạng thái hệ thống mà không cần đầu vào nào từ môi trường.
+
+Để mô tả tất cả các quỹ đạo trạng thái có thể có của hệ thống, có thể sử dụng một sơ đồ trạng thái; xem Hình~6.3 để biết một mô hình có thể có mô tả hành vi hệ thống. Nó trình bày các trạng thái hay \emph{chế độ} khác nhau mà hệ thống có thể ở: tại mức cao nhất, ba trạng thái \texttt{moving}, \texttt{shooting} và \texttt{low\_fuel} được xác định, biểu diễn bằng hình chữ nhật bo góc. Trạng thái \texttt{moving} có ba trạng thái con, tương ứng với hướng di chuyển của xe tăng. Trạng thái hệ thống có thể thay đổi khi một chuyển tiếp, biểu diễn bằng mũi tên, được kích hoạt. Một chuyển tiếp được kích hoạt bởi một \emph{sự kiện} hoặc \emph{thời hạn chờ} tùy chọn và một \emph{điều kiện} tùy chọn trên toàn bộ trạng thái hệ thống, bao gồm giá trị các biến hệ thống. Khi một chuyển tiếp được kích hoạt, một \emph{hành động} được thực thi, có thể thay đổi giá trị các biến hệ thống hoặc phát ra một sự kiện.
+
+Đến đây kết thúc mô tả ở mức cao về trừu tượng hóa theo sự kiện rời rạc để mô tả hành vi hệ thống, bao gồm một ký pháp sơ đồ có thể sử dụng. Trong phần còn lại của chương, hệ hình thức Statecharts được giải thích như một ví dụ về ngôn ngữ sơ đồ như vậy để mô tả hành vi có yếu tố thời gian, phản ứng và tự chủ của các hệ thống.
+
+\sourcefigure{6.4}{173}{Luồng công việc để mô hình hóa, mô phỏng, kiểm thử và cuối cùng sinh mã từ các mô hình Statecharts. \textit{Chú giải thêm của bản dịch:} \texttt{GatherReqs}: thu thập yêu cầu; \texttt{ModelSystem}: mô hình hóa hệ thống; \texttt{ReviseSystem}: sửa lại mô hình; \texttt{DefineInput}: xác định đầu vào; \texttt{DefineTestCases}: xác định ca kiểm thử; \texttt{Simulate}: mô phỏng; \texttt{Test}: kiểm thử; \texttt{CheckOutput}: kiểm tra đầu ra; \texttt{GenerateCode}: sinh mã; \texttt{TraceLang}: ngôn ngữ vết. \texttt{IT}/\texttt{ST}/\texttt{TT}/\texttt{TC}: vết đầu vào/vết mô phỏng/vết kiểm thử/ca kiểm thử.}
+
+% Source: printed 160 / PDF 174
+\subsection{Quy trình}
+Làm ví dụ xuyên suốt minh họa việc sử dụng Statecharts, chúng ta sẽ phát triển một mô hình Statecharts mô tả hành vi có yếu tố thời gian, tự chủ và phản ứng của đồng hồ điện tử. Tuy nhiên, mỗi khi phát triển một hệ thống, điều quan trọng là xem xét những bước nào được thực hiện và những hiện vật (artefacts) nào được tạo ra trong quy trình phát triển hệ thống, rồi mô tả quy trình này bằng một mô hình. Quy trình, hay luồng công việc, sẽ hướng dẫn chúng ta xuyên suốt chương để thiết kế, mô phỏng, kiểm thử và cuối cùng triển khai hệ thống ví dụ. Hình~6.4 trình bày mô hình của quy trình này bằng ngôn ngữ Đồ thị biến đổi hệ hình thức và Mô hình quy trình (Formalism Transformation Graph and Process modelling, FTG+PM) [195].
+
+Ở bên phải, một mô hình quy trình (Process Model, PM) mô tả các giai đoạn khác nhau trong phát triển hệ thống. Quy trình gồm một số \emph{hoạt động}, có thể thủ công hoặc tự động. Các hoạt động thủ công cần đầu vào từ người dùng: chẳng hạn, việc tạo mô hình bắt đầu khi người dùng mở một trình biên tập mô hình và kết thúc khi người dùng lưu mô hình rồi đóng trình biên tập. Các hoạt động tự động là những chương trình có tính biến đổi, theo nghĩa có thể xem chúng như hộp đen nhận đầu vào và tạo đầu ra. Mọi hoạt động đều tạo \emph{hiện vật} và có thể nhận hiện vật làm đầu vào. Các nút phân nhánh (fork) và hợp nhánh (join) có thể chia luồng công việc thành những nhánh song song, nơi nhiều hoạt động cùng hoạt động tại một thời điểm. Các nút quyết định có thể quyết định cách quy trình tiếp diễn dựa trên một giá trị boolean.
+
+Ở bên trái, một đồ thị biến đổi hệ hình thức (Formalism Transformation Graph, FTG) là bản đồ của tất cả các \emph{ngôn ngữ} được sử dụng trong quá trình phát triển hệ thống. Mỗi hiện vật được tạo ra trong mô hình quy trình tuân thủ một ngôn ngữ trong đồ thị biến đổi hệ hình thức. Ngoài ra, đồ thị xác định các \emph{phép biến đổi} giữa các ngôn ngữ, có thể thủ công hoặc tự động. Một lần nữa, có sự tương ứng giữa hoạt động trong mô hình quy trình và phép biến đổi trong đồ thị biến đổi hệ hình thức: phép biến đổi đóng vai trò một ``giao diện'' xác định các hiện vật đầu vào và đầu ra mà hoạt động trong luồng công việc phải tuân thủ.
+
+Trong luồng công việc của chúng ta, bước đầu là xác định các yêu cầu của hệ thống ví dụ và phát triển một mô hình ban đầu của hệ thống. Sau đó mô hình này được mô phỏng và kiểm thử song song. Một lần mô phỏng tạo ra vết đầu ra từ một vết đầu vào cho trước, theo cách trừu tượng hóa sự kiện rời rạc đã thảo luận. Vết đầu ra này được kiểm tra thủ công và người ta quyết định các yêu cầu có được đáp ứng hay không. Ở nhánh song song còn lại của luồng công việc, một ca kiểm thử được xác định bởi bộ sinh (generator), tạo các sự kiện đầu vào, và bộ chấp nhận (acceptor), kiểm tra xem vết đầu ra được tạo có đúng hay không. Một kiểm thử chạy hoàn toàn tự động, và một lần nữa người ta quyết định thiết kế hệ thống có đáp ứng các yêu cầu hay không. Nếu không, mô hình hệ thống được sửa đổi cho đến khi đáp ứng mọi yêu cầu. Khi tất cả yêu cầu đã được đáp ứng, có thể triển khai hệ thống bằng cách sinh mã ứng dụng phù hợp. Trong trường hợp của chúng ta, hệ thống được triển khai bằng cách sinh mã Python và ghép nối nó với phần trực quan hóa đồng hồ điện tử được mô phỏng, như trong Hình~6.1.
+
+\section{Mô hình hóa bằng Statecharts}
+Mục trước giới thiệu các yêu cầu của ví dụ đồng hồ điện tử, giải thích cách xem hành vi của nó thông qua trừu tượng hóa theo sự kiện rời rạc, và mô tả một quy trình phát triển hệ thống bằng hệ hình thức Statecharts. Trong mục này, chúng tôi giải thích các phần tử của hệ hình thức Statecharts có thể được sử dụng để mô hình hóa hành vi có yếu tố thời gian, phản ứng và tự chủ của các hệ thống. Chúng tôi bắt đầu từ các khái niệm cơ bản về trạng thái và chuyển tiếp, rồi dần giới thiệu những khái niệm nâng cao hơn về chiều sâu, tính trực giao, truyền thông quảng bá và lịch sử. Cú pháp và ngữ nghĩa của từng khái niệm mới được giải thích và minh họa bằng cách từng bước phát triển mô hình của ví dụ xuyên suốt.
+
+\subsection{Trạng thái và chuyển tiếp}
+Các khối cấu thành cơ bản của bất kỳ mô hình Statecharts nào là \emph{trạng thái} và \emph{chuyển tiếp} (transition) giữa những trạng thái đó. Đây là các khái niệm thiết yếu cần giải thích trước khi chuyển sang những phần tử Statecharts nâng cao hơn. Các khối cấu thành cơ bản này có cơ sở lý thuyết là ô-tô-mát trạng thái hữu hạn (Finite State Automata) [150]. Để minh họa việc sử dụng trạng thái và chuyển tiếp, hai phần hành vi của đồng hồ điện tử được trình bày trong Hình~6.5 và Hình~6.6, hiện thực hóa phần hệ thống cập nhật giá trị đồng hồ mỗi giây và phần hệ thống chịu trách nhiệm bật, tắt đèn Indiglo.
+
+% Source: printed 161 / PDF 175
+\sourcefigure{6.5}{175}{Cập nhật giá trị đồng hồ mỗi giây.}
+\sourcefigure{6.6}{175}{Hành vi của Indiglo.}
+
+Trạng thái mô hình hóa \emph{chế độ} mà hệ thống đang ở. Khi không có các vùng đồng thời, tại bất kỳ thời điểm nào trong quá trình thực thi hệ thống có đúng một trạng thái đang hoạt động. Một trạng thái có \emph{tên} dùng để định danh duy nhất nó. Có đúng một trạng thái trong mô hình là trạng thái ban đầu; khi khởi động hệ thống, trạng thái hệ thống được khởi tạo thành trạng thái ban đầu đó. Biểu diễn trực quan của một trạng thái là hình chữ nhật bo góc, hay \emph{roundtangle}. Để trực quan hóa trạng thái ban đầu, người ta vẽ một hình tròn nhỏ màu đen với mũi tên chỉ đến trạng thái ban đầu.
+
+Trong Hình~6.6, ba trạng thái được mô hình hóa để hiện thực hóa hành vi của đèn Indiglo: \texttt{off}, là trạng thái mặc định, \texttt{pushed} và \texttt{released}. Những tên này được chọn có chủ đích để phản ánh trạng thái của đồng hồ thực (``vật lý''), tức màn hình. Tuy nhiên, không có liên hệ trực tiếp giữa tên trạng thái và trạng thái màn hình: tên chỉ được dùng để nhanh chóng truyền đạt ý nghĩa đến người xem mô hình; hành vi thực sự, tức bật và tắt đèn, phải được hiện thực hóa trong mối liên kết giữa mô hình Statecharts, hay chính xác hơn là mã được sinh từ nó, và mã nền tảng, tức đồng hồ điện tử vật lý cùng nền tảng phần mềm nhúng của nó, hoặc trong trường hợp của chúng ta là nền tảng mô phỏng bằng Python. Trạng thái \texttt{off} biểu diễn việc đèn tắt; trạng thái \texttt{pressed} biểu diễn trạng thái người dùng đang nhấn nút trên bên phải để bật đèn; trạng thái \texttt{released} biểu diễn trạng thái người dùng đã nhả nút trên bên phải.
+
+Bên cạnh trạng thái, hay chế độ, mà hệ thống đang ở, hệ thống theo dõi một số \emph{biến trạng thái} $\{v_1,v_2,\ldots,v_n\}$. Kiểu dữ liệu và các phép gán có thể thực hiện cho những biến này phụ thuộc vào mô hình dữ liệu được hỗ trợ bởi biến thể cụ thể của hệ hình thức Statecharts. Trong Yakindu, các kiểu độc lập với ngôn ngữ hiện thực hóa là \texttt{integer}, \texttt{real}, \texttt{boolean}, \texttt{string} và \texttt{void} được định nghĩa\footnote{\url{https://www.itemis.com/en/yakindu/state-machine/documentation/user-guide/sclang_statechart_language_reference\#sclang_types}}. Các biến có tên $\{v_1,v_2,\ldots,v_n\}$ và kiểu $\{t_1,t_2,\ldots,t_n\}$ này có các giá trị $\{val_1,val_2,\ldots,val_n\}$, trong đó $val_i\in\mathrm{dom}(t_i)\quad\forall i\in[1,\ldots,n]$.
+
+Trong khi trạng thái mô tả cấu hình hiện tại của hệ thống, chuyển tiếp mô hình hóa động thái của hệ thống và mô tả cách cấu hình này phát triển theo thời gian. Một chuyển tiếp nối đúng hai trạng thái: trạng thái \emph{nguồn} và trạng thái \emph{đích}. Khi hệ thống đang chạy, một chuyển tiếp có thể được \emph{kích hoạt} khi một số điều kiện được thỏa mãn. Khi chuyển tiếp được kích hoạt, trạng thái hiện tại của hệ thống được đổi từ trạng thái nguồn sang trạng thái đích. Đồng thời, \emph{hành động} của chuyển tiếp được thực thi. Nhìn chung, dạng biểu thức của một chuyển tiếp được viết như sau: 
+\[
+\langle\textit{trigger-event}\rangle[\langle\textit{trigger-condition}\rangle]/\langle\textit{action}\rangle
+\]
+ Điều kiện kích hoạt của một chuyển tiếp gồm những phần tử sau:
+\begin{itemize}
+\item Một \emph{sự kiện kích hoạt} tùy chọn, được định danh bằng \emph{tên} và danh sách \emph{tham số}. Nhìn chung, một sự kiện có dạng biểu thức 
+\[
+\langle\textit{event-name}\rangle(\langle\textit{event-params}\rangle)
+\]
+ Sự kiện có thể là sự kiện đầu vào từ môi trường hoặc một sự kiện nội bộ của mô hình Statecharts. Sự kiện kích hoạt cũng có thể là một
+% Source: printed 162 / PDF 176
+thời hạn chờ (timeout), được định danh bằng tên sự kiện dành riêng \texttt{after} và một tham số biểu thị lượng thời gian, với một độ phân giải thời gian nhất định, sẽ trôi qua cho đến khi thời hạn chờ kích hoạt.
+\item Một \emph{điều kiện kích hoạt} tùy chọn, mô hình hóa một điều kiện boolean trên trạng thái hệ thống. Điều kiện có thể kiểm tra các giá trị biến hệ thống và xem một trạng thái cụ thể trong một thành phần trực giao khác (xem Mục~6.3.3) có đang hoạt động hay không.
+\end{itemize}
+
+Một chuyển tiếp không có yếu tố kích hoạt được gọi là \emph{tự phát} (spontaneous). Chuyển tiếp đi ra từ dấu chỉ trạng thái ban đầu luôn tự phát. Hành động của chuyển tiếp có thể:
+\begin{itemize}
+\item Phát ra các sự kiện, cục bộ trong mô hình Statecharts hoặc gửi ra môi trường. Nhìn chung, một sự kiện có dạng biểu thức 
+\[
+\langle\textit{event-name}\rangle(\langle\textit{event-params}\rangle)
+\]
+
+\item Thực hiện các phép tính và phép gán trên các biến của hệ thống.
+\end{itemize}
+
+Trong Hình~6.6, các chuyển tiếp được mô hình hóa để mô tả hành vi động của đèn Indiglo: đèn bật khi sự kiện \texttt{topRightPressed} đến từ môi trường. Đèn tiếp tục sáng chừng nào nút chưa được nhả; nếu nút được nhả, đèn tiếp tục sáng 2 giây rồi tắt. \emph{Giao diện} của mô hình này gồm tập hợp các sự kiện đầu vào được chấp nhận $X=\{\textit{topRightPressed},\textit{topRightReleased}\}$, tập hợp các sự kiện đầu ra có thể có $Y=\emptyset$, và một tập hợp các hàm gọi lại (callback) $\{\textit{setIndiglo},\textit{unsetIndiglo}\}$. Khi mô hình này được triển khai bằng cách sinh mã và được đặt trong một môi trường, môi trường có thể gửi các sự kiện đầu vào thuộc tập sự kiện đầu vào đến hệ thống đang chạy. Môi trường có thể lắng nghe các sự kiện đầu ra do hệ thống phát ra và thực hiện hành động phù hợp. Hơn nữa, khi hệ thống khởi động, môi trường phải cung cấp các hiện thực cho các hàm gọi lại: mô hình Statecharts không biết những hiện thực này, vì chúng sẽ thay đổi trạng thái ``vật lý'' của hệ thống. Theo nghĩa này, cùng một mô hình có thể được đặt trong những môi trường khác nhau để hiện thực hóa cùng hành vi trên những hệ thống ``vật lý'' khác nhau; chẳng hạn, một phiên bản cập nhật phần cứng hệ thống không nhất thiết dẫn đến thay đổi hành vi hệ thống. Trong trường hợp đó, có thể cập nhật phần cứng và môi trường đi kèm nhưng giữ nguyên mô hình Statecharts, rồi sinh mã để đặt vào môi trường mới.
+
+\subsection{Trạng thái phức hợp}
+Một trạng thái phức hợp (composite state) là một tập hợp các trạng thái con, bản thân chúng có thể là trạng thái cơ bản hoặc trạng thái phức hợp. Điều này cho phép lồng trạng thái tới độ sâu tùy ý. Mục đích chính của trạng thái phức hợp là nhóm những hành vi thuộc về nhau về mặt lôgic. Những chuyển tiếp đi vào trạng thái phức hợp sẽ đi vào trạng thái mặc định của nó, theo tính bắc cầu xuống đến mức thấp nhất. Điều này có nghĩa mọi trạng thái phức hợp phải có đúng một trạng thái mặc định, giống như đối với toàn bộ mô hình Statecharts. Tất nhiên, cũng có thể đi trực tiếp vào một trạng thái con của trạng thái phức hợp bằng cách chọn nó làm đích. Có thể xem các chuyển tiếp đi ra từ trạng thái phức hợp như cũng được xác định trên tất cả những trạng thái bên trong; thông qua một thủ tục làm phẳng, có thể thu được mô hình Statecharts tương đương chỉ chứa trạng thái cơ bản và chuyển tiếp.
+
+Chẳng hạn, trong Hình~6.7, hành vi báo thức được mô hình hóa. Một trạng thái phức hợp \texttt{blinking} được xác định: nó được đi vào khi thủ tục \texttt{checkTime} trả về \texttt{true}, biểu thị đã đến giờ báo thức. Khi đi vào trạng thái \texttt{blinking}, trạng thái mặc định \texttt{on} cũng được đi vào; nếu một hành động được xác định trên chuyển tiếp đến trạng thái mặc định thì hành động đó cũng được thực thi. Hai chuyển tiếp đi ra được xác định: khi người dùng nhấn bất kỳ nút nào hoặc sau 4 giây, báo thức được tắt. Bất kể trạng thái bên trong đang hoạt động của \texttt{blinking} là gì, khi chuyển tiếp bên ngoài được kích hoạt, trạng thái đang hoạt động đó được thoát trước khi thoát trạng thái \texttt{blinking} và đi vào trạng thái \texttt{off}.
+
+Một vấn đề quan trọng với trạng thái phức hợp là tính không tất định không mong muốn có thể xuất hiện nếu một trạng thái con có chuyển tiếp đi ra được kích hoạt bởi cùng sự kiện với chuyển tiếp của trạng thái phức hợp chứa nó. Trong phiên bản làm phẳng của mô hình Statecharts, tính không tất định này sẽ rõ ràng, vì một trạng thái sẽ có hai chuyển tiếp đi ra được kích hoạt bởi cùng sự kiện. Có thể thu được phiên bản làm phẳng của một mô hình Statecharts bằng cách loại bỏ phân cấp: ta chỉ giữ các trạng thái ``lá'', tức trạng thái cơ bản, bằng cách bổ sung vào trạng thái lá những chuyển tiếp đi ra khỏi hoặc đi vào các trạng thái tổ tiên của nó. Bằng cách làm điều này đệ quy, bắt đầu từ mức thấp nhất, ta loại bỏ phân cấp bằng cách dần bổ sung những chuyển tiếp ``mức cao hơn'' này vào các trạng thái cơ bản.
+
+Chẳng hạn, trong Hình~6.7, nếu có một chuyển tiếp theo sự kiện \texttt{topRightPressed} từ trạng thái \texttt{on} đến trạng thái \texttt{off}, mô hình sẽ không tất định nếu trạng thái \texttt{on} đang hoạt động khi sự kiện \texttt{topRightPressed} được môi trường phát ra. Để giải quyết tính không tất định như vậy, vì Statecharts là một hệ hình thức tất định, có thể chọn chuyển tiếp ngoài cùng, như trong STATEMATE [141], hoặc chọn chuyển tiếp trong cùng,
+% Source: printed 163 / PDF 177
+như trong Rhapsody [139]. Các lựa chọn khác nhau này được trình bày trong Hình~6.8, cùng với phiên bản làm phẳng của các mô hình. Trong bài hướng dẫn này, chúng tôi giả định ngữ nghĩa STATEMATE.
+
+\sourcefigure{6.7}{177}{Thành phần điều khiển hành vi báo thức.}
+
+\subsection{Các vùng trực giao}
+Các trạng thái có thể được kết hợp theo phân cấp trong những trạng thái phức hợp như đã giải thích ở tiểu mục trước, hoặc theo tính trực giao trong những vùng đồng thời. Trước đây có đúng một trạng thái của mô hình Statecharts đang hoạt động tại cùng một thời điểm; khi đi vào một trạng thái có các vùng đồng thời, tất cả các vùng thực thi đồng thời. Mỗi vùng có một trạng thái mặc định được đi vào khi đi vào vùng đó. Các vùng trực giao có thể phản ứng với sự kiện đồng thời và truyền thông với nhau. Điều này được thực hiện bằng cách phát ra sự kiện trong một vùng đồng thời để những vùng đồng thời khác ``nhận biết'' chúng, gọi là truyền thông quảng bá (broadcast communication). Cách thứ hai để các vùng trực giao truyền thông là truy vấn trạng thái của một vùng trực giao khác: điều kiện kích hoạt của một điều kiện cụ thể có thể chứa ràng buộc về trạng thái nào đang hoạt động trong một vùng trực giao khác.
+
+Các Hình~6.5, 6.6 và 6.7 đều trực giao với nhau. Quả vậy, giờ cần được cập nhật ngay cả khi đèn Indiglo bật hoặc báo thức kêu. Nếu không, đồng hồ sẽ vô dụng như một thiết bị theo dõi thời gian. Một thành phần trực giao thứ tư được trình bày trong Hình~6.9. Nó điều khiển màn hình đồng hồ điện tử bằng cách chuyển,
+% Source: printed 164 / PDF 178
+trong trạng thái phức hợp \texttt{displaying}, giữa các trạng thái \texttt{displaying\_time}, \texttt{displaying\_chrono} và \texttt{displaying\_alarm} khi người dùng nhấn nút trên bên trái. Người dùng có thể chỉnh cả giờ hiện tại lẫn thời điểm đặt báo thức. Để làm điều đó, có một chuyển tiếp từ trạng thái \texttt{displaying\_time} và \texttt{displaying\_alarm} đến trạng thái \texttt{editing\_time}, nơi người dùng có thể tăng giờ/phút/giây bằng cách nhấn nút dưới bên trái, và đổi mục đang được chọn bằng cách nhấn nút dưới bên phải. Thành phần trực giao \texttt{display} truyền thông với thành phần trực giao \texttt{time} bằng cách phát ra các sự kiện \texttt{time\_edit} và \texttt{edit\_done}. Điều này bảo đảm giờ không được cập nhật trong khi người dùng đang chỉnh sửa.
+
+\sourcefigure{6.8}{178}{Tính không tất định trong trạng thái phức hợp: (a) mô hình ví dụ chứa tính không tất định; (b) phiên bản làm phẳng: tính không tất định ở trạng thái A; (c) ngữ nghĩa Statemate: chuyển tiếp ngoài cùng được ưu tiên; (d) ngữ nghĩa Rhapsody: chuyển tiếp trong cùng được ưu tiên.}
+
+\subsection{Lịch sử}
+Một phần tử cuối cùng của hệ hình thức Statecharts là trạng thái \emph{lịch sử} (history). Một trạng thái lịch sử có thể được đặt trong trạng thái phức hợp như một con trực tiếp. Nó ghi nhớ trạng thái hiện tại của trạng thái phức hợp khi thoát khỏi trạng thái phức hợp đó. Có hai loại trạng thái lịch sử: trạng thái lịch sử nông (shallow history) ghi nhớ trạng thái hiện tại ở cùng mức của nó, còn trạng thái lịch sử sâu (deep history) ghi nhớ trạng thái hiện tại ở cùng mức và ở tất cả những mức thấp hơn trong phân cấp. Khi một chuyển tiếp có trạng thái lịch sử làm đích, trạng thái đã được ghi nhớ được khôi phục, thay vì đi vào trạng thái mặc định của trạng thái phức hợp.
+
+Trong Hình~6.9, một trạng thái lịch sử nông ghi nhớ trạng thái con trực tiếp đang hoạt động của trạng thái phức hợp \texttt{displaying} khi nó được thoát, tức khi thực hiện một chuyển tiếp đến trạng thái \texttt{editing\_time}. Khi quay lại từ trạng thái \texttt{editing\_time}, trạng thái lịch sử sẽ khôi phục trạng thái hoạt động gần nhất, để bảo đảm ta trở lại trạng thái \texttt{displaying\_time} hoặc \texttt{displaying\_alarm}, tùy nội dung vừa chỉnh sửa. Nếu không có trạng thái lịch sử, ta sẽ luôn trở lại trạng thái mặc định \texttt{displaying\_time}.
+
+% Source: printed 165 / PDF 179
+\begin{quote}\small
+\textbf{Khóa đọc Hình 6.9--6.11 (bản dịch).} \texttt{displaying\_time}, \texttt{chrono}, \texttt{alarm}: hiển thị giờ, bấm giờ, báo thức; \texttt{waiting\_to\_edit}: chờ vào chế độ chỉnh sửa; \texttt{editing\_time}: chỉnh giờ hoặc báo thức; \texttt{waiting}: chờ; \texttt{increasing}: tăng mục đang chọn; \texttt{going\_to\_next}: chuyển sang mục tiếp theo; \texttt{stopped}/\texttt{running}: dừng/đang chạy. \texttt{input\_generator}/\texttt{output\_checker}: bộ sinh đầu vào/bộ kiểm tra đầu ra; \texttt{init}/\texttt{step1}--\texttt{step4}: khởi tạo/các bước 1--4; \texttt{passed}/\texttt{failure}: đạt/không đạt. \emph{entry}/\emph{exit}: hành động khi vào/ra; \emph{after}: sau khoảng thời gian; \emph{raise}: phát sự kiện; \texttt{active(path)}: kiểm tra trạng thái \texttt{path} đang hoạt động. Tên nút mô tả vị trí và thao tác nhấn/nhả; các định danh và đường dẫn được giữ nguyên. Phần mô tả các hàm gọi lại nằm trong Mục 6.6, ngay sau Hình 6.11.
+\end{quote}
+
+\sourcefigure{6.9}{179}{Thành phần điều khiển hành vi hiển thị.}
+
+% Source: printed 166 / PDF 180
+\subsection{Cú pháp tiện dụng}
+Các tiểu mục trước đã thảo luận những phần tử thiết yếu của hệ hình thức Statecharts. Tuy nhiên, còn có những cấu trúc cú pháp bổ sung giúp người mô hình hóa làm việc dễ dàng hơn, nhưng cũng có thể được mô hình hóa bằng các cấu trúc Statecharts ``chuẩn''.
+
+Một bổ sung ``cú pháp tiện dụng'' (syntactic sugar) như vậy là hành động vào/ra cho các trạng thái, một cách hiệu quả hơn để đặc tả những hành động luôn cần thực thi khi đi vào hoặc thoát một trạng thái, thay vì lặp lại hành động trên từng chuyển tiếp đi vào/đi ra. Một hành động vào được thực thi khi đi vào trạng thái, còn một hành động ra được thực thi khi thoát trạng thái. Điều này ảnh hưởng quan trọng đến ngữ nghĩa thực thi một chuyển tiếp kết hợp với các trạng thái phức hợp. Một chuyển tiếp được xác định giữa các trạng thái $A$ và $B$. Khi thực thi chuyển tiếp này, trạng thái $A$ được thoát và trạng thái $B$ được đi vào. Tuy nhiên, điều này chỉ đúng nếu $A$ và $B$ là các hậu duệ trực tiếp của cùng một trạng thái phức hợp. Nhiều trạng thái hơn được thoát nếu $A$ nằm trong một phân cấp trạng thái, và nhiều trạng thái hơn được đi vào nếu $B$ nằm trong một phân cấp trạng thái khác. Để thực thi một chuyển tiếp, trạng thái ``tổ tiên chung thấp nhất'' (Least Common Ancestor, LCA) được tính từ trạng thái nguồn $A$ và trạng thái đích $B$. LCA là một trạng thái ở phía trên cả $A$ lẫn $B$ trong phân cấp, có cả $A$ và $B$ làm trạng thái con, và là trạng thái thấp nhất có thuộc tính đó. Để thực thi chuyển tiếp, bắt đầu từ $A$, các trạng thái trong phân cấp lên tới nhưng không bao gồm LCA được thoát, và các hành động ra của chúng được thực thi theo cùng thứ tự. Sau đó hành động của chuyển tiếp được thực thi. Tiếp theo, các trạng thái xuống theo phân cấp hướng tới $B$ được đi vào, bao gồm $B$ nhưng không bao gồm LCA, và các hành động vào của chúng được thực thi theo cùng thứ tự.
+
+Các hành động vào và ra đã được trình bày xuyên suốt các thành phần của mô hình đồng hồ điện tử trong chương. Chẳng hạn, đối với thành phần trực giao báo thức trong Hình~6.7, mỗi khi thoát trạng thái \texttt{blinking}, biểu thị báo thức đã ``kích hoạt'' và giai đoạn nhấp nháy đã kết thúc, báo thức được vô hiệu hóa bằng một lời gọi \texttt{setAlarm}, và đèn Indiglo được tắt bằng một lời gọi \texttt{unsetIndiglo}. Nếu không mô hình hóa hành động này thành hành động ra, ta phải lặp lại nó trên hai chuyển tiếp đi ra khỏi trạng thái \texttt{blinking}. Trong trạng thái phức hợp \texttt{blinking}, trạng thái \texttt{on} có một hành động vào bật đèn Indiglo. Nếu không mô hình hóa hành động này thành hành động vào, ta phải lặp lại nó trên chuyển tiếp đi vào đánh dấu trạng thái này là trạng thái ban đầu và trên chuyển tiếp đi vào từ trạng thái \texttt{off}.
+
+\subsection{Mô hình Statecharts đầy đủ}
+Mô hình Statecharts đầy đủ của đồng hồ điện tử, trong đó các vùng trực giao đã thảo luận được đặt trong những sơ đồ con, được trình bày trong Hình~6.10. Một thành phần bổ sung chưa được thảo luận ở các tiểu mục trước là thành phần \texttt{chrono}, chịu trách nhiệm tăng bộ bấm giờ khi được kích hoạt. Lưu ý rằng chỉ có thể kích hoạt bộ bấm giờ khi bộ bấm giờ được hiển thị trong thành phần \texttt{display}; hàm \texttt{active} nhận một tham chiếu trạng thái làm tham số và trả về \texttt{true} khi trạng thái đó đang hoạt động tại thời điểm ấy.
+
+\sourcefigure{6.10}{181}{Mô hình Statecharts đầy đủ của hành vi đồng hồ điện tử.}
+
+\section{Ngữ nghĩa chi tiết}
+Ngữ nghĩa chi tiết của Statecharts tinh tế hơn so với ấn tượng ban đầu. Trong mục này, chúng tôi giải thích ngữ nghĩa Statecharts theo cách hiện thực hóa trong STATEMATE [141]. Như đã đề cập, có thể có một số biến thể ngữ nghĩa nếu có nhiều lựa chọn, chẳng hạn chọn chuyển tiếp trong hoặc ngoài khi có xung đột trong một trạng thái phức hợp. Trong Mục~6.7, chúng tôi sẽ giải thích rằng còn có những lựa chọn khác.
+
+Việc thực thi một Statechart được chia thành các bước vi mô (microstep). Một hàng đợi sự kiện giữ các sự kiện hiện đang được phát ra, từ môi trường hoặc cục bộ bởi Statechart. Nó cũng theo dõi các thời hạn chờ sẽ hết hạn trong tương lai, tương ứng với một điều kiện \texttt{after} trên chuyển tiếp. Trong mỗi bước vi mô, thuật toán thực thi quyết định những chuyển tiếp nào trong các vùng trực giao khác nhau được cho phép thực thi (enabled). Chúng được thực thi theo thứ tự tùy ý bằng cách thay đổi trạng thái hệ thống từ trạng thái nguồn của từng chuyển tiếp sang trạng thái đích của nó. Cụ thể, thuật toán thực thi hoạt động như sau:
+\begin{enumerate}
+\item Một tập hợp các chuyển tiếp ứng viên được tạo ra, gồm những chuyển tiếp được cho phép bởi các sự kiện đã được phát cục bộ trong bước trước, bởi các thời hạn chờ hoặc bởi các sự kiện từ môi trường. Các chuyển tiếp ứng viên được lọc bằng cách
+% Source: printed 167 / PDF 181
+đánh giá điều kiện của chúng, là một hàm boolean trên toàn bộ trạng thái hệ thống. Trạng thái hệ thống giữ nguyên cho đến khi tất cả chuyển tiếp thực thi cùng lúc; một hàm kiểm tra xem một trạng thái cụ thể có đang hoạt động hay không không phụ thuộc vào chuyển tiếp nào kích hoạt trước, vì việc kiểm tra được thực hiện trước khi bất kỳ chuyển tiếp nào kích hoạt.
+\item Tập hợp ứng viên được kiểm tra về tính không tất định, tức xung đột, gồm hai loại:
+\begin{itemize}
+\item Hai chuyển tiếp ứng viên có thể xung đột nếu có cùng trạng thái nguồn. Trong STATEMATE, thuật toán thực thi không thể ưu tiên một chuyển tiếp hơn chuyển tiếp còn lại; do đó, một cảnh báo được gửi đến người dùng và một trong các ứng viên được chọn tùy ý. Những cơ chế phức tạp hơn có thể gán độ ưu tiên cho các chuyển tiếp này dựa trên những tiêu chí khác; chúng sẽ được thảo luận trong Mục~6.7.1.
+\item Hai chuyển tiếp ứng viên có thể xung đột nếu chúng được cho phép trong cùng một trạng thái phân cấp, tại bất kỳ mức nào của phân cấp. Trong STATEMATE, chuyển tiếp cao nhất trong phân cấp được chọn.
+\end{itemize}
+\item Khi đã biết tập hợp chuyển tiếp cần thực thi, mỗi chuyển tiếp được thực thi theo các bước sau, theo thứ tự tùy ý vì ta giả định những thành phần trực giao độc lập:
+\begin{enumerate}
+\renewcommand{\labelenumii}{\alph{enumii}.}
+\item Tính \emph{tổ tiên chung thấp nhất} (LCA) của chuyển tiếp. Đây là trạng thái thấp nhất trong phân cấp trạng thái có cả trạng thái nguồn và trạng thái đích làm hậu duệ.
+\item Tính \emph{tập thoát} của chuyển tiếp. Tập hợp này chứa tất cả các trạng thái cần thoát khi thực thi chuyển tiếp, bao gồm trạng thái nguồn của chuyển tiếp và mọi trạng thái trong phân cấp lên tới nhưng không bao gồm LCA.
+\item Với mỗi trạng thái phức hợp trong tập thoát có một trạng thái lịch sử làm con trực tiếp, cấu hình hiện tại của trạng thái phức hợp được ghi nhớ.
+\item Với mỗi trạng thái trong tập thoát, theo thứ tự từ thấp nhất đến cao nhất trong phân cấp, hành động ra của nó được thực thi và trạng thái được loại khỏi cấu hình hiện tại của hệ thống.
+\item Hành động của chuyển tiếp được thực thi. Các hành động được mô hình hóa bằng mã, chẳng hạn phép gán giá trị, được thực thi ngay lập tức. Các sự kiện được phát ra được đưa vào hàng đợi, để gửi đến
+% Source: printed 168 / PDF 182
+môi trường như đầu ra ở cuối bước, hoặc để Statechart nhận biết trong lần lặp tiếp theo của thuật toán thực thi.
+\item Tập đích hiệu lực của mỗi chuyển tiếp được thực thi. Đây là một thủ tục đệ quy xuống tới các trạng thái ``lá'', tức trạng thái cơ bản. Nếu đích là một trạng thái phức hợp, tập đích được mở rộng bằng tập đích hiệu lực của trạng thái mặc định của nó. Nếu đích là một trạng thái chứa nhiều vùng trực giao, tập đích được mở rộng bằng tập đích hiệu lực của tất cả các vùng trực giao của nó. Nếu đích là một trạng thái lịch sử, tập đích được mở rộng bằng tập đích hiệu lực của những trạng thái đã được ghi nhớ.
+\item Mọi đích trong tập đích hiệu lực được đi vào, miễn là chúng không phải tổ tiên của nguồn chuyển tiếp. Các đích được đi vào từ cao nhất đến thấp nhất trong phân cấp. Hành động vào của chúng được thực thi và chúng được bổ sung vào cấu hình hiện tại của hệ thống. Với mọi chuyển tiếp đi ra từ những trạng thái vừa được đi vào có thời hạn chờ, một sự kiện được lập lịch cho tương lai.
+\end{enumerate}
+\item Mọi sự kiện được phát ra trong bước được xử lý: chúng được gửi ra môi trường như sự kiện đầu ra, hoặc nếu là sự kiện cục bộ thì được sử dụng trong bước vi mô tiếp theo.
+\end{enumerate}
+
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C6-1).} Tuyên bố ở trang 162 rằng Statecharts là một hệ hình thức tất định cần được hiểu kèm quy tắc giải quyết xung đột. Chính thuật toán ở trang 167 cho phép chọn tùy ý giữa các chuyển tiếp cùng trạng thái nguồn. Nếu từ $A$ có hai chuyển tiếp được cho phép bởi cùng sự kiện tới $B$ và $C$, kết quả chưa duy nhất khi không có quy tắc ưu tiên bổ sung. Ưu tiên theo phân cấp chỉ giải quyết loại xung đột theo phân cấp; Mục~6.7.1 trình bày các lựa chọn khác.
+\end{quote}
+
+Quá trình này tiếp tục vô hạn, hoặc cho đến khi một điều kiện kết thúc thực thi được thỏa mãn. Chẳng hạn, về mặt cú pháp, một trạng thái cụ thể có thể được chỉ định là trạng thái ``kết thúc'', hoặc một điều kiện có thể được xác định trên toàn bộ trạng thái hệ thống. Trong mọi trường hợp, thuật toán thực thi chịu trách nhiệm tuân thủ thời gian được chỉ định trong các sự kiện \texttt{after}, bằng cách điều tiết nhịp thực thi sao cho tiệm cận thực thi thời gian thực, có hoặc không có bảo đảm tùy theo hệ điều hành.
+
+\section{Kiểm thử Statecharts}
+Để kiểm thử một mô hình Statecharts, cần xác định một vết các sự kiện đầu vào và một vết các sự kiện đầu ra được kỳ vọng, như trong Hình~6.4. Kiểm thử cần được tự động hóa hoàn toàn. Vì vậy, cần một chiến thuật khác với mô phỏng mô hình rồi cung cấp thủ công các sự kiện đầu vào trong khi kiểm tra phản ứng của mô hình. Ta muốn tự chủ sinh một số sự kiện có yếu tố thời gian trong một ``bộ sinh'' và kiểm tra xem hệ thống có phát ra đúng các sự kiện trong một ``bộ chấp nhận'' hay không. Về cơ bản, môi trường tương tác với hệ thống được mô phỏng dưới dạng cặp bộ sinh--bộ chấp nhận này.
+
+Để mô phỏng môi trường như vậy, có thể xem hệ thống như hộp đen và sử dụng một cơ chế sinh sự kiện đúng ở bên ngoài mô hình. Hoặc có thể xem hệ thống như hộp trắng và cũng mô hình hóa cặp bộ sinh/bộ chấp nhận bằng Statecharts. Cách này có lợi thế là bổ sung cơ chế kiểm thử vào mô hình bằng chính ngôn ngữ đã dùng để phát triển nó. Hơn nữa, ngôn ngữ Statecharts phù hợp để biểu đạt hành vi của bộ sinh và bộ chấp nhận, vì chúng là những hệ thống có yếu tố thời gian, tự chủ và phản ứng. Điều này được minh họa trong Hình~6.11, nơi chúng ta phát triển một ca kiểm thử cho một phần của mô hình đồng hồ điện tử. Bộ sinh và bộ chấp nhận được mô hình hóa thành các vùng trực giao bên cạnh hệ thống thực tế.
+
+Ca kiểm thử kiểm tra hành vi được kỳ vọng của đồng hồ điện tử khi người dùng muốn chỉnh giờ. Để làm điều đó, một sự kiện đầu vào tương ứng với việc người dùng nhấn nút dưới bên phải được phát ra sau 1 giây. Bộ chấp nhận kiểm tra xem điều này có khiến hệ thống chuyển sang trạng thái \texttt{waiting\_to\_edit} hay không. Tiếp theo, sau thêm 1,6 giây, nút dưới bên phải được nhả, điều phải khiến trạng thái hệ thống chuyển thành \texttt{editing\_time}. Sau đó, 0,4 giây tiếp theo, nút dưới bên trái được nhấn; điều này khiến trạng thái \texttt{increasing} được kích hoạt cho đến khi nhả nút dưới bên trái sau 3 giây. Tiếp đó, 5 giây sau, hệ thống phải tự động chuyển lại sang trạng thái \texttt{displaying\_time}. Nếu kiểm thử kết thúc ở trạng thái \texttt{passed}, hàm gọi lại \texttt{testPassed} được gọi, biểu thị kiểm thử đã đạt. Nếu không, hàm gọi lại \texttt{testFailed} được gọi.
+
+Nhờ cách tiếp cận hộp trắng, chúng ta có thể kiểm tra cả các sự kiện đầu ra do hệ thống tạo ra lẫn trạng thái bên trong. Để có thể kiểm tra các sự kiện do mô hình phát ra, ta phải thay đổi những sự kiện này thành phát cục bộ thay vì phát ra môi trường. Nếu kiểm thử theo cách tiếp cận hộp đen, bộ sinh và bộ chấp nhận có thể được mô hình hóa thành những mô hình Statecharts riêng biệt, và có thể thiết lập một kênh truyền thông giữa bộ sinh, hệ thống và bộ chấp nhận. Tuy nhiên, cách này có nhược điểm là các kênh truyền thông gây ra độ trễ, điều có thể khó tính đến trong bộ sinh và bộ chấp nhận. Nó cho phép kiểm thử một hệ thống mà ta không có quyền truy cập mô hình, nhưng điều này nằm ngoài phạm vi chương.
+
+% Source: printed 169 / PDF 183
+\sourcefigure{6.11}{183}{Các thành phần bổ sung của kiểm thử đồng hồ điện tử. \textit{Ghi chú bản dịch (P6-1):} phần đầu của điều kiện canh cuối trong \texttt{output\_checker} đã bị cắt trong ảnh tiếng Anh. Kiểm tra cuối xét việc hệ thống trở lại \texttt{displaying\_time} trước khi chuyển xuống \texttt{passed}. Các đường dẫn trạng thái trong ảnh được giữ nguyên; xem khóa đọc Hình 6.9--6.11 và các vùng phóng to sau hình.}
+\sourceillustration{6.11G}{183}{\textbf{Chi tiết phóng to Hình 6.11 (bản dịch):} bộ sinh đầu vào. Các thời lượng và tên sự kiện giữ nguyên theo hình nguồn.}
+\sourceillustration{6.11C}{183}{\textbf{Chi tiết phóng to Hình 6.11 (bản dịch):} bộ kiểm tra đầu ra. Phần đầu điều kiện canh cuối vẫn bị cắt như nguồn; xem Ghi chú P6-1 cạnh hình đầy đủ.}
+\clearpage
+
+\section{Triển khai Statecharts}
+Sau khi đã đặc tả hành vi có yếu tố thời gian, phản ứng và tự chủ của một hệ thống, cần triển khai nó lên nền tảng đích. Phương pháp phổ biến nhất là sinh mã bằng một ngôn ngữ bậc cao như C++, Python hoặc Java. Sau đó mã được sinh được ghép nối, thông qua giao diện các sự kiện đầu vào/đầu ra và các thao tác gọi lại, với một nền tảng được lập trình thủ công để hiện thực hóa hành vi không theo chế độ, tức không có yếu tố thời gian, không phản ứng hoặc không tự chủ. Thông thường, nền tảng này gồm một số hàm thư viện thực hiện các hành động, như hiển thị thông tin lên màn hình, gửi tín hiệu đến một cơ cấu chấp hành hoặc truy vấn giá trị của một cảm biến. Cũng phải có một nhân thực thi cho nền tảng, chịu trách nhiệm hiện thực hóa hành vi được đặc tả bởi Statechart; có thể tìm thêm thông tin về những nền tảng này trong Mục~6.7.2.
+
+Để sinh mã, chúng ta dựa vào Yakindu. Yakindu là công cụ mô hình hóa và mô phỏng Statecharts với những tính năng sau:
+\begin{itemize}
+\item Một công cụ mô hình hóa đồ họa để mô tả hệ thống bằng hệ hình thức Statecharts.
+\item Một ngôn ngữ hành động trung lập để sử dụng trong các ràng buộc và hành động của chuyển tiếp.
+\item Một bộ mô phỏng để mô phỏng các mô hình Statecharts nhằm kiểm tra hành vi của chúng. Bộ mô phỏng cho phép người dùng phát ra các sự kiện trong khi mô phỏng đang chạy.
+\item Một giao diện bộ sinh mã để sinh mã sang bất kỳ ngôn ngữ lập trình nào; các bộ sinh mã định sẵn được cung cấp cho Java, C và C++. Các lựa chọn cấu hình của bộ sinh mã gồm thư mục để sinh các tệp, ``cơ chế thực thi'' dựa trên chu kỳ hoặc hướng sự kiện, việc có cần sinh các bộ lắng nghe cho sự kiện bên ngoài hay không, v.v. Yakindu cho phép viết các bộ sinh mã tùy chỉnh riêng, làm tăng tính linh hoạt của công cụ.
+\end{itemize}
+
+Hình~6.3.6 trình bày mô hình đồng hồ điện tử được mô hình hóa trong Yakindu. Phần trung tâm của hình là vùng vẽ, nơi mô hình Statecharts được vẽ. Công cụ ``hướng cú pháp'', có nghĩa là chỉ có thể xây dựng các mô hình đúng cú pháp. Những phần tử cú pháp hợp lệ được trình bày trong một bảng công cụ ở phía bên phải. Các phần tử này
+% Source: printed 170 / PDF 184
+tương ứng với những phần tử đã thảo luận ở các mục trước, cùng một vài phần tử cú pháp tiện dụng bổ sung sẽ không được thảo luận ở đây. Ở phía bên trái của hình, một giao diện cho mô hình Statecharts được xác định. Giao diện này làm tường minh các sự kiện đầu vào, đầu ra và phát cục bộ có thể có, cùng mọi biến dữ liệu và hàm gọi lại. Trong các mục trước, chúng ta đã để định nghĩa giao diện này ở dạng ngầm định, nhưng Yakindu yêu cầu làm tường minh vì một số lý do:
+\begin{itemize}
+\item Các yếu tố kích hoạt chuyển tiếp có thể được thẩm định, vì chúng chỉ có thể sử dụng một sự kiện \texttt{after} hoặc một sự kiện được khai báo trong giao diện, có thể là nội bộ hoặc bên ngoài.
+\item Các hành động có thể được thẩm định để bảo đảm chỉ truy cập những biến đã được khai báo, thực hiện trên chúng những thao tác hợp lệ đối với kiểu dữ liệu, và chỉ gọi các hàm đã khai báo trong giao diện.
+\item Khi sinh mã, có thể sinh các phương thức giao diện cho bộ lắng nghe sự kiện đầu ra, tương ứng với các sự kiện đầu ra có thể có của hệ thống. Tương tự, có thể sinh các phương thức giao diện để phát ra các sự kiện đầu vào từ môi trường.
+\end{itemize}
+
+Bằng cách kiểm tra tính hợp lệ cú pháp của mô hình cũng như tính hợp lệ của các điều kiện kích hoạt và mã hành động, Yakindu ngăn ngừa nhiều lỗi mà người mô hình hóa có thể mắc. Từ mô hình này, ta cũng có thể sinh một ứng dụng chạy được. Trong trường hợp của chúng ta, ta sẽ sinh hành vi và trực quan hóa nó trong một giao diện người dùng đồ họa (GUI) bằng Python, thể hiện trạng thái hiện tại của hệ thống: tùy chế độ hiển thị, đó là giờ hiện tại, bộ bấm giờ hoặc báo thức, cũng như đèn Indiglo; và cho phép tương tác với hệ thống bằng cách nhấn bốn nút của đồng hồ. Để làm điều đó, ta xác định một thư viện trực quan hóa có thể hiển thị trạng thái hệ thống. Nó có giao diện sau:
+\begin{itemize}
+\item \texttt{refreshTimeDisplay()}: hiển thị giá trị hiện tại của đồng hồ.
+\item \texttt{refreshChronoDisplay()}: hiển thị giá trị hiện tại của bộ bấm giờ.
+\item \texttt{increaseTimeByOne()}: tăng giá trị đồng hồ thêm một giây.
+\item \texttt{setIndiglo()}: bật đèn Indiglo.
+\item \texttt{unsetIndiglo()}: tắt đèn Indiglo.
+\item \texttt{resetChrono()}: đặt lại bộ bấm giờ.
+\item \texttt{increaseChronoByOne()}: tăng bộ bấm giờ thêm $\frac{1}{10}$ giây.
+\item \texttt{startSelection()}: bắt đầu lựa chọn để chỉnh giờ hoặc báo thức.
+\item \texttt{stopSelection()}: dừng lựa chọn để chỉnh giờ hoặc báo thức.
+\item \texttt{selectNext()}: chọn phần tử tiếp theo, giờ/phút/giây, để chỉnh sửa.
+\item \texttt{increaseSelection()}: tăng phần tử hiện đang được chọn, giờ/phút/giây.
+\item \texttt{setAlarm()}: chuyển trạng thái bật/tắt báo thức.
+\item \texttt{checkTime()}: \texttt{boolean}: trả về \texttt{true} khi đến giờ báo thức.
+\item \texttt{refreshAlarmDisplay()}: hiển thị giờ báo thức đã đặt.
+\item \texttt{addListener(Button, Listener)}: bổ sung một bộ lắng nghe cho các nút trong GUI để bật/tắt đèn giao thông hoặc cho ngắt của cảnh sát.
+\end{itemize}
+
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C6-2).} Mô tả \texttt{addListener} trong bản gốc nhắc đến đèn giao thông và cảnh sát, trong khi ví dụ ở đây là đồng hồ điện tử. Đoạn tiếp theo xác định rõ các bộ lắng nghe cho thao tác nhấn/nhả bốn nút của đồng hồ. Khi hiện thực ví dụ này, cần nối các nút đó với tám sự kiện đã liệt kê; cụm từ về đèn giao thông không mô tả giao diện đồng hồ.
+\end{quote}
+
+Thư viện này có thể được khởi tạo để hiển thị và thay đổi trạng thái hiện tại của đồng hồ điện tử, như trong Hình~6.1, nơi giờ hiện tại được hiển thị tương ứng với chế độ hiển thị mặc định. Để kết nối GUI này với mã do Yakindu sinh từ mô hình Statecharts, ta xác định những bộ lắng nghe phù hợp cho các nút trong giao diện: nhấn/nhả nút dưới bên trái/trên bên trái/dưới bên phải/trên bên phải sẽ gửi một sự kiện có tên phù hợp từ tập hợp \{\texttt{bottomLeftPressed}, \texttt{bottomLeftReleased}, \texttt{topLeftPressed}, \texttt{topLeftReleased}, \texttt{bottomRightPressed}, \texttt{bottomRightReleased}, \texttt{topRightPressed}, \texttt{topRightReleased}\}.
+
+Các hàm gọi lại được gọi trong quá trình thực thi Statechart được hiện thực hóa bằng cách gọi hàm cùng tên trong giao diện. Việc ghép nối này đơn giản, nhưng cũng có thể thực hiện những cách ghép nối phức tạp hơn, miễn là bản thân các hàm gọi lại không đưa vào hành vi chờ, không tạo các luồng và không thực thi quá lâu.
+
+Phương pháp phát triển này cho phép tách rõ hành vi, được mã hóa trong mô hình và được một bộ sinh mã phù hợp chuyển thành mã thực thi, khỏi phần trình bày, được mã hóa trong thư viện trực quan hóa. Những hệ thống điều khiển phức tạp hơn hưởng lợi từ cách này thông qua việc tách lôgic điều khiển khỏi các cơ cấu chấp hành và cảm biến bằng những giao diện phù hợp cung cấp chức năng cần thiết.
+
+% Source: printed 171 / PDF 185
+\section{Các chủ đề nâng cao}
+Mục này khảo sát một số chủ đề nâng cao liên quan đến Statecharts. Trước hết, chúng tôi khảo sát những biến thể ngữ nghĩa có thể có của Statecharts; có thể xem Statecharts như một họ hệ hình thức có ngữ nghĩa hơi khác nhau, thay vì chỉ một hệ hình thức duy nhất. Sau đó, chúng tôi giải thích rằng Statecharts có thể được thực thi, tức triển khai, trên nhiều nền tảng khác nhau, điều có ảnh hưởng đến cách nhân xử lý hàng đợi sự kiện và cách thời gian được tiến tới. Cuối cùng, chúng tôi khảo sát công việc đang được thực hiện nhằm đưa vào cấu trúc động để cho phép có nhiều đối tượng, hay ``tác tử'', đồng thời.
+
+\subsection{Các biến thể ngữ nghĩa}
+Trong Mục~6.4, chúng tôi đã giải thích ngữ nghĩa thực thi Statecharts bằng các \emph{bước nhỏ} (small step): việc thực thi không có thứ tự của một chuyển tiếp được cho phép trong mỗi vùng trực giao. Tuy đây là một đặc tả đúng, ta có thể tự đặt một số câu hỏi:
+\begin{itemize}
+\item Khi nào các sự kiện do một chuyển tiếp phát ra có thể được nhận thấy và sử dụng để tính một tập hợp chuyển tiếp được cho phép mới?
+\item Việc giải quyết xung đột được thực hiện như thế nào nếu có nhiều chuyển tiếp được cho phép trong cùng một vùng trực giao?
+\item Khi nào ta xử lý một sự kiện bên ngoài? Ngay sau một bước nhỏ, hay chờ đến khi hệ thống ở trạng thái \emph{tĩnh lặng} (quiescent), tức không có chuyển tiếp nào được cho phép?
+\item Khi nào các phép gán cho biến có thể được nhận thấy? Ngay sau khi một chuyển tiếp được thực thi, sau một bước nhỏ, hay thậm chí muộn hơn?
+\end{itemize}
+
+Trong bài báo của mình, Esmaeilsabzali và cộng sự khảo sát những lựa chọn ngữ nghĩa này cho các ngôn ngữ mô hình hóa bước lớn, một tập hợp ngôn ngữ mà Statecharts thuộc về [94]. Những lựa chọn ngữ nghĩa này dẫn đến một \emph{họ} các ngôn ngữ có liên quan: không còn chỉ có một ngôn ngữ Statecharts duy nhất, mà có thể cấu hình ngôn ngữ cho phù hợp với ứng dụng đang xét.
+
+Cốt lõi là nhận xét rằng có ba tầng bước: bước nhỏ, bước kết hợp (combo step) và bước lớn (big step). Một bước lớn là một chuỗi bước kết hợp, còn một bước kết hợp là một chuỗi bước nhỏ. Thuộc tính đặc biệt của một bước lớn là sau khi nó kết thúc, đầu vào từ môi trường, tức các sự kiện gửi đến Statechart, và đầu ra, tức các sự kiện gửi đến môi trường, được xử lý. Có thể nói bước nhỏ và bước kết hợp là những bước \emph{nội bộ}, còn bước lớn dẫn đến những thay đổi \emph{có thể quan sát từ bên ngoài}. Một bước nhỏ có hành vi như đã xác định trước, nhưng có thể lựa chọn không cho phép tính đồng thời trong một bước nhỏ: trong trường hợp đó, chỉ một chuyển tiếp được thực thi. Hơn nữa, khi cho phép tính đồng thời, có thể lựa chọn các chuyển tiếp có thể ngắt ưu tiên (preempt) nhau hay không. Một bước kết hợp nhóm một chuỗi bước nhỏ. Trong những đoạn tiếp theo, chúng tôi khảo sát một số lựa chọn ngữ nghĩa có thể thực hiện; những lựa chọn này cấu hình ngôn ngữ Statecharts, tạo thành một ``biến thể'' ngôn ngữ.
+
+\paragraph{Tính cực đại của bước lớn (Big Step Maximality)}
+Lựa chọn ngữ nghĩa này quyết định khi nào một bước lớn kết thúc, điều luôn phải xảy ra ở một ``trạng thái nhất quán'', tức sau ít nhất một bước nhỏ. Một lựa chọn về mặt cú pháp (\emph{syntactic}) là chỉ định một số trạng thái là các trạng thái điều khiển ``ổn định''; trong trường hợp đó, một bước lớn kết thúc sau một chuỗi bước nhỏ kết thúc ở một trạng thái như vậy. Lựa chọn thứ hai là \emph{take one}, thực thi đúng một bước nhỏ. Cuối cùng là lựa chọn \emph{take many}, thực thi các bước nhỏ cho đến khi không còn chuyển tiếp nào được cho phép.
+
+Ở lựa chọn thứ nhất và cuối cùng, một nhược điểm là các bước lớn có thể không kết thúc, vì không đi vào một trạng thái điều khiển đã được chỉ định hoặc vì các chuyển tiếp vẫn được cho phép. Một nhược điểm của lựa chọn thứ hai là bước lớn không có phạm vi cú pháp rõ ràng, trong khi ở những trường hợp khác có thể suy ra phạm vi của một bước lớn từ mô hình.
+
+\paragraph{Tính cực đại của bước kết hợp (Combo Step Maximality)}
+Lựa chọn ngữ nghĩa này giống tính cực đại của bước lớn, nhưng được áp dụng cho các bước kết hợp. Khác biệt chính giữa bước kết hợp và bước lớn là sau một bước kết hợp, không thể xử lý đầu vào nào từ môi trường.
+
+% Source: printed 172 / PDF 186
+\paragraph{Tính đồng thời trong bước nhỏ (Small Step Concurrency)}
+Trong khi tính cực đại của bước lớn và bước kết hợp quy định có thể thực thi bao nhiêu bước nhỏ, lựa chọn ngữ nghĩa này cho phép một bước nhỏ gồm việc thực thi một chuyển tiếp duy nhất (\emph{single}) hoặc nhiều (\emph{many}) chuyển tiếp được cho phép đồng thời. Ưu điểm của cách tiếp cận \emph{single} là sự đơn giản, nhưng nó đòi hỏi các chuyển tiếp được sắp thứ tự một cách không tất định. Ngược lại, cách tiếp cận \emph{many} có khả năng xảy ra điều kiện tranh chấp (race condition).
+
+\paragraph{Cơ chế ngắt ưu tiên trong bước nhỏ (Small Step Preemption)}
+Nếu một chuyển tiếp là một ngắt đối với chuyển tiếp khác, điều xảy ra khi cả hai chuyển tiếp được cho phép trong các vùng trực giao và một trong chúng có trạng thái đích không trực giao với các trạng thái nguồn của cả hai chuyển tiếp, qua đó thực sự thoát khỏi cả hai vùng trực giao, và tính đồng thời \emph{many} được bật, lựa chọn ngữ nghĩa này cho phép kiểm soát điều sẽ xảy ra. Hoặc cả hai chuyển tiếp được thực thi (không ngắt ưu tiên, \emph{non-preemptive}), dẫn đến việc thực thi hành động của cả hai chuyển tiếp và trạng thái đích bên ngoài các vùng trực giao trở thành trạng thái hoạt động; hoặc chỉ chuyển tiếp gây ngắt được thực thi (ngắt ưu tiên, \emph{preemptive}).
+
+\paragraph{Thời gian tồn tại của sự kiện (Event Lifeline)}
+\emph{Thời gian tồn tại của sự kiện} xác định một sự kiện ``sống'' bao lâu và có thể kích hoạt một chuyển tiếp trong bao lâu. Cả sự kiện đầu vào lẫn sự kiện được sinh nội bộ đều có thời gian tồn tại, và chúng có thể khác nhau. Có năm lựa chọn:
+\begin{enumerate}
+\item Với \emph{present in whole}, sự kiện được giả định là hiện diện trong toàn bộ thời gian của một bước lớn. Điều này dẫn đến hành vi trái trực giác, vì có thể dẫn đến hành vi không có tính nhân quả, trong đó một sự kiện được tạo bởi một chuyển tiếp xảy ra ``muộn hơn'' trong bước lớn lại có thể gây ra một chuyển tiếp ``trước đó''.
+\item Với \emph{present in remainder}, sự kiện sẵn có trong phần còn lại của bước lớn. Đây là một lựa chọn trực quan, nhưng có thể dẫn đến tính không tất định không mong muốn: tùy thứ tự thực thi các chuyển tiếp, một chuyển tiếp có thể tạo một sự kiện và ngay lập tức cho phép một chuyển tiếp vốn sẽ không được cho phép nếu thứ tự khác đi.
+\item Với \emph{present in next combo step}, một sự kiện được sinh chỉ có thể được nhận biết trong bước kết hợp tiếp theo. Điều này bảo đảm thứ tự các chuyển tiếp trong một bước kết hợp không thể ảnh hưởng đến việc một chuyển tiếp có được cho phép hay không. Tuy nhiên, thứ tự chỉ là thứ tự bộ phận, vì các bước kết hợp có thể được sắp thứ tự một cách không tất định.
+\item Với \emph{present in next small step}, một sự kiện được sinh chỉ có thể được nhận biết trong bước nhỏ tiếp theo. Cả thứ tự các chuyển tiếp trong một bước nhỏ lẫn thứ tự các bước kết hợp đều không thể ảnh hưởng đến việc một chuyển tiếp có được thực thi trong một lần chạy cụ thể hay không.
+\end{enumerate}
+
+Lựa chọn ngữ nghĩa này có khả năng ảnh hưởng rất lớn đến việc thực thi mô hình Statecharts. Nó cũng cho thấy những lợi ích tiềm tàng của việc chia quá trình thực thi thành các bước lớn, bước kết hợp và bước nhỏ.
+
+\paragraph{Độ ưu tiên chuyển tiếp (Transition Priority)}
+Lựa chọn ngữ nghĩa cuối cùng giải quyết vấn đề khi có hai hay nhiều tập hợp chuyển tiếp có thể được thực thi trong một bước nhỏ. Trong trường hợp đó, phải lựa chọn tập hợp nào sẽ được thực thi. Một ví dụ phổ biến là khi hai chuyển tiếp trong cùng một phân cấp trạng thái được cho phép. Lựa chọn theo phân cấp (\emph{hierarchical}) cho phép độ ưu tiên được xác định bởi trạng thái nguồn và trạng thái đích của các chuyển tiếp; chẳng hạn, trong STATEMATE [141], chuyển tiếp ngoài cùng được chọn, còn trong Rhapsody [139], chuyển tiếp trong cùng được chọn. Tuy nhiên, có thể có những cơ chế phức tạp hơn trong lựa chọn này. Lựa chọn độ ưu tiên tường minh (\emph{explicit priority}) cho phép người mô hình hóa gán độ ưu tiên tường minh trong mô hình. Cuối cùng, phủ định các yếu tố kích hoạt (\emph{negation of triggers}) yêu cầu người mô hình hóa xem xét tất cả chuyển tiếp và tăng cường các điều kiện kích hoạt sự kiện sao cho tránh được xung đột. Hai lựa chọn cuối khá tốn công sử dụng, nhưng cho phép kiểm soát chính xác các độ ưu tiên.
+
+% Source: printed 173 / PDF 187
+\sourcefigure{6.12}{187}{Ba nền tảng thực thi.}
+
+\subsection{Các nền tảng thực thi}
+Chúng ta đã thảo luận việc triển khai mô hình Statecharts trong Mục~6.6. Cụ thể, đã thảo luận cách cung cấp hiện thực cho các hàm tính toán được gọi trong hành động của mô hình Statecharts, và cách xây dựng một lớp ``kết dính'' để gửi đúng các sự kiện đầu vào đến Statechart và diễn giải các sự kiện đầu ra từ Statechart. Ta chưa xem xét bên nào nắm quyền điều khiển trong ứng dụng đã triển khai; ta luôn xem đó là Statechart. Nhưng thường mô hình Statecharts được nhúng trong những ứng dụng cũng cần nắm quyền điều khiển, chẳng hạn các hệ thống giao diện người dùng và bộ máy trò chơi. Mục này khảo sát cách nhân Statecharts có thể hoạt động trên những nền tảng này bằng cách nhường một số chức năng điều khiển then chốt.
+
+Ngữ nghĩa Statecharts, được cấu hình theo các lựa chọn ngữ nghĩa trình bày ở tiểu mục trước, được thực thi trên một nền tảng thực thi cung cấp những hàm thiết yếu cho nhân thực thi, như lập lịch các sự kiện có yếu tố thời gian. Nhân cố gắng chạy mô hình Statecharts trong thời gian thực, nghĩa là độ trễ trên các chuyển tiếp có yếu tố thời gian được diễn giải như một lượng thời gian tính bằng giây. Việc phát ra sự kiện và các chuyển tiếp không có yếu tố thời gian được thực thi nhanh nhất có thể. Thảo luận về các nền tảng này là hữu ích, vì các bộ mô phỏng/bộ thực thi Statecharts phụ thuộc vào chúng; hơn nữa, ta cần những loại nền tảng khác nhau cho các tình huống ứng dụng khác nhau. Chúng tôi phân biệt ba nền tảng, mỗi nền tảng phù hợp với một tình huống khác nhau. Hình~6.12 trình bày tổng quan về ba nền tảng và cách chúng xử lý sự kiện.
+
+Nền tảng cơ bản nhất, sẵn có trong hầu hết các ngôn ngữ lập trình, dựa trên luồng (threads). Ở dạng đơn giản nhất, nền tảng chạy một luồng thao tác trên hàng đợi sự kiện toàn cục, được bảo đảm an toàn luồng bằng các khóa. Đầu vào từ môi trường được xử lý bằng cách chiếm khóa này; nhân nhả khóa sau mỗi bước lớn của thuật toán thực thi. Điều này cho phép đầu vào bên ngoài xen kẽ với các sự kiện được phát nội bộ. Tuy nhiên, chạy một ứng dụng trên nền tảng này có thể gây can nhiễu với những cơ chế lập lịch khác, chẳng hạn một mô-đun giao diện người dùng, hoặc với mã không an toàn luồng.
+
+Để khắc phục vấn đề can nhiễu này, nền tảng vòng lặp sự kiện (event loop) tái sử dụng hàng đợi sự kiện do một nền tảng giao diện người dùng có sẵn quản lý, chẳng hạn Tkinter. Nền tảng giao diện người dùng cung cấp các hàm quản lý thời hạn chờ cho các sự kiện có yếu tố thời gian, cũng như đưa phần tử vào và lấy phần tử ra khỏi hàng đợi. Điều này dẫn đến sự tích hợp liền mạch của cả sự kiện Statecharts lẫn sự kiện giao diện người dùng bên ngoài, như thao tác nhấp chuột: nền tảng giao diện người dùng lúc này chịu trách nhiệm xen kẽ chúng đúng cách.
+% Source: printed 174 / PDF 188
+Việc xen kẽ được hiện thực hóa trong ``vòng lặp chính'' của nền tảng giao diện người dùng, thay vì một vòng lặp \texttt{while} vô hạn như đối với nền tảng luồng.
+
+Nền tảng vòng lặp trò chơi (game loop) tạo điều kiện tích hợp với các bộ máy trò chơi, chẳng hạn bộ máy Unity mã nguồn mở\footnote{\url{https://unity3d.com/}}, nơi các đối tượng trò chơi chỉ được cập nhật tại những thời điểm đã xác định trước do bộ máy trò chơi quyết định. Trong hàm ``update'', nhân chịu trách nhiệm kiểm tra thời gian hiện tại, vì một khoảng thời gian đã trôi qua kể từ lần gọi hàm ``update'' gần nhất, và xử lý tất cả các sự kiện được sinh. Điều này có nghĩa các sự kiện được sinh giữa hai thời điểm như vậy không được xử lý ngay, mà được đưa vào hàng đợi cho đến thời điểm xử lý tiếp theo.
+
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C6-3).} Bản gốc gọi Unity là bộ máy mã nguồn mở. Kho mã C\# công khai \texttt{UnityCsReference} dùng giấy phép \emph{Unity Reference-Only License}, ghi ngày 27-3-2018, chỉ cho phép sử dụng để tham khảo và không cho phép tự do sửa đổi hay phân phối. Vì vậy, sự công khai của kho mã này không đồng nghĩa với việc toàn bộ bộ máy Unity được phát hành dưới giấy phép nguồn mở. Bản dịch giữ phát biểu của tác giả và làm rõ sự khác biệt ở đây. Nguồn của Unity: \url{https://unity.com/legal/licenses/unity-reference-only-license}.
+\end{quote}
+
+\subsection{Cấu trúc động}
+Chỉ sử dụng Statecharts không thể mở rộng để xử lý hành vi phức tạp, thường có cấu trúc động, của các hệ thống phần mềm phức tạp như giao diện người dùng đồ họa (WIMP), trò chơi, hệ thống đa tác tử, \ldots{} Độ phức tạp của chúng vượt ra ngoài hành vi có yếu tố thời gian, phản ứng và tự chủ mà Statecharts thể hiện tốt. Trong nhiều ứng dụng, cần một tập hợp các đối tượng cộng tác và đồng thời có thể xuất hiện hoặc biến mất lúc chạy. Các phương pháp luận mô hình hóa hướng đối tượng xử lý độ phức tạp phần mềm và cho phép xây dựng một tập hợp đối tượng tương tác, nhưng không được thiết kế chuyên biệt để mô hình hóa những hệ thống sự kiện rời rạc có yếu tố thời gian và có tính tương tác [137].
+
+Một số cách tiếp cận, chẳng hạn OO Statecharts [137], đã được đề xuất. Gần đây hơn, SCCD [281] được trình bày, kết hợp khả năng biểu đạt cấu trúc hướng đối tượng của biểu đồ lớp (Class Diagrams) với những đặc trưng hành vi sự kiện rời rạc của Statecharts.
+
+Hình~6.13 trình bày tổng quan về ngôn ngữ SCCD, áp dụng cho một ứng dụng ``bóng nảy'': ứng dụng cho phép người dùng tạo một số quả bóng trên màn hình. Hành vi tự chủ của chúng đơn giản là di chuyển theo một hướng nhất định và nảy khỏi các cạnh màn hình. Người dùng có thể chọn và xóa các quả bóng. Như có thể thấy, có một số đối tượng hiện diện: một thể hiện của lớp \texttt{Window} và hai thể hiện của lớp \texttt{Ball} được trình bày. Có một số liên kết giữa các đối tượng; có thể sử dụng những liên kết này để gửi hoặc nhận sự kiện. Biểu đồ đối tượng, gồm các đối tượng và liên kết, \emph{tuân thủ} phần biểu đồ lớp của mô hình SCCD. Mặt khác, mỗi đối tượng có một trạng thái lúc chạy, tương ứng với một trong các trạng thái trong mô hình Statecharts của nó. Một thực thể trung tâm, bộ quản lý đối tượng (object manager), cho phép các thể hiện yêu cầu tạo hoặc xóa một đối tượng hay liên kết mới.
+
+Các đối tượng có thể truyền thông bằng sự kiện: SCCD đặc tả một số \emph{phạm vi sự kiện}. Truyền đích danh (\emph{narrow cast}) cho phép một đối tượng gửi một sự kiện qua một kết nối đến một đối tượng hoặc tập hợp đối tượng cụ thể khác. Truyền quảng bá (\emph{broad cast}) gửi sự kiện đến tất cả các đối tượng khác trong ứng dụng. Một sự kiện đầu ra (\emph{output event}) hoạt động tương tự sự kiện đầu ra trong Statecharts: nó được gửi đến môi trường của ứng dụng. Một phạm vi \texttt{cd} đặc biệt được xác định để gửi sự kiện đến bộ quản lý đối tượng.
+
+Về bản chất, các đối tượng của một Statechart chạy đồng thời và truyền thông theo cách ``lỏng'' hơn so với các vùng trực giao của một Statechart. Mô hình Statecharts trong mỗi đối tượng phải hoàn thành một bước lớn trước khi có thể gửi sự kiện đến đối tượng khác hoặc xử lý đầu vào từ các sự kiện khác. Truyền thông giữa các đối tượng là bất đồng bộ: chúng không thể gọi các phương thức của nhau hoặc trực tiếp thay đổi giá trị biến của nhau. Theo nghĩa này, SCCD có thể được xem như một cơ sở ngữ nghĩa cho các hệ thống đa tác tử, trong đó tác tử có một giao diện được xác định rõ để truyền thông.
+
+\section{Tổng kết}
+Chương này minh họa cách sử dụng hệ hình thức Statecharts để mô hình hóa hành vi có yếu tố thời gian, phản ứng và tự chủ của một hệ thống. Chương được xây dựng quanh một quy trình phát triển bắt đầu từ thu thập yêu cầu để xây dựng thiết kế ban đầu của hệ thống. Các khái niệm của hệ hình thức Statecharts, gồm trạng thái, chuyển tiếp, phân cấp, tính trực giao, truyền thông quảng bá và lịch sử, được giải thích bằng ví dụ xuyên suốt về đồng hồ điện tử. Thiết kế này được tinh chỉnh bằng cách mô phỏng mô hình và kiểm thử nó, thông qua cung cấp một đoạn sự kiện đầu vào cho mô phỏng/kiểm thử và kiểm tra đầu ra do mô hình tạo ra, thủ công trong mô phỏng hoặc tự động bằng một bộ tiên tri kiểm thử (oracle) trong kiểm thử. Cuối cùng, mã được sinh từ mô hình thiết kế và triển khai lên một nền tảng.
+% Source: printed 175 / PDF 189
+Cần ghép nối giữa các hàm nền tảng và các sự kiện đầu ra/hàm gọi lại của Statechart để cuối cùng thu được một hệ thống chạy được. Sau cùng, một số chủ đề nâng cao đã được thảo luận.
+
+\sourcefigure{6.13}{189}{SCCD: Một cái nhìn tổng quan. \textit{Chú giải thêm của bản dịch:} \emph{Create Window}: tạo cửa sổ; \texttt{bouncing}/\texttt{selected}/\texttt{dragging}: đang nảy/được chọn/đang kéo; \emph{left-click}/\emph{drag}/\emph{release}: nhấp nút trái chuột/kéo/nhả chuột; \texttt{color}/\texttt{pos}/\texttt{vel}: màu/vị trí/vận tốc. Tên sự kiện, trạng thái và thuộc tính trong mô hình được giữ nguyên.}
+
+\section{Tài liệu và đọc thêm}
+Có thể tìm thấy thảo luận kỹ lưỡng về nguồn gốc của ký pháp trực quan Statecharts trong [136]. Nguồn gốc của hệ hình thức Statecharts được mô tả trong [134]; sau đó công trình này được bổ sung bằng thảo luận về ngữ nghĩa của nó trong STATEMATE [141] và Rhapsody [139]. Gần đây hơn, Esmaeilsabzali và cộng sự phân rã ngữ nghĩa của các ``ngôn ngữ mô hình hóa bước lớn'', một họ ngôn ngữ mà Statecharts thuộc về, và trình bày một họ ngữ nghĩa thực thi của chúng [94]. OMG đang xây dựng một tiêu chuẩn cho ngữ nghĩa thực thi chính xác của máy trạng thái UML [221].
+
+Việc phối hợp các đối tượng Statecharts thực thi đồng thời có nguồn gốc từ một bài báo năm 1997 của Harel và Gery [137]. SCCD [281] cố gắng ràng buộc các thao tác đối tượng có thể có, gồm tạo và xóa đối tượng cũng như truyền thông giữa đối tượng, bằng cách mô hình hóa các cấu hình đối tượng được cho phép trong một biểu đồ lớp mà từng biểu đồ đối tượng, tức một ảnh chụp tại một thời điểm trong quá trình thực thi mô hình, phải tuân thủ.
+
+% Source: printed 176 / PDF 190
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Giải thích sự khác biệt giữa lịch sử sâu và lịch sử nông.
+\item Giải thích các cách khác nhau mà những biến thể Statecharts, cụ thể là Statemate so với UML 2.0/Rhapsody, giải quyết tính không tất định khi các chuyển tiếp đi ra của những trạng thái lồng nhau theo phân cấp được kích hoạt bởi cùng một sự kiện.
+\item Một mô hình Statecharts có bao giờ ``bị chặn'' (block) hay không? Giải thích vì sao có hoặc vì sao không.
+\item Vẽ phiên bản làm phẳng, không có phân cấp hoặc tính trực giao, của một mô hình Statecharts chứa các trạng thái phân cấp và các thành phần trực giao.
+\item Các chuyển tiếp đi ra/đi vào từ/đến một trạng thái phân cấp chứa những thành phần trực giao được thực thi như thế nào? Giải thích các cách khác nhau mà các vùng trực giao có thể ``tương tác''. Giải thích sự khác biệt giữa các đối tượng chạy đồng thời trong SCCD và các vùng trực giao bên trong những đối tượng này.
+\end{enumerate}
+
+\section*{Lời cảm ơn}
+Công trình này được tài trợ một phần bởi Flanders Make vzw, trung tâm nghiên cứu chiến lược dành cho ngành sản xuất.
+
+\paragraph{Truy cập mở}
+Chương này được cấp phép theo Giấy phép quốc tế Creative Commons Ghi công 4.0 (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, phóng tác, phân phối và tái tạo bằng bất kỳ phương tiện hoặc định dạng nào, với điều kiện ghi công thích hợp cho tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons, và cho biết nếu có thay đổi.
+
+Hình ảnh hoặc các tài liệu khác của bên thứ ba trong chương này thuộc giấy phép Creative Commons của chương, trừ khi có quy định khác trong dòng ghi công cho tài liệu đó. Nếu tài liệu không thuộc giấy phép Creative Commons của chương và mục đích sử dụng của bạn không được quy định pháp luật cho phép hoặc vượt quá phạm vi sử dụng được phép, bạn cần xin phép trực tiếp chủ sở hữu quyền tác giả.

@@ -1,0 +1,34 @@
+{
+  "edition": "Cơ sở mô hình hóa đa mô thức cho các hệ thống thực-ảo",
+  "edition_year": 2026,
+  "source_doi": "10.1007/978-3-030-43946-0",
+  "source_sha256": "bcb1771d9936504d1e1c29fd7572888da170f67c8a6e77a55ef34eb6e542c5c9",
+  "status": "complete",
+  "pages": 355,
+  "chapters": 9,
+  "numbered_figures": 157,
+  "numbered_tables": 11,
+  "exercise_diagrams": 6,
+  "bibliography_records": 310,
+  "media_files": 181,
+  "additional_reading_details": 7,
+  "cover_image": {
+    "file": "assets/cover-donald-giannatti-unsplash.jpg",
+    "sha256": "fcd1695a6328e332c4da331e1ebf3d265a469b125b36c470d620d8bfc3789ca6",
+    "photographer": "Donald Giannatti",
+    "license": "Unsplash License"
+  },
+  "reading_pdf": {
+    "file": "foundations-mpm4cps-vi.pdf",
+    "sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de",
+    "bytes": 32227165
+  },
+  "source_archive": {
+    "file": "foundations-mpm4cps-vi-source.zip",
+    "sha256": "3cd9f4252604b12f30cbb269860d2b7ba7b66fe8606dc128f92c6e9c851fde72",
+    "bytes": 33617174,
+    "entries": 357
+  },
+  "master_tex_sha256": "059827b1d55663d161268a967444610ddc79041135c7bc9bfb1d9f343b59326f",
+  "runtime_python": "3.12.14"
+}

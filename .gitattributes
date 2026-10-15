@@ -1,0 +1,29 @@
+# Consistent text checkouts on Windows, macOS, and Linux.
+* text=auto eol=lf
+*.tex text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.ps1 text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Artwork and archives must keep their exact bytes.
+*.pdf binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.webp binary
+*.zip binary
+*.gz binary
+*.7z binary
+*.otf binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

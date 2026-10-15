@@ -1,0 +1,1023 @@
+% FULL TEXT DRAFT: printed pages 127–153 / PDF 142–168 translated and self-reviewed.
+% Independent fidelity review, figure integration and compiled layout QA are pending.
+% Source: printed 127 / PDF 142
+\chapter{DEVS: Mô hình hóa và mô phỏng sự kiện rời rạc để phân tích hiệu năng các hệ thống bị giới hạn tài nguyên}
+\chapterauthors{Yentl Van Tendeloo và Hans Vangheluwe}
+
+\begin{quote}\small
+\textbf{Yentl Van Tendeloo}\\
+University of Antwerp, Bỉ\\
+Thư điện tử: \url{Yentl.VanTendeloo@uantwerpen.be}\\
+\textbf{Hans Vangheluwe}\\
+University of Antwerp -- Flanders Make, Bỉ; McGill University, Canada\\
+Thư điện tử: \url{hans.vangheluwe@uantwerpen.be}\\
+\copyright{} Các tác giả 2020. P. Carreira và cộng sự (chủ biên), \emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+\url{https://doi.org/10.1007/978-3-030-43946-0_5}
+\end{quote}
+
+\section*{Tóm tắt}
+DEVS là một hệ hình thức phổ biến để mô hình hóa các hệ thống động phức tạp bằng cách trừu tượng hóa theo sự kiện rời rạc. Ở mức trừu tượng này, một chuỗi có yếu tố thời gian gồm các ``sự kiện'' thích hợp đi vào hệ thống, hoặc phát sinh bên trong hệ thống khi hết thời gian chờ, gây ra những thay đổi tức thời của trạng thái hệ thống. Giữa các sự kiện, trạng thái không thay đổi, nên quỹ đạo trạng thái là một hàm hằng từng đoạn. Những ưu điểm chính của DEVS là định nghĩa hình thức chặt chẽ và khả năng hỗ trợ hợp thành theo mô-đun. Chương này giới thiệu hệ hình thức DEVS cổ điển theo cách tiếp cận từ dưới lên, bằng một ví dụ đèn giao thông đơn giản. Trước hết, chương trình bày cú pháp và ngữ nghĩa thao tác của các mô hình nguyên tử, tức không phân cấp. Sau đó, ngữ nghĩa của các mô hình ghép, có phân cấp, được xác định bằng cách chuyển chúng thành các mô hình DEVS nguyên tử. Vì phép ``làm phẳng'' mang tính hình thức này không hiệu quả, chương cũng trình bày một bộ mô phỏng trừu tượng theo mô-đun, hoạt động trực tiếp trên mô hình ghép. Đây là cơ sở chung cho các hiện thực hiệu quả về sau. Tiếp đó, chúng tôi xem xét những ứng dụng thực tế của mô hình hóa và mô phỏng DEVS trong phân tích hiệu năng hệ thống hàng đợi. Cuối cùng, chúng tôi trình bày một số hạn chế của DEVS cổ điển và những giải pháp dưới dạng các biến thể của hệ hình thức ban đầu.
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi kỳ vọng bạn có thể:
+\begin{itemize}
+\item Hiểu sự khác biệt giữa DEVS và các hệ hình thức khác có tính chất tương tự.
+\item Giải thích ngữ nghĩa của một mô hình DEVS cho trước.
+\item Hiểu mối quan hệ và sự khác biệt giữa mô hình DEVS với bộ mô phỏng của nó.
+\item Áp dụng DEVS cho các bài toán hàng đợi đơn giản.
+\item Hiểu những hạn chế chính của DEVS và các phần mở rộng hiện có.
+\end{itemize}
+
+\section{Giới thiệu}
+DEVS [309] là một hệ hình thức phổ biến để mô hình hóa các hệ thống động phức tạp bằng cách trừu tượng hóa theo sự kiện rời rạc. Ở mức trừu tượng này, một chuỗi có yếu tố thời gian gồm các ``sự kiện'' thích hợp đi vào hệ thống gây ra những thay đổi tức thời của trạng thái hệ thống. Những sự kiện này có thể phát sinh từ bên ngoài, tức từ một mô hình khác, hoặc từ bên trong, tức do chính mô hình tạo ra khi hết thời gian chờ. Trạng thái tiếp theo của hệ thống được xác định từ trạng thái trước đó và sự kiện. Giữa các sự kiện, trạng thái không thay đổi, nên quỹ đạo trạng thái
+% Source: printed 128 / PDF 143
+là một hàm hằng từng đoạn. Nhân mô phỏng chỉ cần xét những trạng thái tại đó sự kiện xảy ra và bỏ qua mọi thời điểm trung gian. Điều này khác với các mô hình thời gian rời rạc: thời gian được tăng theo một bước cố định, và trạng thái chỉ được cập nhật tại những thời điểm đó. Mô hình sự kiện rời rạc có ưu điểm là độ hạt thời gian của chúng, về lý thuyết, có thể không bị giới hạn, trong khi độ hạt thời gian trong mô hình thời gian rời rạc là cố định. Tuy vậy, độ phức tạp tăng thêm khiến cách tiếp cận này không phù hợp với những hệ thống vốn có bước thời gian cố định.
+
+Những ưu điểm chính của DEVS so với các hệ hình thức sự kiện rời rạc khác là định nghĩa hình thức chặt chẽ và khả năng hỗ trợ hợp thành theo mô-đun. DES và Statecharts là những hệ hình thức sự kiện rời rạc có thể so sánh với DEVS, nhưng giữa chúng vẫn có những khác biệt đáng kể.
+
+So với DES, DEVS cung cấp tính mô-đun, cho phép lồng các mô hình vào bên trong thành phần và qua đó tạo nên một hệ phân cấp mô hình. Hệ phân cấp này đòi hỏi các kết nối ghép và, khi cần, các cổng; toàn bộ việc trao đổi giữa hai thành phần đều sử dụng chúng. Ngược lại, các mô hình DES có thể truy cập trực tiếp những mô hình khác và gửi sự kiện cho chúng bằng cách gọi phương thức. Ngoài ra, DEVS phân tách rõ ràng hơn mô hình mô phỏng với nhân mô phỏng.
+
+So với Statecharts, DEVS có định nghĩa hình thức chặt chẽ hơn và một kiểu mô-đun khác. Statecharts để lại khá nhiều khoảng trống cho việc diễn giải, dẫn đến nhiều cách diễn giải khác nhau [140, 138]. Ngược lại, DEVS được định nghĩa hoàn toàn bằng hình thức và có một thuật toán tham chiếu, tức một bộ mô phỏng trừu tượng. Cả DEVS lẫn Statecharts đều là các hệ hình thức theo mô-đun, nhưng Statecharts tạo ra hệ phân cấp bằng các trạng thái hợp thành, còn DEVS sử dụng các mô hình hợp thành cho mục đích này. Mỗi cách đều có ưu điểm riêng, nên cả hai đều hữu ích trong thực tiễn.
+
+Chương này cung cấp phần nhập môn về DEVS, hiện nay thường được gọi là DEVS cổ điển (Classic DEVS), thông qua một mô hình ví dụ đơn giản trong miền đèn giao thông. Chúng tôi bắt đầu từ một đèn giao thông tự hoạt động đơn giản, rồi từng bước mở rộng thành đèn giao thông có tương tác với cảnh sát. Mỗi bước mở rộng giới thiệu một thành phần mới của hệ hình thức DEVS cùng ngữ nghĩa tương ứng, được mô tả theo cách không hình thức. Chúng tôi bắt đầu với các mô hình nguyên tử, không phân cấp, trong Mục 5.2 và giới thiệu các mô hình ghép, có phân cấp, trong Mục 5.3. Mục 5.4 trình bày bộ mô phỏng trừu tượng xác định thuật toán tham chiếu. Mục 5.5 chuyển sang một mô hình hệ thống hàng đợi đơn giản, thay cho ví dụ đèn giao thông. Dù DEVS có những ứng dụng rõ ràng, nhiều biến thể đã xuất hiện để khắc phục một số hạn chế của nó. Mục 5.6 thảo luận các biến thể này, lý do xuất hiện và những khác biệt của chúng. Cuối cùng, Mục 5.7 tổng kết chương.
+
+\section{Các mô hình DEVS nguyên tử}
+Chúng tôi bắt đầu giải thích DEVS từ các mô hình nguyên tử. Đúng như tên gọi, mô hình nguyên tử là những khối cấu thành không thể chia nhỏ của một mô hình.
+
+Trong mục này, chúng tôi xây dựng dần đặc tả hình thức đầy đủ của một mô hình nguyên tử và giới thiệu các khái niệm mới khi cần đến chúng. Ở mỗi bước trung gian, chúng tôi trình bày và giải thích những khái niệm được đưa vào, cách chúng xuất hiện trong ví dụ xuyên suốt, và ảnh hưởng của chúng đối với ngữ nghĩa. Miền được dùng làm ví dụ xuyên suốt chương là một đèn giao thông đơn giản.
+
+\subsection{Mô hình tự hoạt động}
+Dạng đơn giản nhất của đèn giao thông là một đèn tự hoạt động. Quan sát từ bên ngoài, chúng ta kỳ vọng thấy một vết thực thi tương tự Hình 5.1. Hình 5.2 biểu diễn trực quan một mô hình có thể tạo ra vết thực thi như vậy.
+
+Để mô tả Hình 5.2 một cách hình thức, chúng ta phân biệt các thành phần sau:
+\begin{enumerate}
+\item \textbf{Tập trạng thái ($S$).} Khía cạnh dễ nhận thấy nhất của đèn giao thông là trạng thái hiện tại của nó, được biểu thị bằng ba màu khác nhau mà đèn có thể hiển thị. Các trạng thái này có tính tuần tự: tại cùng một thời điểm, đèn giao thông chỉ có thể ở một trạng thái.\footnote{Khác với, chẳng hạn, Statecharts.} Tập trạng thái không bị giới hạn ở dạng liệt kê như trong ví dụ này, mà có thể chứa số lượng thuộc tính tùy ý.
+% Source: printed 129 / PDF 144
+\[
+S:\times_{i=1}^{n}S_i
+\]
+\item \textbf{Hàm tiến thời gian ($ta$).} Với mỗi trạng thái vừa xác định, chúng ta nhận thấy có một khoảng thời gian chờ trong trạng thái đó. Rõ ràng, một số trạng thái tồn tại lâu hơn những trạng thái khác. Chẳng hạn, đèn giữ màu xanh và đỏ tương đối lâu, còn thời gian ở trạng thái vàng chỉ ngắn. Hàm này phải được định nghĩa cho từng phần tử của tập trạng thái và phải trả về một khoảng thời gian theo cách tất định. Khoảng thời gian có thể là bất kỳ số thực dương nào, kể cả không và vô cùng. Thời gian âm không được phép, vì điều đó buộc mô phỏng phải quay ngược thời gian. DEVS cho phép thời gian tiến đúng bằng không, dù điều này không thể xảy ra trong thực tế. Có hai trường hợp sử dụng: độ trễ rất nhỏ và không liên quan đến bài toán đang mô hình hóa; hoặc trạng thái là một trạng thái nhân tạo, không có tương ứng trong thế giới thực, chẳng hạn một phần của mẫu thiết kế. Lưu ý rằng DEVS không xét cơ sở thời gian, dù các hình minh họa ở đây sử dụng giây. Thời gian mô phỏng chỉ là một số thực, và người dùng tự quyết định cách diễn giải. Đơn vị này có thể là giây, năm, hoặc thậm chí $\pi$ giây, tùy người dùng, miễn là được giữ cố định trong suốt quá trình mô phỏng.
+\[
+ta:S\rightarrow\mathbb{R}^{+}_{0,+\infty}
+\]
+\item \textbf{Hàm chuyển trạng thái nội bộ ($\delta_{int}$).} Sau khi xác định các trạng thái và thời gian chờ, phần cuối cùng là xác định trạng thái tiếp theo từ một trạng thái cho trước. Đây là nhiệm vụ của hàm chuyển trạng thái nội bộ: hàm chỉ ra trạng thái tiếp theo cho từng trạng thái. Vì đây là một hàm, mỗi trạng thái có nhiều nhất một trạng thái tiếp theo, nhờ đó tránh được mọi sự mơ hồ. Lưu ý rằng hàm không nhất thiết phải là hàm toàn phần hoặc đơn ánh: một số trạng thái có thể không có trạng thái tiếp theo, chẳng hạn khi hàm tiến thời gian được quy định bằng $+\infty$, và một số trạng thái có cùng một trạng thái tiếp theo. Cho đến đây, chỉ hàm chuyển trạng thái nội bộ được mô tả là có thể thay đổi trạng thái. Vì vậy, các hàm khác, chẳng hạn hàm tiến thời gian, không được phép sửa trạng thái; chúng chỉ có quyền đọc trạng thái.
+\[
+\delta_{int}:S\rightarrow S
+\]
+% Source: printed 130 / PDF 145
+\item \textbf{Trạng thái toàn phần ban đầu ($q_{init}$).} Chúng ta còn phải xác định trạng thái ban đầu của hệ thống. Dù đặc tả ban đầu của hệ hình thức DEVS không có thành phần này, chúng tôi đưa nó vào đây vì đây là một thành phần thiết yếu của mô hình [285]. Tuy nhiên, thay vì chỉ là ``trạng thái ban đầu'' ($s_{init}$), đây là một trạng thái toàn phần. Nghĩa là chúng ta không chỉ chọn trạng thái ban đầu của hệ thống mà còn xác định hệ thống đã ở trong trạng thái đó bao lâu. Do đó, thời gian đã trôi qua được bổ sung vào định nghĩa trạng thái toàn phần ban đầu để việc mô hình hóa linh hoạt hơn. Đối với bộ mô phỏng, mô hình sẽ có vẻ như đã ở trong trạng thái ban đầu một thời gian.
+\[
+q_{init}:(s,e)\mid s\in S,\;0\leq e\leq ta(s)
+\]
+\end{enumerate}
+
+\sourcefigure{5.1}{144}{Vết thực thi của đèn giao thông tự hoạt động.}
+\sourcefigure{5.2}{144}{Mô hình tạo ra vết thực thi trong Hình 5.1.}
+
+Chúng tôi mô tả mô hình trong Hình 5.2 bằng một bộ bốn gồm ba thành phần này.
+\[
+\langle S,q_{init},\delta_{int},ta\rangle
+\]
+\begin{align*}
+S &= \{\mathrm{green},\mathrm{yellow},\mathrm{red}\}\\
+q_{init} &= (\mathrm{green},0.0)\\
+\delta_{int} &= \{\mathrm{green}\rightarrow\mathrm{yellow},\\
+&\qquad\mathrm{yellow}\rightarrow\mathrm{red},\\
+&\qquad\mathrm{red}\rightarrow\mathrm{green}\}\\
+ta &= \{\mathrm{green}\rightarrow delay_{green},\\
+&\qquad\mathrm{yellow}\rightarrow delay_{yellow},\\
+&\qquad\mathrm{red}\rightarrow delay_{red}\}
+\end{align*}
+
+Với hệ hình thức đơn giản này, chúng tôi xác định ngữ nghĩa như trong Thuật toán 4. Mô hình được khởi tạo với thời gian mô phỏng bằng không và trạng thái bằng trạng thái ban đầu, chẳng hạn $\mathrm{green}$. Mô phỏng cập nhật thời gian bằng giá trị trả về của hàm tiến thời gian, rồi thực hiện hàm chuyển trạng thái nội bộ trên trạng thái hiện tại để nhận trạng thái mới.
+
+\paragraph{Thuật toán 4.} Mã giả mô phỏng DEVS cho các mô hình tự hoạt động.
+\begin{quote}
+\begin{tabular}{l}
+$time\leftarrow 0$\\
+$current\_state\leftarrow initial\_state$\\
+$last\_time\leftarrow -initial\_elapsed$\\
+\textbf{while} not termination\_condition() \textbf{do}\\
+\quad $time\leftarrow last\_time+ta(current\_state)$\\
+\quad $current\_state\leftarrow\delta_{int}(current\_state)$\\
+\quad $last\_time\leftarrow time$\\
+\textbf{end while}
+\end{tabular}
+\end{quote}
+
+\subsection{Mô hình tự hoạt động có đầu ra}
+Hãy nhớ rằng DEVS là một hệ hình thức theo mô-đun, trong đó chỉ mô hình nguyên tử được truy cập trạng thái nội bộ của chính nó. Điều này tự nhiên đặt ra một vấn đề cho đèn giao thông: các thành phần khác không có cách nào biết trạng thái hiện tại, tức màu sắc của đèn. Vì vậy, chúng ta muốn đèn xuất màu của nó, ở đây dưới dạng một chuỗi, thay vì một phần tử của kiểu liệt kê. Hiện tại, đầu ra gắn chặt với tập trạng thái, nhưng điều đó không phải là bắt buộc: các giá trị có thể xuất ra hoàn toàn có thể khác với tập trạng thái. Vết thực thi mong muốn được thể hiện trong Hình 5.3. Chúng ta thấy rằng đèn nay phát ra những sự kiện đánh dấu thời điểm bắt đầu của khoảng thời gian đã xác định. Cũng cần nhớ DEVS là một hệ hình thức sự kiện rời rạc: đầu ra chỉ là một sự kiện đơn lẻ chỉ ra thời điểm, chứ không phải một tín hiệu liên tục. Vì vậy, bên nhận phải lưu lại sự kiện để biết trạng thái hiện tại của đèn giao thông tại bất kỳ thời điểm nào. Về mặt trực quan, mô hình được cập nhật thành Hình 5.4; dấu chấm than trên một phép chuyển trạng thái biểu thị việc sinh đầu ra.
+
+Phân tích mô hình đã cập nhật, chúng ta thấy cần thêm hai khái niệm để cho phép tạo đầu ra.
+% Source: printed 131 / PDF 146
+\sourcefigure{5.3}{146}{Vết thực thi của đèn giao thông tự hoạt động có đầu ra.}
+\sourcefigure{5.4}{146}{Mô hình tạo ra vết thực thi trong Hình 5.3.}
+\begin{enumerate}
+\item \textbf{Tập đầu ra ($Y$).} Tương tự việc xác định tập trạng thái hợp lệ, chúng ta cũng phải xác định tập đầu ra hợp lệ. Tập này đóng vai trò giao diện với các thành phần khác, quy định những sự kiện mà chúng kỳ vọng nhận được. Sự kiện cũng có thể có các thuộc tính phức tạp, nhưng hiện tại chúng ta vẫn giới hạn ở những sự kiện đơn giản. Nếu sử dụng cổng, mỗi cổng có tập đầu ra riêng.
+\[
+Y:\times_{i=1}^{l}Y_i
+\]
+\item \textbf{Hàm đầu ra ($\lambda$).} Sau khi xác định tập sự kiện hợp lệ, chúng ta còn cần một hàm để thực sự sinh các sự kiện đó. Tương tự các hàm khác, hàm đầu ra được định nghĩa trên trạng thái và trả về một sự kiện, hoặc không có sự kiện, theo cách tất định. Như thể hiện trong hình mô hình, sự kiện được sinh \emph{trước} khi đạt đến trạng thái mới. Nghĩa là hàm đầu ra vẫn sử dụng trạng thái cũ, tức trạng thái đang được rời khỏi, thay vì trạng thái mới. Do đó, phải gọi hàm đầu ra ngay trước hàm chuyển trạng thái nội bộ. Đối với đèn giao thông, hàm đầu ra phải trả về tên của trạng thái tiếp theo, thay vì trạng thái hiện tại. Chẳng hạn, nếu hàm đầu ra nhận trạng thái $\mathrm{green}$ làm đầu vào, nó phải sinh sự kiện \texttt{show\_yellow}.
+
+Tương tự hàm tiến thời gian, hàm này không tạo ra trạng thái mới nên chỉ được đọc trạng thái. Điều đó có thể đòi hỏi một số cách xử lý gián tiếp: việc phát ra sự kiện thường ảnh hưởng đến trạng thái mô hình, chẳng hạn xóa sự kiện khỏi hàng đợi hoặc tăng một bộ đếm. Vì không được ghi vào trạng thái, cần ghi nhớ những thay đổi này và thực hiện chúng ngay khi hàm chuyển trạng thái nội bộ được thực thi. Lưu ý rằng hàm đầu ra có thể không trả về đầu ra nào; khi đó, nó trả về $\phi$.
+\[
+\lambda:S\rightarrow Y\cup\{\phi\}
+\]
+\end{enumerate}
+
+Mô hình có thể được mô tả bằng một bộ sáu.
+\[
+\langle Y,S,q_{init},\delta_{int},\lambda,ta\rangle
+\]
+% Source: printed 132 / PDF 147
+\begin{align*}
+Y &= \{show\_green,show\_yellow,show\_red\}\\
+S &= \{\mathrm{green},\mathrm{yellow},\mathrm{red}\}\\
+q_{init} &= (\mathrm{green},0.0)\\
+\delta_{int} &= \{\mathrm{green}\rightarrow\mathrm{yellow},\\
+&\qquad\mathrm{yellow}\rightarrow\mathrm{red},\\
+&\qquad\mathrm{red}\rightarrow\mathrm{green}\}\\
+\lambda &= \{\mathrm{green}\rightarrow show\_yellow,\\
+&\qquad\mathrm{yellow}\rightarrow show\_red,\\
+&\qquad\mathrm{red}\rightarrow show\_green\}\\
+ta &= \{\mathrm{green}\rightarrow delay_{green},\\
+&\qquad\mathrm{yellow}\rightarrow delay_{yellow},\\
+&\qquad\mathrm{red}\rightarrow delay_{red}\}
+\end{align*}
+
+Mã giả được điều chỉnh đôi chút để bổ sung việc sinh đầu ra, như trong Thuật toán 5. Hãy nhớ rằng đầu ra được sinh trước khi thực hiện phép chuyển trạng thái nội bộ, nên lời gọi phương thức được đặt ngay trước phép chuyển này.
+
+\begin{samepage}
+\paragraph{Thuật toán 5.} Mã giả mô phỏng DEVS cho các mô hình tự hoạt động có đầu ra.
+\begin{quote}
+\begin{tabular}{l}
+$time\leftarrow 0$\\
+$current\_state\leftarrow initial\_state$\\
+$last\_time\leftarrow -initial\_elapsed$\\
+\textbf{while} not termination\_condition() \textbf{do}\\
+\quad $time\leftarrow last\_time+ta(current\_state)$\\
+\quad $output(\lambda(current\_state))$\\
+\quad $current\_state\leftarrow\delta_{int}(current\_state)$\\
+\quad $last\_time\leftarrow time$\\
+\textbf{end while}
+\end{tabular}
+\end{quote}
+\end{samepage}
+
+\subsection{Mô hình có thể bị ngắt}
+Đặc tả đèn giao thông hiện tại vẫn hoàn toàn tự hoạt động. Dù điều này phù hợp trong hầu hết trường hợp, cảnh sát có thể muốn tạm tắt đèn giao thông khi điều khiển giao thông bằng tay. Để cho phép điều đó, đèn phải xử lý các sự kiện đến được sinh từ bên ngoài, chẳng hạn sự kiện do cảnh sát gửi để tắt đèn hoặc khởi động lại. Hình 5.5 thể hiện vết thực thi mong muốn. Hình 5.6 trình bày một mô hình tạo ra vết thực thi này, dùng dấu hỏi để biểu thị việc nhận sự kiện.
+
+Một lần nữa, chúng ta cần thêm hai thành phần trong đặc tả DEVS.
+\begin{enumerate}
+\item \textbf{Tập đầu vào ($X$).} Tương tự tập đầu ra, chúng ta cần xác định những sự kiện mà mô hình kỳ vọng nhận được. Đây cũng là một định nghĩa giao diện để các thành phần khác biết mô hình hiểu những sự kiện nào.
+\[
+X=\times_{i=1}^{m}X_i
+\]
+\item \textbf{Hàm chuyển trạng thái bên ngoài ($\delta_{ext}$).} Tương tự hàm chuyển trạng thái nội bộ, hàm chuyển trạng thái bên ngoài cũng được phép xác định trạng thái mới. Trước hết, hàm này vẫn phụ thuộc vào trạng thái hiện tại, giống hàm chuyển trạng thái nội bộ. Hàm chuyển trạng thái bên ngoài còn được truy cập hai giá trị nữa: thời gian đã trôi qua và sự kiện đầu vào. \emph{Thời gian đã trôi qua} cho biết mô hình nguyên tử này đã trải qua bao lâu kể từ phép chuyển trạng thái gần nhất, dù là chuyển nội bộ hay bên ngoài. Trong hàm chuyển trạng thái nội bộ, con số này được biết ngầm, tức chính là giá trị của hàm tiến thời gian; còn ở đây, nó phải được truyền vào một cách tường minh. Thời gian đã trôi qua
+% Source: printed 133 / PDF 148
+là một số trong khoảng $[0,ta(s)]$, với $s$ là trạng thái hiện tại của mô hình. Lưu ý rằng khoảng này bao gồm cả $0$ và $ta(s)$: mô hình có thể nhận một sự kiện ngay sau khi phép chuyển xảy ra hoặc ngay trước khi phép chuyển nội bộ xảy ra. Cặp gồm trạng thái hiện tại và thời gian đã trôi qua thường được gọi là \emph{trạng thái toàn phần} ($Q$) của mô hình. Chúng ta đã gặp trạng thái toàn phần khi xét trạng thái toàn phần ban đầu. Sự kiện nhận được là tham số cuối cùng của hàm. Tổ hợp ba tham số này xác định trạng thái mới theo cách tất định. Vì hàm chuyển trạng thái bên ngoài nhận nhiều tham số, một trạng thái có thể được định nghĩa nhiều phép chuyển bên ngoài.
+\begin{gather*}
+\delta_{ext}:Q\times X\rightarrow S\\
+Q=\{(s,e)\mid s\in S,\;0\leq e\leq ta(s)\}
+\end{gather*}
+\end{enumerate}
+
+\sourcefigure{5.5}{148}{Vết thực thi của đèn giao thông tự hoạt động.}
+\sourcefigure{5.6}{148}{Mô hình đơn giản dự kiến tạo ra vết thực thi trong Hình 5.5, nhưng thực tế không tạo ra vết đó.}
+
+Dù đã có đủ các thành phần trong đặc tả DEVS cho mô hình nguyên tử, công việc vẫn chưa kết thúc. Khi bổ sung trạng thái \texttt{manual}, chúng ta còn phải gửi một thông điệp đầu ra báo rằng đèn đã tắt. Tuy nhiên, hãy nhớ rằng hàm đầu ra chỉ được gọi trước hàm chuyển trạng thái nội bộ, chứ không được gọi trước hàm chuyển trạng thái bên ngoài. Để vẫn có đầu ra, chúng ta phải bảo đảm một phép chuyển nội bộ xảy ra trước khi thực sự đạt đến trạng thái \texttt{manual}. Có thể làm điều đó bằng cách đưa vào một trạng thái trung gian nhân tạo, hết thời gian chờ ngay lập tức và phát ra sự kiện \texttt{turn\_off}. Khi nhận sự kiện \texttt{toManual}, thay vì đi thẳng đến \texttt{manual}, mô hình đi đến trạng thái nhân tạo \texttt{going\_manual}. Hàm tiến thời gian của trạng thái này được đặt bằng không, vì đây chỉ là một trạng thái nhân tạo, không có ý nghĩa trong miền đang nghiên cứu. Do thời gian tiến bằng không, hàm đầu ra của trạng thái được kích hoạt ngay lập tức, và đầu ra \texttt{turn\_off} được sinh khi chuyển sang \texttt{manual}. Tương tự, khi nhận sự kiện \texttt{toAuto}, mô hình phải đi đến một trạng thái nhân tạo \texttt{going\_auto} để sinh sự kiện \texttt{show\_red}. Vết thực thi đã sửa và mô hình tương ứng được minh họa lần lượt trong Hình 5.7 và Hình 5.8.
+
+Cuối cùng, chúng tôi đưa ra đặc tả đầy đủ của đèn giao thông dưới dạng một mô hình DEVS nguyên tử, được định nghĩa bằng một bộ tám.
+\[
+\langle X,Y,S,q_{init},\delta_{int},\delta_{ext},\lambda,ta\rangle
+\]
+
+% Source: printed 134 / PDF 149
+\sourcefigure{5.7}{149}{Vết thực thi của đèn giao thông có ngắt sau khi sửa bằng các trạng thái nhân tạo.}
+\sourcefigure{5.8}{149}{Mô hình tạo ra vết thực thi trong Hình 5.7. \textit{Ghi chú bản dịch (P5-1):} nguồn dùng \texttt{show\_black} trong Hình 5.5, 5.7 và 5.8, nhưng dùng \texttt{turn\_off} trong phần mô tả và hàm $\lambda$ cho hành vi tắt đèn. Bản dịch giữ cả hai cách đặt tên của nguồn.}
+\begin{align*}
+X &= \{toAuto,toManual\}\\
+Y &= \{show\_green,show\_yellow,show\_red,turn\_off\}\\
+S &= \{\mathrm{green},\mathrm{yellow},\mathrm{red},\mathrm{going\_manual},\mathrm{going\_auto},\mathrm{manual}\}\\
+q_{init} &= (\mathrm{green},0.0)\\
+\delta_{int} &= \{\mathrm{green}\rightarrow\mathrm{yellow},\\
+&\qquad\mathrm{yellow}\rightarrow\mathrm{red},\\
+&\qquad\mathrm{red}\rightarrow\mathrm{green},\\
+&\qquad\mathrm{going\_manual}\rightarrow\mathrm{manual},\\
+&\qquad\mathrm{going\_auto}\rightarrow\mathrm{red}\}\\
+\delta_{ext} &= \{(\mathrm{green},\_,toManual)\rightarrow\mathrm{going\_manual}\\
+&\qquad(\mathrm{yellow},\_,toManual)\rightarrow\mathrm{going\_manual}\\
+&\qquad(\mathrm{red},\_,toManual)\rightarrow\mathrm{going\_manual}\\
+&\qquad(\mathrm{manual},\_,toAuto)\rightarrow\mathrm{going\_auto}\}\\
+\lambda &= \{\mathrm{green}\rightarrow show\_yellow,\\
+&\qquad\mathrm{yellow}\rightarrow show\_red,\\
+&\qquad\mathrm{red}\rightarrow show\_green,\\
+&\qquad\mathrm{going\_manual}\rightarrow turn\_off,\\
+&\qquad\mathrm{going\_auto}\rightarrow show\_red\}\\
+ta &= \{\mathrm{green}\rightarrow delay_{green},\\
+&\qquad\mathrm{yellow}\rightarrow delay_{yellow},\\
+&\qquad\mathrm{red}\rightarrow delay_{red},\\
+&\qquad\mathrm{manual}\rightarrow+\infty,\\
+&\qquad\mathrm{going\_manual}\rightarrow0,\\
+&\qquad\mathrm{going\_auto}\rightarrow0\}
+\end{align*}
+
+Thuật toán 6 trình bày toàn bộ ngữ nghĩa của mô hình nguyên tử dưới dạng mã giả. Tương tự trước đây, chúng ta vẫn có cùng vòng lặp mô phỏng, nhưng giờ mô hình có thể bị ngắt từ bên ngoài. Tại mỗi bước thời gian, cần xác định liệu một ngắt bên ngoài có được lên lịch trước ngắt nội bộ hay không. Nếu không,
+% Source: printed 135 / PDF 150
+chúng ta tiếp tục như trước, bằng cách thực hiện phép chuyển trạng thái nội bộ. Nếu có một sự kiện bên ngoài cần được xử lý trước, chúng ta thực hiện phép chuyển trạng thái bên ngoài.
+
+\begin{samepage}
+\paragraph{Thuật toán 6.} Mã giả mô phỏng DEVS cho các mô hình có thể bị ngắt.
+\begin{quote}
+\begin{tabular}{l}
+$time\leftarrow0$\\
+$current\_state\leftarrow initial\_state$\\
+$last\_time\leftarrow-initial\_elapsed$\\
+\textbf{while} not termination\_condition() \textbf{do}\\
+\quad $next\_time\leftarrow last\_time+ta(current\_state)$\\
+\quad \textbf{if} $time\_next\_event\leq next\_time$ \textbf{then}\\
+\qquad $elapsed\leftarrow time\_next\_event-last\_time$\\
+\qquad $current\_state\leftarrow\delta_{ext}((current\_state,elapsed),next\_event)$\\
+\qquad $time\leftarrow time\_next\_event$\\
+\quad \textbf{else}\\
+\qquad $time\leftarrow next\_time$\\
+\qquad $output(\lambda(current\_state))$\\
+\qquad $current\_state\leftarrow\delta_{int}(current\_state)$\\
+\quad \textbf{end if}\\
+\quad $last\_time\leftarrow time$\\
+\textbf{end while}
+\end{tabular}
+\end{quote}
+\end{samepage}
+
+\paragraph{Câu hỏi suy ngẫm.} Vì sao hàm đầu ra không được gọi trước khi gọi hàm chuyển trạng thái bên ngoài?
+
+\section{Các mô hình DEVS ghép}
+Ví dụ đèn giao thông đã có thể nhận và phát sự kiện, nhưng chưa có mô hình nguyên tử nào khác để trao đổi với nó. Để kết hợp các mô hình nguyên tử và cho phép chúng trao đổi với nhau, chúng tôi giới thiệu các mô hình ghép. Nội dung được trình bày trong bối cảnh đèn giao thông trước đó được kết nối với một cảnh sát. Mô hình đèn giao thông giữ nguyên các chi tiết; chi tiết của mô hình cảnh sát không quan trọng ở đây, miễn là nó phát ra các sự kiện \texttt{toAuto} và \texttt{toManual}.
+
+\subsection{Ghép cơ bản}
+Vấn đề đầu tiên khi ghép đèn giao thông với cảnh sát là cấu trúc: làm thế nào định nghĩa một tập các mô hình và mối quan hệ giữa chúng? Đây chính là định nghĩa cốt lõi của mô hình ghép: nó chỉ là một mô hình cấu trúc dùng để ghép các mô hình với nhau. Khác với mô hình nguyên tử, mô hình ghép \emph{hoàn toàn không} có hành vi gắn trực tiếp với nó. Hành vi là trách nhiệm của mô hình nguyên tử, còn cấu trúc là trách nhiệm của mô hình ghép.
+
+Để xác định cấu trúc cơ bản, chúng ta cần ba thành phần.
+\begin{enumerate}
+\item \textbf{Các thể hiện mô hình ($D$).} Tập các thể hiện mô hình xác định những mô hình nào được chứa trong mô hình ghép này.
+\item \textbf{Các đặc tả mô hình ($MS=\{M_i\mid i\in D\}$).} Bên cạnh việc xác định các thể hiện khác nhau của mô hình con, chúng ta phải đưa vào đặc tả mô hình nguyên tử của chúng. Với mỗi phần tử đã xác định trong $D$, chúng ta đưa vào bộ tám đặc tả mô hình nguyên tử. Theo định nghĩa, mô hình con của một mô hình DEVS ghép luôn phải là mô hình nguyên tử. Sau đây, chúng ta sẽ thấy cách mở rộng điều này để hỗ trợ các hệ phân cấp tùy ý.
+\begin{align*}
+MS &= \{M_i\mid i\in D\}\\
+   &= \{\langle X_i,Y_i,S_i,q_{init,i},\delta_{int,i},\delta_{ext,i},\lambda_i,ta_i\rangle\mid i\in D\}
+\end{align*}
+\item \textbf{Các mô hình chịu ảnh hưởng ($IS=\{I_i\mid i\in D\cup\{self\}\}$).} Bên cạnh việc xác định các thể hiện mô hình và đặc tả của chúng, chúng ta cần xác định các kết nối giữa chúng. Kết nối được xác định bằng các tập mô hình chịu ảnh hưởng: với mỗi thể hiện mô hình nguyên tử, chúng ta xác định
+% Source: printed 136 / PDF 151
+tập các mô hình chịu ảnh hưởng của mô hình đó. Các kết nối ghép phải tuân theo một số giới hạn để tránh tạo ra những mô hình không nhất quán. Hai ràng buộc sau được áp dụng:
+\begin{itemize}
+\item \emph{Một mô hình không được tác động lên chính nó.} Ràng buộc này hợp lý, vì nếu không, một mô hình có thể trực tiếp tác động lên chính nó. Dù tự thân việc đó không gây vấn đề đáng kể, nó khiến mô hình đồng thời kích hoạt cả phép chuyển trạng thái nội bộ lẫn phép chuyển trạng thái bên ngoài. Vì chưa xác định phép chuyển nào được xử lý trước, tình huống này không được phép. Nói cách khác, một mô hình không được là phần tử của chính tập mô hình chịu ảnh hưởng của nó.
+\[
+\forall i\in D:i\notin I_i
+\]
+\item \emph{Chỉ cho phép các liên kết bên trong mô hình ghép.} Đây là một cách khác để nói rằng các kết nối phải tôn trọng tính mô-đun. Mô hình không được trực tiếp tác động lên mô hình bên ngoài mô hình ghép hiện tại, hoặc lên mô hình nằm sâu bên trong những mô hình con khác ở mức này. Nói cách khác, mô hình chịu ảnh hưởng phải là một tập con của tập mô hình trong mô hình ghép này.
+\[
+\forall i\in D:I_i\subseteq D
+\]
+\end{itemize}
+
+Lưu ý rằng không có ràng buộc tường minh đối với các vòng lặp đại số, tức một vòng các mô hình có thời gian tiến bằng không, ngăn thời gian mô phỏng tăng lên. Nếu tình huống này không được giải quyết, mô phỏng có thể mắc kẹt tại thời điểm cụ thể đó. Tình huống chỉ trở thành vấn đề khi phụ thuộc vòng không bao giờ được giải quyết, khiến mô phỏng rơi vào bế tắc động (livelock).
+\end{enumerate}
+
+Do đó, mô hình ghép có thể được định nghĩa bằng một bộ ba.
+\[
+\langle D,MS,IS\rangle
+\]
+
+\subsection{Đầu vào và đầu ra}
+Mô hình ghép hiện kết nối hai mô hình nguyên tử. Dù cảnh sát đã có thể truyền sự kiện cho đèn giao thông, chúng ta lại mất khả năng phát ra trạng thái của đèn. Các sự kiện không thể đi ra ngoài mô hình ghép hiện tại. Vì vậy, phải bổ sung các sự kiện đầu vào và đầu ra làm giao diện cho mô hình ghép. Điều đó bổ sung $X_{self}$ và $Y_{self}$ vào bộ, lần lượt là tập sự kiện đầu vào và đầu ra, tạo thành một bộ năm.
+\[
+\langle X_{self},Y_{self},D,MS,IS\rangle
+\]
+
+Các ràng buộc đối với kết nối ghép cần được nới lỏng để đáp ứng những khả năng mới này: một mô hình có thể chịu ảnh hưởng từ các sự kiện đầu vào của mô hình ghép; tương tự, các mô hình cũng có thể tác động lên sự kiện đầu ra của mô hình ghép. Những ràng buộc trước đó được nới lỏng để cho phép $self$, tức chính mô hình ghép.
+\begin{gather*}
+\forall i\in D\cup\{self\}:i\notin I_i\\
+\forall i\in D\cup\{self\}:I_i\subseteq D\cup\{self\}
+\end{gather*}
+
+\subsection{Phân xử trường hợp đồng thời}
+Hãy nhớ rằng DEVS được xem là một hệ hình thức chặt chẽ và chính xác. Tuy mọi thành phần đã được định nghĩa chính xác, sự tương tác giữa chúng vẫn chưa được xác định hoàn toàn: điều gì xảy ra khi đèn giao thông thay đổi trạng thái đúng lúc cảnh sát thực hiện phép chuyển trạng thái của mình? Đèn sẽ chuyển sang trạng thái tiếp theo trước rồi xử lý ngắt của cảnh sát, hay sẽ phản hồi trực tiếp với ngắt và bỏ qua sự kiện nội bộ? Dù sự khác biệt trong ví dụ này rất nhỏ, trạng thái đạt đến sau khi hết thời gian chờ có thể phản ứng rất khác đối với sự kiện đến.
+
+DEVS giải quyết vấn đề bằng cách định nghĩa một hàm \emph{phân xử trường hợp đồng thời} ($select$). Hàm này nhận tất cả các mô hình có xung đột và trả về mô hình được ưu tiên hơn các mô hình còn lại. Sau khi thực hiện phép chuyển trạng thái nội bộ đó,
+% Source: printed 137 / PDF 152
+và có thể cả những phép chuyển trạng thái bên ngoài mà nó gây ra ở nơi khác, tập các mô hình sắp chuyển trạng thái có thể đã thay đổi. Nếu vẫn còn nhiều mô hình sắp chuyển trạng thái, chúng ta lặp lại thủ tục trên, có thể gọi lại hàm $select$ với tập mới.
+\[
+select:2^D\to D
+\]
+Thành phần mới này biến mô hình ghép thành một bộ sáu.
+\[
+\langle X_{self},Y_{self},D,MS,IS,select\rangle
+\]
+
+\subsection{Các hàm chuyển đổi sự kiện}
+Cuối cùng, trong ví dụ này, chúng ta có toàn quyền kiểm soát cả hai mô hình nguyên tử được kết hợp. Điều đó không phải lúc nào cũng xảy ra, vì có thể chúng ta tái sử dụng những mô hình nguyên tử được định nghĩa ở nơi khác. Tùy theo miền ứng dụng, các mô hình được tái sử dụng có thể làm việc với những sự kiện khác nhau. Chẳng hạn, nếu cảnh sát và đèn giao thông đều được định nghĩa sẵn, cảnh sát dùng \texttt{go\_to\_work} và \texttt{take\_break}, còn đèn giao thông lắng nghe \texttt{toAuto} và \texttt{toManual}, thì không thể ghép trực tiếp chúng với nhau. Dù có thể định nghĩa các khối bao bọc, tức những mô hình nguyên tử nhân tạo nhận một sự kiện đầu vào rồi phát ra phiên bản đã chuyển đổi với thời gian tiến bằng không, DEVS cung cấp một giải pháp gọn hơn.
+
+Các kết nối được bổ sung một hàm chuyển đổi sự kiện ($Z_{i,j}$), xác định cách chuyển đổi sự kiện đi vào kết nối trước khi chuyển nó đến đầu cuối của kết nối. Như vậy, hàm này ánh xạ sự kiện đầu ra thành sự kiện đầu vào và có thể thay đổi nội dung của chúng.
+\begin{align*}
+Z_{self,j}&:X_{self}\to X_j &&\forall j\in D\\
+Z_{i,self}&:Y_i\to Y_{self} &&\forall i\in D\\
+Z_{i,j}&:Z_i\to X_j &&\forall i,j\in D
+\end{align*}
+% Source prints Z_i (not Y_i) in the third signature; retained for fidelity.
+Các hàm chuyển đổi này được định nghĩa cho từng kết nối, kể cả những kết nối với các sự kiện đầu vào và đầu ra của mô hình ghép.
+\[
+ZS=\{Z_{i,j}\mid i\in D\cup\{self\},j\in I_i\}
+\]
+Nếu không được định nghĩa, hàm chuyển đổi được ngầm xem là hàm đồng nhất. Khi một sự kiện phải đi qua nhiều kết nối, các hàm chuyển đổi được nối tiếp nhau theo thứ tự đi qua.
+
+Với thành phần cuối cùng này, chúng ta định nghĩa mô hình ghép bằng một bộ bảy.
+\[
+\langle X_{self},Y_{self},D,MS,IS,ZS,select\rangle
+\]
+
+\subsection{Tính đóng đối với phép ghép}
+Tương tự mô hình nguyên tử, chúng ta cần định nghĩa hình thức ngữ nghĩa của mô hình ghép. Tuy nhiên, thay vì giải thích ngữ nghĩa từ đầu bằng mã giả, chúng ta ánh xạ mô hình ghép sang một mô hình nguyên tử tương đương. Ngữ nghĩa của mô hình ghép vì thế được định nghĩa thông qua một mô hình nguyên tử. Ngoài ra, phép làm phẳng này loại bỏ ràng buộc rằng các mô hình con phải là mô hình nguyên tử: nếu một mô hình con là mô hình ghép, nó có thể được làm phẳng thành mô hình nguyên tử.
+
+Về cơ bản, với mọi mô hình ghép được đặc tả như sau,
+\[
+\langle X_{self},Y_{self},D,MS,IS,ZS,select\rangle,
+\]
+chúng ta định nghĩa một mô hình nguyên tử tương đương được đặc tả bởi
+\[
+\langle X,Y,S,q_{init},\delta_{int},\delta_{ext},\lambda,ta\rangle.
+\]
+Do đó, cần định nghĩa mọi thành phần của mô hình nguyên tử theo các thành phần của mô hình ghép. Các biến đầu vào và đầu ra $X$ và $Y$ rất đơn giản, vì chúng giữ nguyên.
+% Source: printed 138 / PDF 153
+\begin{align*}
+X&=X_{self}\\
+Y&=Y_{self}
+\end{align*}
+Nhìn từ bên ngoài, giao diện của mô hình nguyên tử và mô hình ghép giống hệt nhau: chúng có cùng các sự kiện đầu vào, đầu ra và đòi hỏi cùng loại dữ liệu cho mọi sự kiện.
+
+Trạng thái $S$ bao gồm hợp thành song song các trạng thái của mọi mô hình con, kể cả thời gian đã trôi qua của chúng, tức trạng thái toàn phần $Q$ đã định nghĩa trước đó:
+\[
+S=\mathop{\times}_{i\in D}Q_i,
+\]
+với các trạng thái toàn phần $Q_i$ đã được định nghĩa như sau:
+\[
+Q_i=\{(s_i,e_i)\mid s_i\in S_i,0\le e_i\le ta_i(s_i)\},\qquad\forall i\in D.
+\]
+Thời gian đã trôi qua được lưu riêng cho từng mô hình, vì thời gian đã trôi qua của mô hình nguyên tử mới được cập nhật thường xuyên hơn thời gian đã trôi qua của từng mô hình con.
+
+Trạng thái toàn phần ban đầu lại gồm hai thành phần: trạng thái ban đầu ($s_{init}$) và thời gian đã trôi qua ban đầu ($e_{init}$). Trước hết, xét $e_{init}$. Theo trực giác, nó bằng thời gian kể từ phép chuyển trạng thái gần nhất của mô hình đã làm phẳng, nghĩa là bằng giá trị nhỏ nhất trong mọi thời gian đã trôi qua ban đầu của các mô hình con nguyên tử. Tiếp theo, cần đặc tả $s_{init}$ là hợp thành của mọi trạng thái toàn phần ban đầu của các mô hình con nguyên tử. Tuy nhiên, lưu ý rằng với trạng thái toàn phần ban đầu của mỗi mô hình con, phải trừ đi thời gian đã trôi qua nhỏ nhất ($e_{init}$). Thật vậy, $q_{init}$ xác định rằng chúng ta đã đi vào trạng thái $s_{init}$ trong quá khứ, cụ thể là cách đây $e_{init}$ đơn vị thời gian.
+\begin{align*}
+q_{init}&=(s_{init},e_{init})\\
+s_{init}&=(\ldots,(s_{init,i},e_{init,i}-e_{init}),\ldots)\\
+e_{init}&=\min_{i\in D}\{e_{init,i}\}
+\end{align*}
+Hàm thời gian tiến $ta$ trả về giá trị nhỏ nhất trong mọi thời gian còn lại.
+\[
+ta(s)=\min\{\sigma_i=ta_i(s_i)-e_i\mid i\in D\}
+\]
+Thành phần sắp chuyển trạng thái được chọn trong tập tất cả các mô hình có thời gian còn lại nhỏ nhất đó ($IMM$). Tập này chứa mọi mô hình có thời gian còn lại ($\sigma_i$) bằng thời gian tiến ($ta$) của mô hình đã làm phẳng. Sau đó, hàm $select$ rút tập này xuống còn một phần tử $i^*$.
+\begin{align*}
+IMM(s)&=\{i\in D\mid\sigma_i=ta(s)\}\\
+i^*&=select(IMM(s))
+\end{align*}
+Hàm đầu ra $\lambda$ thực hiện hàm đầu ra của $i^*$ rồi áp dụng hàm chuyển đổi, nhưng chỉ khi mô hình đó trực tiếp tác động lên mô hình đã làm phẳng, tức đầu ra của $i^*$ được định tuyến đến đầu ra của mô hình ghép. Nếu không có kết nối đến đầu ra của mô hình ghép, nghĩa là $i^*$ chỉ được ghép với những mô hình nguyên tử khác, thì ở đây không gọi hàm đầu ra. Sau đây, chúng ta sẽ thấy các sự kiện ấy vẫn được tạo ra, nhưng được tiêu thụ nội bộ ở nơi khác.
+\[
+\lambda(s)=\begin{cases}
+Z_{i^*,self}(\lambda_{i^*}(s_{i^*}))&\text{nếu }self\in I_{i^*},\\
+\phi&\text{trong các trường hợp khác.}
+\end{cases}
+\]
+Hàm chuyển trạng thái nội bộ được định nghĩa riêng cho từng phần của trạng thái:
+\[
+\delta_{int}(s)=(\ldots,(s'_j,e'_j),\ldots).
+\]
+Có ba loại mô hình: (1) chính mô hình $i^*$, chỉ thực hiện hàm chuyển trạng thái nội bộ; (2) các mô hình chịu ảnh hưởng của $i^*$, thực hiện phép chuyển trạng thái bên ngoài dựa trên đầu ra do $i^*$ tạo ra; (3) các mô hình không liên quan đến $i^*$. Trong mọi trường hợp, thời gian đã trôi qua đều được cập nhật.
+% Source: printed 139 / PDF 154
+\[
+(s'_j,e'_j)=\begin{cases}
+(\delta_{int,j}(s_j),0)&j=i^*,\\
+\begin{aligned}
+(&\delta_{ext,j}((s_j,e_j+ta(s)),\\
+&\quad Z_{i^*,j}(\lambda_{i^*}(s_{i^*}))),0)
+\end{aligned}&j\in I_{i^*},\\
+(s_j,e_j+ta(s))&\text{trong các trường hợp khác.}
+\end{cases}
+\]
+Lưu ý rằng hàm chuyển trạng thái nội bộ bao gồm các hàm chuyển trạng thái bên ngoài của những mô hình con chịu ảnh hưởng từ $i^*$. Vì $i^*$ phát ra các sự kiện được tiêu thụ nội bộ, toàn bộ việc này diễn ra ở bên trong.
+
+Hàm chuyển trạng thái bên ngoài tương tự hàm chuyển trạng thái nội bộ. Lúc này phân biệt hai loại: (1) các mô hình được kết nối trực tiếp với đầu vào của mô hình, thực hiện phép chuyển trạng thái bên ngoài; (2) các mô hình không được kết nối trực tiếp với đầu vào, chỉ cập nhật thời gian đã trôi qua.
+\begin{gather*}
+\delta_{ext}((s,e),x)=(\ldots,(s'_i,e'_i),\ldots),\\
+(s'_i,e'_i)=\begin{cases}
+(\delta_{ext,i}((s_i,e_i+e),Z_{self,i}(x)),0)&i\in I_{self},\\
+(s_i,e_i+e)&\text{trong các trường hợp khác.}
+\end{cases}
+\end{gather*}
+\paragraph{Câu hỏi suy ngẫm.} Có thể thay hàm chuyển đổi $Z$ bằng một mô hình DEVS nguyên tử nhận đầu vào rồi đưa giá trị đã chuyển đổi ra đầu ra mà vẫn bảo toàn ngữ nghĩa hay không?
+
+\section{Bộ mô phỏng trừu tượng DEVS}
+Cho đến đây, ngữ nghĩa của mô hình nguyên tử được định nghĩa bằng ngôn ngữ tự nhiên và mã giả ở mức cao. Ngữ nghĩa của mô hình ghép được xác định bằng cách ánh xạ sang các mô hình nguyên tử đó. Cả hai cách đều có vấn đề riêng. Với mô hình nguyên tử, mã giả chưa đủ cụ thể để xây dựng một bộ mô phỏng tuân thủ DEVS: nhiều chi tiết của thuật toán còn chưa được xác định, chẳng hạn sự kiện bên ngoài đến từ đâu. Với mô hình ghép, thủ tục làm phẳng gọn và hình thức, nhưng thực hiện nó lúc chạy lại rất kém hiệu quả.
+
+Để giải quyết những vấn đề này, chúng ta sẽ định nghĩa một thuật toán mô phỏng chi tiết hơn và hình thức cho cả mô hình nguyên tử lẫn mô hình ghép. Mô hình nguyên tử có định nghĩa cụ thể hơn với giao diện rõ ràng, còn mô hình ghép có thuật toán mô phỏng riêng không cần làm phẳng. Như vậy, mô hình ghép được gán ``ngữ nghĩa thao tác'' thay cho ``ngữ nghĩa chuyển dịch''.
+
+Thuật toán mô phỏng này, một bộ mô phỏng trừu tượng, là cơ sở cho những thuật toán mô phỏng hiệu quả hơn và đóng vai trò thuật toán tham chiếu. Mục tiêu là định nghĩa hình thức ngữ nghĩa của cả hai loại mô hình một cách ngắn gọn, không xét hiệu năng hay vấn đề triển khai. Có thể điều chỉnh thuật toán, nhưng kết quả cuối cùng phải giống hệt nhau: kết quả mô phỏng phải hoàn toàn độc lập với cách triển khai. Triển khai trực tiếp bộ mô phỏng trừu tượng không hiệu quả; vì thế các triển khai thực tế khác nhau đáng kể.
+
+Tiếp theo, chúng ta trình bày chi tiết thuật toán của bộ mô phỏng trừu tượng. Với mỗi mô hình nguyên tử và mỗi mô hình ghép, một thể hiện của thuật toán tương ứng được tạo ra.
+
+Bảng 5.1 trình bày các biến được dùng, kiểu của chúng và một lời giải thích ngắn.
+\begin{center}
+\small\textbf{Bảng 5.1.} Các biến dùng trong bộ mô phỏng trừu tượng.
+\begin{tabular}{@{}llp{0.60\linewidth}@{}}
+\toprule
+Tên&Kiểu&Giải thích\\\midrule
+$t_l$&thời gian&thời gian mô phỏng của phép chuyển trạng thái gần nhất\\
+$t_n$&thời gian&thời gian mô phỏng của phép chuyển trạng thái tiếp theo\\
+$t$&thời gian&thời gian mô phỏng hiện tại\\
+$e$&thời gian&thời gian đã trôi qua kể từ phép chuyển trạng thái gần nhất\\
+$s$&trạng thái&trạng thái hiện tại của mô hình nguyên tử\\
+$x$&sự kiện&sự kiện đến\\
+$y$&sự kiện&sự kiện đi\\
+$from$&mô hình&nguồn của thông điệp đến\\
+$parent$&mô hình&mô hình ghép chứa mô hình này\\
+$self$&mô hình&mô hình hiện tại\\\bottomrule
+\end{tabular}
+\end{center}
+Ngoài ra, chúng ta phân biệt năm loại thông điệp đồng bộ hóa được trao đổi giữa các bộ mô phỏng trừu tượng. Bảng 5.2 cho biết các loại thông điệp này.
+% Source: printed 140 / PDF 155
+\begin{center}
+\small\textbf{Bảng 5.2.} Các loại thông điệp đồng bộ hóa.
+\begin{tabular}{@{}lp{0.78\linewidth}@{}}
+\toprule
+Loại&Giải thích\\\midrule
+$i$&khởi tạo mô phỏng\\
+$*$&chuyển trạng thái trong mô hình\\
+$x$&sự kiện đầu vào của mô hình\\
+$y$&sự kiện đầu ra của mô hình\\
+$done$&mô hình đã tính toán xong\\\bottomrule
+\end{tabular}
+\end{center}
+Trước hết là thuật toán mô phỏng trừu tượng cho mô hình nguyên tử, được trình bày trong Thuật toán 7. Thuật toán gồm một cấu trúc điều kiện lớn phụ thuộc vào thông điệp nhận được. Mô hình nguyên tử chỉ thực hiện thao tác khi nhận thông điệp; nó không có hành vi tự chủ. Thuật toán được gọi mỗi khi nhận một thông điệp đồng bộ hóa. Thông điệp gồm ba thành phần: loại thông điệp, nguồn thông điệp và thời gian mô phỏng. Cấu trúc điều kiện có ba nhánh. Khi nhận thông điệp $i$, chúng ta khởi tạo thời gian mô phỏng.
+
+Một nhánh khác xử lý thông điệp $*$, kích hoạt một phép chuyển trạng thái. Thông điệp xác định cả bên gửi lẫn thời điểm phải chuyển trạng thái. Theo định nghĩa, phép chuyển trạng thái chỉ có thể xảy ra tại $t_n$, nên chúng ta kiểm tra điều đó. Sau khi kiểm tra, cần thực hiện các bước: (1) tạo đầu ra, (2) gửi nó cho bên gửi thông điệp $*$, tức mô hình cha, (3) thực hiện phép chuyển trạng thái nội bộ, (4) cập nhật thời gian bằng thời gian tiến, và (5) báo cho mô hình cha biết đã xử lý xong thông điệp, đồng thời gửi thời điểm chuyển trạng thái tiếp theo.
+
+Cuối cùng, có thể nhận thông điệp $x$, báo hiệu đầu vào bên ngoài. Điều này có thể xảy ra bất cứ lúc nào từ phép chuyển trạng thái gần nhất ($t_l$) đến phép chuyển trạng thái đã lên lịch ($t_n$), nên chúng ta lại kiểm tra thời gian mô phỏng. Lưu ý rằng cả hai đầu mút đều được phép: do hàm $select$, một mô hình khác có thể chuyển trạng thái ngay sau hoặc ngay trước phép chuyển trạng thái đã lên lịch của mô hình này. Chúng ta thực hiện các bước: (1) tính thời gian đã trôi qua ($e$) dựa trên thời gian mô phỏng được cung cấp ($t$), (2) thực hiện phép chuyển trạng thái bên ngoài, (3) cập nhật thời gian mô phỏng của phép chuyển trạng thái tiếp theo, và (4) báo cho mô hình cha biết đã xử lý xong thông điệp, đồng thời gửi thời điểm chuyển trạng thái tiếp theo.
+
+\begin{quote}\small
+\textbf{Khóa đọc Thuật toán 7--9 (bản dịch).} \emph{receive ... message}: nhận thông điệp ...; \emph{send ... to ...}: gửi ... tới ...; \emph{wait for ...}: chờ ...; \emph{topmost coupled model}: mô hình ghép ở mức cao nhất; \emph{error: bad synchronization}: lỗi đồng bộ hóa không hợp lệ; \emph{for all ... in ...}: với mọi ... thuộc ...; \texttt{active\_children}: tập mô hình con đang hoạt động. Các tên thông điệp và định danh trong mã được giữ nguyên.
+\end{quote}
+
+{\small
+\begin{longtable}{@{}l@{}}
+\multicolumn{1}{@{}p{\linewidth}@{}}{\normalsize\textbf{Thuật toán 7.} Bộ mô phỏng trừu tượng cho mô hình DEVS nguyên tử.}\\*[4pt]
+\textbf{if} receive $(i,from,t)$ message \textbf{then}\\*
+\quad $t_l\leftarrow t-e$\\*
+\quad $t_n\leftarrow t_l+ta(s)$\\
+\quad send $(done,self,t_n)$ to $parent$\\
+\textbf{else if} receive $(*,from,t)$ message \textbf{then}\\
+\quad\textbf{if} $t=t_n$ \textbf{then}\\
+\qquad $y\leftarrow\lambda(s)$\\
+\qquad\textbf{if} $y\ne\phi$ \textbf{then}\\
+\qquad\quad send $(y,self,t)$ to $parent$\\
+\qquad\textbf{end if}\\
+\qquad $s\leftarrow\delta_{int}(s)$\\
+\qquad $t_l\leftarrow t$\\
+\qquad $t_n\leftarrow t_l+ta(S)$\\
+\qquad send $(done,self,t_n)$ to $parent$\\
+\quad\textbf{end if}\\
+\textbf{else if} receive $(x,from,t)$ message \textbf{then}\\
+\quad\textbf{if} $t_l\le t\le t_n$ \textbf{then}\\
+\qquad $e\leftarrow t-t_l$\\
+\qquad $s\leftarrow\delta_{ext}((s,e),x)$\\
+\qquad $t_l\leftarrow t$\\
+\qquad $t_n\leftarrow t_l+ta(s)$\\
+\qquad send $(done,self,t_n)$ to $parent$\\
+\quad\textbf{else}\\
+\qquad error: bad synchronization\\
+\quad\textbf{end if}\\
+\textbf{end if}
+\end{longtable}
+}
+% Source Algorithm7 has uppercase S in ta(S); retained.
+
+% Translator note C5-N1 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C5-N1).} Trong nhánh xử lý thông điệp $*$ của Thuật toán 7 (trang 140 của bản gốc), lời gọi được in là $ta(S)$. Ở đây $S$ là tập trạng thái, còn trạng thái hiện tại vừa được cập nhật là $s$. Theo định nghĩa hàm tiến thời gian, lời gọi phải dùng trạng thái hiện tại: $ta(s)$.
+\end{quote}
+% Translator note C5-N1 end
+
+% Source: printed 141 / PDF 156
+Hãy nhớ rằng thuật toán mô phỏng trừu tượng không có hành vi tự chủ. Điều đó cho thấy có một thực thể khác điều khiển tiến trình mô phỏng. Thực thể này là bộ điều phối gốc, mã hóa vòng lặp mô phỏng chính. Thuật toán của nó được trình bày trong Thuật toán 8. Chừng nào mô phỏng cần tiếp tục, nó gửi một thông điệp đến mô hình cao nhất trong hệ phân cấp để thực hiện phép chuyển trạng thái. Khi nhận phản hồi, thời gian mô phỏng được đẩy đến thời điểm do mô hình cao nhất chỉ ra.
+
+\noindent\textbf{Thuật toán 8.} Bộ điều phối gốc DEVS.
+\begin{quote}
+\small
+\begin{tabular}{@{}l@{}}
+send $(i,main,0.0)$ to topmost coupled model $top$\\
+wait for $(done,top,t_N)$\\
+$t\leftarrow t_N$\\
+\textbf{while not} $terminationCondition()$ \textbf{do}\\
+\quad send $(*,main,t)$ to topmost coupled model $top$\\
+\quad wait for $(done,top,t_N)$\\
+\quad $t\leftarrow t_N$\\
+\textbf{end while}
+\end{tabular}
+\end{quote}
+
+Cuối cùng, dù không hoàn toàn cần thiết vì đã có thuật toán làm phẳng, chúng ta cũng định nghĩa một lối tắt để mô phỏng mô hình ghép. Thuật toán mô phỏng trừu tượng cho mô hình ghép được trình bày trong Thuật toán 9. Mô hình ghép có thể nhận cả năm loại thông điệp đồng bộ hóa.
+
+Trước hết, thông điệp $i$ lại báo hiệu khởi tạo. Nó chỉ chuyển tiếp thông điệp đến mọi mô hình con và đánh dấu từng mô hình con là đang hoạt động. Mỗi mô hình ghép cũng có các biến $t_l$ và $t_n$, lần lượt bằng giá trị lớn nhất và nhỏ nhất của các mô hình con. Điều này hợp lý, vì mọi phép chuyển trạng thái của mô hình con đều đòi hỏi một thao tác trên mô hình ghép chứa nó. Khi gửi thông điệp đến một mô hình con, mô hình ấy được đánh dấu là đang hoạt động. Công dụng của việc này sẽ được thấy khi xử lý thông điệp $done$.
+
+Thứ hai, thông điệp $*$ lại báo hiệu một phép chuyển trạng thái. Khác với mô hình nguyên tử, mô hình ghép không thể tự chuyển trạng thái. Thay vào đó, nó chuyển tiếp thông điệp đến mô hình con sắp chuyển trạng thái, được tìm bằng cách thực hiện hàm $select$ trên mọi mô hình có cùng $t_n$ đó. Chỉ một mô hình được chọn và nhận thông điệp $*$. Như trước, mô hình được đánh dấu là đang hoạt động để bảo đảm chờ nó tính toán xong.
+
+Thứ ba, thông điệp $y$ báo hiệu một thông điệp đầu ra. Thông điệp được hàm đầu ra của một thành phần con phát ra và cần được định tuyến qua mô hình ghép. Phần này của thuật toán chịu trách nhiệm định tuyến thông điệp đến các mô hình chịu ảnh hưởng từ mô hình đã gửi nó. Lưu ý rằng một trong các mô hình chịu ảnh hưởng có thể là $self$, nghĩa là phải định tuyến thông điệp ra bên ngoài, tức đến đầu ra của mô hình ghép. Trong mọi trường hợp, phải chuyển đổi thông điệp bằng hàm chuyển đổi sự kiện. Hàm thực tế được gọi phụ thuộc vào nguồn và đích của thông điệp.
+
+Thứ tư, có thể nhận thông điệp $x$, báo hiệu đầu vào. Việc xử lý gần như giống thông điệp đầu ra, nhưng lúc này có thể xử lý cả thông điệp nhận từ mô hình cha.
+
+Cuối cùng, có thể nhận thông điệp $done$, báo hiệu một mô hình con đã tính toán xong. Mô hình con đã được đánh dấu là đang hoạt động sẽ được bỏ dấu ấy. Khi nhận thông điệp $done$ từ tất cả các mô hình con, tức mọi mô hình con đều không còn hoạt động, chúng ta xác định các biến $t_l$ và $t_n$ của mình, rồi gửi giá trị $t_n$ nhỏ nhất của mọi mô hình con. Thời điểm này được gửi đến mô hình cha.
+
+Bộ mô phỏng trừu tượng cho mô hình ghép có thể làm việc với bất kỳ loại mô hình con nào, không nhất thiết là mô hình nguyên tử. Trong hệ phân cấp sâu, thông điệp $done$ luôn truyền giá trị $t_n$ nhỏ nhất lên trên. Cuối cùng, bộ điều phối gốc luôn nhận được $t_n$ nhỏ nhất, tức thời điểm của phép chuyển trạng thái nội bộ tiếp theo sớm nhất.
+
+\paragraph{Câu hỏi suy ngẫm.} Một mô hình DEVS nguyên tử có thể thực hiện cả phép chuyển trạng thái nội bộ lẫn phép chuyển trạng thái bên ngoài tại cùng một thời điểm mô phỏng hay không? Giải thích câu trả lời.
+
+% Source: printed 142 / PDF 157. Algorithm9 is reflowed before Section5.5.
+\noindent\textbf{Thuật toán 9.} Bộ mô phỏng trừu tượng cho mô hình DEVS ghép.
+{\small
+\begin{longtable}{@{}l@{}}
+\textbf{if} receive $(i,from,t)$ message \textbf{then}\\
+\quad\textbf{for all} $d$ in $D$ \textbf{do}\\
+\qquad send $(i,self,t)$ to $d$\\
+\qquad $active\_children\leftarrow active\_children\cup\{d\}$\\
+\quad\textbf{end for}\\
+\textbf{else if} receive $(*,from,t)$ message \textbf{then}\\
+\quad\textbf{if} $t=t_n$ \textbf{then}\\
+\qquad $i^*=select(\{M_i.t_n=t\mid i\in D\})$\\
+\qquad send $(*,self,t)$ to $i^*$\\
+\qquad $active\_children\leftarrow active\_children\cup\{i^*\}$\\
+\quad\textbf{end if}\\
+\textbf{else if} receive $(y,from,t)$ message \textbf{then}\\
+\quad\textbf{for all} $i\in I_{from}\setminus\{self\}$ \textbf{do}\\
+\qquad send $(Z_{from,i}(y),from,to)$ to $i$\\
+\qquad $active\_children\leftarrow active\_children\cup\{i\}$\\
+\quad\textbf{end for}\\
+\quad\textbf{if} $self\in I_{from}$ \textbf{then}\\
+\qquad send $(Z_{from,self}(y),self,t)$ to $parent$\\
+\quad\textbf{end if}\\
+\textbf{else if} receive $(x,from,t)$ message \textbf{then}\\
+\quad\textbf{if} $t_l\le t\le t_n$ \textbf{then}\\
+\qquad\textbf{for all} $i\in I_{from}$ \textbf{do}\\
+\qquad\quad send $(Z_{self,i}(x),self,t)$ to $i$\\
+\qquad\quad $active\_children\leftarrow active\_children\cup\{i\}$\\
+\qquad\textbf{end for}\\
+\quad\textbf{end if}\\
+\textbf{else if} receive $(done,from,t)$ message \textbf{then}\\
+\quad $active\_children\leftarrow active\_children\setminus\{from\}$\\
+\quad\textbf{if} $active\_children=\phi$ \textbf{then}\\
+\qquad $t_l\leftarrow\max\{t_{l,d}\mid d\in D\}$\\
+\qquad $t_n\leftarrow\min\{t_{n,d}\mid d\in D\}$\\
+\qquad send $(done,self,t_n)$ to $parent$\\
+\quad\textbf{end if}\\
+\textbf{end if}
+\end{longtable}
+}
+% The source's literal 'to', I_from for an input, and select set are preserved.
+
+% Translator note C5-N2 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C5-N2).} Thuật toán 9 (trang 142 của bản gốc) còn có một số ký hiệu chưa nhất quán. Trong thông điệp gửi $\bigl(Z_{from,i}(y),from,to\bigr)$, $to$ chưa được định nghĩa; vị trí thứ ba là thời gian mô phỏng $t$. Tập dùng cho $select$ được in thành $\{M_i.t_n=t\mid i\in D\}$, nhưng theo định nghĩa, tập mô hình sắp chuyển trạng thái phải là $\{i\in D\mid M_i.t_n=t\}$. Đối với thông điệp đầu vào nhận từ mô hình cha, việc định tuyến dựa vào các kết nối đầu vào của chính mô hình ghép, tức tập $I_{self}$ đã định nghĩa ở Mục 5.3; ký hiệu $I_{from}$ trong nhánh này có thể tham chiếu một tập không được định nghĩa khi $from$ là mô hình cha.
+\end{quote}
+% Translator note C5-N2 end
+
+\section{Ứng dụng vào các hệ thống hàng đợi}
+Tất nhiên, tính hữu ích của DEVS vượt xa ví dụ đèn giao thông. Để trình bày một mô hình thực tế hơn và làm rõ khả năng phân tích hiệu năng, tiếp theo chúng tôi đưa ra một hệ thống hàng đợi đơn giản. Dù lý thuyết hàng đợi đã có nhiều kết quả, chúng tôi trình bày mô phỏng như một phương án thay thế các lời giải toán học. Mặc dù các lời giải toán học có ưu điểm riêng, mô phỏng linh hoạt hơn và không trở nên quá phức tạp. Tuy nhiên, mô phỏng tất yếu bị giới hạn ở việc ``lấy mẫu'': các lần mô phỏng chỉ lấy những mẫu và vì vậy thường không tìm ra những trường hợp hiếm hoặc ngoại lệ. Trong nhiều tình huống, có thể chấp nhận việc không xét các trường hợp ấy, như trong mô hình ví dụ này.
+
+Trong mục này, chúng tôi trình bày một bài toán hàng đợi đơn giản. Có thể dễ dàng thay đổi mô hình về hành vi, cấu trúc hoặc tham số.
+
+\subsection{Mô tả bài toán}
+Trong ví dụ này, chúng ta mô hình hóa hành vi của một hàng đợi đơn giản được phục vụ bởi nhiều bộ xử lý. Những hệ thống hàng đợi như vậy xuất hiện rộng rãi, chẳng hạn tại điểm kiểm tra an ninh sân bay. Mô hình có thể được tham số hóa theo nhiều cách: xác định phân phối ngẫu nhiên cho thời điểm tạo sự kiện và kích thước sự kiện, số bộ xử lý, hiệu năng từng bộ xử lý, và chính sách lập lịch của hàng đợi khi chọn một bộ xử lý. Rõ ràng, triển khai mô hình này cùng mọi biến thể bằng DEVS dễ hơn mô hình hóa chúng bằng toán học. Để phân tích hiệu năng, chúng tôi chỉ ra ảnh hưởng của số bộ xử lý, chẳng hạn máy dò kim loại, đối với thời gian chờ trung bình và lớn nhất của các công việc, chẳng hạn hành khách.
+
+Hình 5.9 biểu diễn một mô hình của hệ thống này. Các sự kiện, tức người, được bộ sinh tạo ra theo một hàm phân phối. Chúng đi vào hàng đợi, nơi quyết định sẽ gửi chúng đến bộ xử lý nào. Nếu có nhiều bộ xử lý sẵn sàng, hàng đợi chọn bộ xử lý đã nhàn rỗi lâu nhất; nếu không có bộ xử lý nào sẵn sàng, sự kiện được xếp hàng đến khi có một bộ xử lý sẵn sàng. Khi nhiều sự kiện đang chờ, hàng đợi hoạt động theo nguyên tắc vào trước ra trước (First-In-First-Out, FIFO). Để báo rằng mình sẵn sàng, bộ xử lý cần thông báo cho hàng đợi. Hàng đợi theo dõi các bộ xử lý sẵn sàng. Khi một sự kiện đến bộ xử lý, nó được xử lý trong một khoảng thời gian,
+% Source: printed 143 / PDF 158
+phụ thuộc vào kích thước sự kiện và đặc tính hiệu năng của bộ xử lý. Sau khi xử lý, bộ xử lý báo cho hàng đợi và phát ra sự kiện đã được xử lý.
+\sourcefigure{5.9}{158}{Hệ thống hàng đợi với một bộ sinh, một hàng đợi và $n$ bộ xử lý.}
+
+\subsection{Mô tả bằng DEVS}
+Dù có thể trình bày các ví dụ chỉ bằng mô tả hình thức, chúng sẽ không thực thi được và gây ra một lượng đáng kể độ phức tạp phát sinh ngoài bản chất bài toán. Chúng tôi dùng công cụ PythonPDEVS\footnote{Tải xuống: \url{http://msdl.cs.mcgill.ca/projects/DEVS/PythonPDEVS}.} [282, 283] để triển khai mô hình DEVS và thực hiện mô phỏng. Trong PythonPDEVS, mô hình DEVS được triển khai bằng cách định nghĩa các phương thức thực hiện những khía cạnh khác nhau của bộ đặc tả. Mã trong các phương thức này chỉ là mã Python thông thường, dù mô hình DEVS ghép cần một số ít lời gọi API. Vì phần lớn công cụ DEVS hoạt động tương tự nhau, có thể dễ dàng chuyển những ví dụ này sang công cụ mô phỏng DEVS khác. Một tổng quan về các công cụ mô phỏng DEVS phổ biến được trình bày trong [284].
+
+Để đặc tả mô hình này, trước hết chúng ta định nghĩa sự kiện được trao đổi giữa các mô hình: \emph{Job}, tức công việc. Một công việc được mã hóa bằng lớp \texttt{Job}. Lớp có các thuộc tính \emph{size}, biểu thị thời gian xử lý, và \emph{creation time}, phục vụ thu thập thống kê. Định nghĩa lớp \texttt{Job} được trình bày trong Đoạn mã 1.
+\begin{verbatim}
+class Job:
+    def __init__(self, size, creation_time):
+        # Jobs have a size and creation_time parameter
+        self.size = size
+        self.creation_time = creation_time
+\end{verbatim}
+\noindent\textbf{Đoạn mã 1.} Mã PythonPDEVS cho sự kiện \texttt{Job}.
+
+Lúc này, chúng ta xét riêng từng mô hình nguyên tử, bắt đầu với bộ sinh sự kiện.
+
+Bộ sinh được định nghĩa là một mô hình nguyên tử bằng lớp \texttt{Generator}, trình bày trong Đoạn mã 2. Các lớp biểu diễn mô hình nguyên tử kế thừa lớp \texttt{AtomicDEVS}. Chúng cần triển khai các phương thức thực hiện từng thành phần DEVS. Các triển khai mặc định dành cho mô hình thụ động đã được cung cấp, nên không cần định nghĩa những hàm không dùng. Trong hàm tạo, các cổng đầu vào và đầu ra được định nghĩa cùng các tham số mô hình và trạng thái ban đầu. Định nghĩa bộ sinh rất đơn giản: chúng ta tính thời gian còn lại đến sự kiện tiếp theo (\texttt{remaining}) và giảm số sự kiện còn phải gửi. Bộ sinh cũng theo dõi thời gian mô phỏng hiện tại để đặt thời điểm tạo sự kiện. Hàm thời gian tiến trả về thời gian còn lại đến phép chuyển trạng thái nội bộ tiếp theo. Cuối cùng, hàm đầu ra trả về một sự kiện khách hàng mới
+% Source: printed 144 / PDF 159
+với kích thước được xác định ngẫu nhiên. Công việc có một thuộc tính chứa thời điểm nó được tạo ra. Tuy nhiên, hãy nhớ rằng hàm đầu ra được gọi trước phép chuyển trạng thái nội bộ, nên thời gian hiện tại chưa được phép chuyển ấy cập nhật. Vì vậy, hàm đầu ra cũng phải thực hiện phép cộng này nhưng không lưu kết quả vào trạng thái, vì nó không được ghi vào trạng thái.
+
+\begin{verbatim}
+from pypdevs.DEVS import AtomicDEVS
+from job import Job
+import random
+
+# Define the state of the generator as a structured object
+class GeneratorState:
+    def __init__(self, gen_num):
+        # Current simulation time (statistics)
+        self.current_time = 0.0
+        # Remaining time until generation of new event
+        self.remaining = 0.0
+        # Counter on how many events to generate still
+        self.to_generate = gen_num
+
+class Generator(AtomicDEVS):
+    def __init__(self, gen_param, size_param, gen_num):
+        AtomicDEVS.__init__(self, "Generator")
+        # Output port for the event
+        self.out_event = self.addOutPort("out_event")
+        # Define the state
+        self.state = GeneratorState(gen_num)
+
+        # Parameters defining the generator's behaviour
+        self.gen_param = gen_param
+        self.size_param = size_param
+
+    def intTransition(self):
+        # Update simulation time
+        self.state.current_time += self.timeAdvance()
+        # Update number of generated events
+        self.state.to_generate -= 1
+        if self.state.to_generate == 0:
+            # Already generated enough events, so stop
+            self.state.remaining = float('inf')
+        else:
+            # Still have to generate events, so sample for new duration
+            self.state.remaining = random.expovariate(self.gen_param)
+        return self.state
+
+    def timeAdvance(self):
+        # Return remaining time; infinity when generated enough
+        return self.state.remaining
+
+    def outputFnc(self):
+        # Determine size of the event to generate
+        size = max(1, int(random.gauss(self.size_param, 5)))
+        # Calculate current time (note the addition!)
+        creation = self.state.current_time + self.state.remaining
+        # Output the new event on the output port
+        return {self.out_event: Job(size, creation)}
+\end{verbatim}
+\noindent\textbf{Đoạn mã 2.} Mã PythonPDEVS cho mô hình nguyên tử \texttt{Generator}.
+
+% Source: printed 145 / PDF 160
+Tiếp theo là hàng đợi, thành phần đáng quan tâm nhất của mô phỏng vì đó là phần chúng ta muốn phân tích. Triển khai \texttt{Queue} có cấu trúc tương tự \texttt{Generator}. Tất nhiên, các thành phần DEVS được đặc tả khác, như trong Đoạn mã 3. Hàng đợi nhận một tham số cấu trúc xác định số bộ xử lý. Tham số này cần thiết vì hàng đợi có một cổng đầu ra cho mỗi bộ xử lý. Khi xảy ra phép chuyển trạng thái nội bộ, hàng đợi biết nó vừa phát một sự kiện đến bộ xử lý nhàn rỗi đầu tiên. Vì thế, nó đánh dấu bộ xử lý nhàn rỗi đầu tiên là bận và loại bỏ sự kiện hiện đang xử lý. Nếu hàng đợi vẫn còn sự kiện và có bộ xử lý sẵn sàng, chúng ta xử lý phần tử đầu tiên trong hàng đợi và đặt bộ đếm \texttt{remaining\_time}.
+
+Trong phép chuyển trạng thái bên ngoài, chúng ta kiểm tra cổng nhận sự kiện. Đó có thể là tín hiệu từ bộ xử lý báo đã hoàn tất, hoặc một sự kiện mới cần xếp hàng. Trong trường hợp thứ nhất, chúng ta đánh dấu bộ xử lý gửi sự kiện là nhàn rỗi và có thể xử lý một thông điệp đang chờ. Để làm được điều đó, bộ xử lý phải đưa mã định danh của nó vào sự kiện; nếu không, hàng đợi không biết ai đã gửi thông điệp. Trong trường hợp thứ hai, chúng ta xử lý ngay sự kiện nếu có bộ xử lý nhàn rỗi, hoặc lưu nó vào hàng đợi. Hàm thời gian tiến chỉ cần trả về bộ đếm \texttt{remaining\_time}, được quản lý trong cả hai hàm chuyển trạng thái. Cuối cùng, trong hàm đầu ra, mô hình phát sự kiện đầu tiên đang chờ đến bộ xử lý sẵn sàng đầu tiên. Lưu ý rằng chỉ được đọc các sự kiện và bộ xử lý, không được sửa các danh sách này: việc sửa trạng thái dành riêng cho các hàm chuyển trạng thái.
+
+Một điểm cần chú ý trong mô hình là bộ đếm \texttt{remaining\_time}, cho biết còn bao nhiêu thời gian trước khi sự kiện được xử lý. Không thể chỉ đặt thời gian xử lý sự kiện trong hàm thời gian tiến, vì có thể xảy ra ngắt trong khoảng đó. Khi có ngắt, chẳng hạn một sự kiện khác đến, hàm thời gian tiến lại được gọi và sẽ trả về toàn bộ thời gian xử lý thay vì thời gian còn lại để xử lý sự kiện. Để giải quyết vấn đề, chúng ta duy trì một bộ đếm được giảm tường minh khi xảy ra ngắt bên ngoài.
+
+\begin{verbatim}
+from pypdevs.DEVS import AtomicDEVS
+
+# Define the state of the queue as a structured object
+class QueueState:
+    def __init__(self, outputs):
+        # Keep a list of all idle processors
+        self.idle_procs = range(outputs)
+        # Keep a list that is the actual queue data structure
+        self.queue = []
+        # Keep the process that is currently being processed
+        self.processing = None
+        # Time remaining for this event
+        self.remaining_time = float("inf")
+
+class Queue(AtomicDEVS):
+    def __init__(self, outputs):
+        AtomicDEVS.__init__(self, "Queue")
+        # Fix the time needed to process a single event
+        self.processing_time = 1.0
+        self.state = QueueState(outputs)
+
+        # Create 'outputs' output ports
+        # 'outputs' is a structural parameter!
+        self.out_proc = []
+        for i in range(outputs):
+            self.out_proc.append(self.addOutPort("proc_%i" % i))
+
+        # Add the other ports: incoming events and finished event
+        self.in_event = self.addInPort("in_event")
+        self.in_finish = self.addInPort("in_finish")
+
+    def intTransition(self):
+        # Is only called when we are outputting an event
+        # Pop the first idle processor and clear processing event
+        self.state.idle_procs.pop(0)
+        if self.state.queue and self.state.idle_procs:
+            # There are still queued elements, so continue
+            self.state.processing = self.state.queue.pop(0)
+            self.state.remaining_time = self.processing_time
+        else:
+            # No events left to process, so become idle
+            self.state.processing = None
+            self.state.remaining_time = float("inf")
+        return self.state
+
+    def extTransition(self, inputs):
+        # Update the remaining time of this job
+        self.state.remaining_time -= self.elapsed
+        # Several possibilities
+        if self.in_finish in inputs:
+            # Processing a "finished" event, so mark proc as idle
+            self.state.idle_procs.append(inputs[self.in_finish])
+            if not self.state.processing and self.state.queue:
+                # Process first task in queue
+                self.state.processing = self.state.queue.pop(0)
+                self.state.remaining_time = self.processing_time
+        elif self.in_event in inputs:
+            # Processing an incoming event
+            if self.state.idle_procs and not self.state.processing:
+                # Process when idle processors
+                self.state.processing = inputs[self.in_event]
+                self.state.remaining_time = self.processing_time
+            else:
+                # No idle processors, so queue it
+                self.state.queue.append(inputs[self.in_event])
+        return self.state
+
+    def timeAdvance(self):
+        # Just return the remaining time for this event (or infinity else)
+        return self.state.remaining_time
+
+    def outputFnc(self):
+        # Output the event to the processor
+        port = self.out_proc[self.state.idle_procs[0]]
+        return {port: self.state.processing}
+\end{verbatim}
+% Source: printed 146 / PDF 161. Listing3 is reflowed across its source page break.
+\noindent\textbf{Đoạn mã 3.} Mã PythonPDEVS cho mô hình nguyên tử \texttt{Queue}.
+
+Mô hình nguyên tử tiếp theo là lớp \texttt{Processor}, trình bày trong Đoạn mã 4. Nó chỉ nhận một sự kiện đến rồi bắt đầu xử lý. Thời gian xử lý, được tính khi nhận sự kiện trong phép chuyển trạng thái bên ngoài, phụ thuộc vào kích thước công việc nhưng có xét tốc độ xử lý và một lượng xử lý tối thiểu cần thực hiện. Sau khi xử lý công việc, chúng ta kích hoạt hàm đầu ra và hàm chuyển trạng thái nội bộ. Cần gửi hai sự kiện: một chứa công việc đã xử lý, và một báo cho hàng đợi biết bộ xử lý đã sẵn sàng. Vì thế, hai cổng khác nhau được dùng. Lưu ý rằng định nghĩa bộ xử lý sẽ không đơn giản như vậy nếu không có hàng đợi phía trước. Lúc này, có thể giả định khi nhận một sự kiện, bộ xử lý đã nhàn rỗi, nên không cần xếp hàng các sự kiện mới đến trước.
+% Source: printed 147 / PDF 162
+\begin{verbatim}
+from pypdevs.DEVS import AtomicDEVS
+
+# Define the state of the processor as a structured object
+class ProcessorState(object):
+    def __init__(self):
+        # State only contains the current event
+        self.evt = None
+
+class Processor(AtomicDEVS):
+    def __init__(self, nr, proc_param):
+        AtomicDEVS.__init__(self, "Processor_%i" % nr)
+        self.state = ProcessorState()
+        self.in_proc = self.addInPort("in_proc")
+        self.out_proc = self.addOutPort("out_proc")
+        self.out_finished = self.addOutPort("out_finished")
+
+        # Define the parameters of the model
+        self.speed = proc_param
+        self.nr = nr
+
+    def intTransition(self):
+        # Just clear processing event
+        self.state.evt = None
+        return self.state
+
+    def extTransition(self, inputs):
+        # Received a new event, so start processing it
+        self.state.evt = inputs[self.in_proc]
+        # Calculate how long it will be processed
+        time = 20.0 + max(1.0, self.state.evt.size / self.speed)
+        self.state.evt.processing_time = time
+        return self.state
+
+    def timeAdvance(self):
+        if self.state.evt:
+            # Currently processing, so wait for that
+            return self.state.evt.processing_time
+        else:
+            # Idle, so don't do anything
+            return float('inf')
+
+    def outputFnc(self):
+        # Output the processed event and signal as finished
+        return {self.out_proc: self.state.evt,
+                self.out_finished: self.nr}
+\end{verbatim}
+\noindent\textbf{Đoạn mã 4.} Mã PythonPDEVS cho mô hình nguyên tử \texttt{Processor}.
+
+Cuối cùng, bộ xử lý gửi công việc đến lớp \texttt{Collector}, trình bày trong Đoạn mã 5. Bộ thu thập là một thành phần nhân tạo không có trong hệ thống đang được mô hình hóa; nó chỉ được dùng để thu thập thống kê. Với mỗi công việc, nó lưu thời gian ở trong hàng đợi.
+
+\begin{verbatim}
+from pypdevs.DEVS import AtomicDEVS
+
+# Define the state of the collector as a structured object
+class CollectorState(object):
+    def __init__(self):
+        # Contains received events and simulation time
+        self.events = []
+        self.current_time = 0.0
+
+class Collector(AtomicDEVS):
+    def __init__(self):
+        AtomicDEVS.__init__(self, "Collector")
+        self.state = CollectorState()
+        # Has only one input port
+        self.in_event = self.addInPort("in_event")
+
+    def extTransition(self, inputs):
+        # Update simulation time
+        self.state.current_time += self.elapsed
+        # Calculate time in queue
+        evt = inputs[self.in_event]
+        time = self.state.current_time - evt.creation_time - evt.processing_time
+        inputs[self.in_event].queueing_time = max(0.0, time)
+        # Add incoming event to received events
+        self.state.events.append(inputs[self.in_event])
+        return self.state
+
+    # Don't define anything else, as we only store events.
+    # Collector has no behaviour of its own.
+\end{verbatim}
+% Source: printed 148 / PDF 163. Listing5 is reflowed across its source page break.
+\noindent\textbf{Đoạn mã 5.} Mã PythonPDEVS cho mô hình nguyên tử \texttt{Collector}.
+
+Khi mọi mô hình nguyên tử đã được định nghĩa, chúng ta chỉ còn ghép chúng với nhau trong một mô hình ghép, như ở Đoạn mã 6. Trong hệ thống này, chúng ta tạo các thể hiện của bộ sinh, hàng đợi và bộ thu thập, cùng một số lượng bộ xử lý có thể thay đổi. Số bộ xử lý có thể khác nhau giữa các cấu hình, nhưng vẫn cố định trong khi mô phỏng. Các kết nối ghép cũng phụ thuộc vào số bộ xử lý, vì mỗi bộ xử lý được kết nối với hàng đợi và bộ thu thập.
+
+\begin{verbatim}
+from pypdevs.DEVS import CoupledDEVS
+
+# Import all models to couple
+from generator import Generator
+from queue import Queue
+from processor import Processor
+from collector import Collector
+
+class QueueSystem(CoupledDEVS):
+    def __init__(self, mu, size, num, procs):
+        CoupledDEVS.__init__(self, "QueueSystem")
+
+        # Define all atomic submodels of which there are only one
+        generator = self.addSubModel(Generator(mu, size, num))
+        queue = self.addSubModel(Queue(len(procs)))
+        collector = self.addSubModel(Collector())
+
+        self.connectPorts(generator.out_event, queue.in_event)
+
+        # Instantiate desired number of processors and connect
+        processors = []
+        for i, param in enumerate(procs):
+            processors.append(self.addSubModel(
+                              Processor(i, param)))
+            self.connectPorts(queue.out_proc[i],
+                              processors[i].in_proc)
+            self.connectPorts(processors[i].out_finished,
+                              queue.in_finish)
+            self.connectPorts(processors[i].out_proc,
+                              collector.in_event)
+
+        # Make it accessible outside of our own scope
+        self.collector = collector
+\end{verbatim}
+% Source: printed 149 / PDF 164. Listing6 is reflowed across its source page break.
+\noindent\textbf{Đoạn mã 6.} Mã PythonPDEVS cho mô hình ghép \texttt{System}.
+
+Khi mô hình DEVS đã được đặc tả đầy đủ, chúng ta có thể bắt đầu chạy mô phỏng. Tuy nhiên, mô phỏng cần một tệp thí nghiệm để khởi tạo mô hình với các tham số và định nghĩa cấu hình mô phỏng. Đoạn mã 7 trình bày một thí nghiệm ví dụ, cũng bằng Python. Thí nghiệm ghi các giá trị thời gian chờ thô vào một tệp CSV (Comma Separated Value, các giá trị phân tách bằng dấu phẩy). Tệp thí nghiệm thường chứa một số cấu hình cho công cụ mô phỏng, khác nhau tùy công cụ. Với PythonPDEVS, tài liệu\footnote{\url{http://msdl.cs.mcgill.ca/projects/DEVS/PythonPDEVS/documentation/html/index.html}.} cung cấp tổng quan về các tùy chọn được hỗ trợ.
+
+\begin{verbatim}
+from pypdevs.simulator import Simulator
+import random
+
+# Import the model we experiment with
+from system import QueueSystem
+
+# Configuration:
+# 1) number of customers to simulate
+num = 500
+# 2) average time between two customers
+time = 30.0
+# 3) average size of customer
+size = 20.0
+# 4) efficiency of processors (products/second)
+speed = 0.5
+# 5) maximum number of processors used
+max_processors = 10
+# End of configuration
+
+# Store all results for output to file
+values = []
+
+# Loop over different configurations
+for i in range(1, max_processors):
+    # Make sure each of them simulates exactly the same workload
+    random.seed(1)
+    # Set up the system
+    procs = [speed] * i
+    m = QueueSystem(mu=1.0/time, size=size, num=num, procs=procs)
+
+    # PythonPDEVS specific setup and configuration
+    sim = Simulator(m)
+    sim.setClassicDEVS()
+    sim.simulate()
+
+    # Gather information for output
+    evt_list = m.collector.state.events
+    values.append([e.queueing_time for e in evt_list])
+
+# Write data to file
+with open('output.csv', 'w') as f:
+    for i in range(num):
+        f.write("%s" % i)
+        for j in range(len(values)):
+            f.write(", %5f" % (values[j][i]))
+        f.write("\n")
+\end{verbatim}
+% Source: printed 150 / PDF 165. Listing7 is reflowed across its source page break.
+\noindent\textbf{Đoạn mã 7.} Mã PythonPDEVS cho thí nghiệm trên hệ thống.
+
+\subsection{Phân tích hiệu năng}
+Sau khi định nghĩa mô hình DEVS và thí nghiệm, tất nhiên vẫn cần chạy mô phỏng. Chỉ cần thực thi tệp thí nghiệm là tệp CSV được tạo ra, rồi có thể phân tích bằng công cụ bảng tính hoặc thư viện vẽ đồ thị. Tùy dữ liệu được lưu trong khi mô phỏng, việc phân tích có thể cho thấy thời gian chờ trung bình, thời gian chờ lớn nhất, số sự kiện, mức sử dụng bộ xử lý, v.v.
+
+Theo mục tiêu ban đầu, chúng ta thực hiện mô phỏng để xác định ảnh hưởng của việc mở thêm bộ xử lý đối với thời gian chờ trung bình và lớn nhất. Hình 5.10 cho thấy diễn biến thời gian chờ của những khách hàng liên tiếp. Hình 5.11 biểu diễn cùng các kết quả bằng biểu đồ hộp. Kết quả cho thấy dù hai bộ xử lý đáp ứng được tải, thời gian chờ lớn nhất khá cao: trung vị là 200 giây và giá trị lớn nhất khoảng 470 giây. Khi thêm chỉ một bộ xử lý, thời gian chờ trung bình giảm đáng kể và thời gian chờ lớn nhất cũng trở nên chấp nhận được: công việc trung bình được phục vụ ngay, với 75\% công việc được xử lý trong vòng 25 giây. Tiếp tục thêm bộ xử lý vẫn có tác động tích cực đến thời gian chờ, nhưng tác động có thể không xứng với chi phí mở thêm bộ xử lý: trừ một số ngoại lệ, từ bốn bộ xử lý trở lên, mọi khách hàng đều được xử lý ngay.
+
+% Translator note C5-N3 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C5-N3).} Đoạn phân tích ở trang 150 của bản gốc ghi trung vị 200 giây và giá trị lớn nhất khoảng 470 giây cho hai bộ xử lý. Các con số này không khớp với vị trí đường trung vị và biên trên được vẽ trong Hình 5.11. Bản dịch giữ các số đã in; để dùng ví dụ này cho phân tích định lượng, cần tính thống kê từ dữ liệu mô phỏng thay vì coi những con số trong câu mô tả là đã được xác nhận bởi hình.
+\end{quote}
+% Translator note C5-N3 end
+
+\sourcefigure{5.10}{166}{Diễn biến thời gian chờ của những khách hàng liên tiếp. \textit{Chú giải thêm của bản dịch:} chiều ngang là thứ tự các khách hàng liên tiếp; các màu mang nhãn 2, 3, 4, 5 chỉ số bộ xử lý đang hoạt động.}
+\sourcefigure{5.11}{166}{Biểu đồ hộp của thời gian chờ khi thay đổi số bộ xử lý đang hoạt động.}
+
+Lý tưởng là định nghĩa một hàm chi phí để lượng hóa giá trị, hoặc mức không hài lòng, của các công việc đang chờ rồi so sánh với chi phí thêm bộ xử lý. Sau đó, có thể tối ưu hàm chi phí để tìm mức cân bằng lý tưởng giữa trả thêm tiền cho bộ xử lý và mất tiền do thời gian xử lý công việc kéo dài. Tất nhiên, mức cân bằng ấy phụ thuộc vào nhiều yếu tố, trong đó có cấu hình mô hình và hàm chi phí được dùng.
+
+\paragraph{Câu hỏi suy ngẫm.} Cần thay đổi những gì để dùng một quy tắc phục vụ hàng đợi hoặc một quá trình đến khác? So sánh với những thay đổi cần thực hiện khi dùng mô hình toán học của cùng quá trình này.
+
+\clearpage
+\section{Các biến thể DEVS}
+Dù đặc tả DEVS gốc được giới thiệu trong chương này đã thành công, người ta vẫn nhận thấy những hạn chế khi dùng nó trong một số miền. Vì vậy, nhiều biến thể đã xuất hiện gần đây. Trong mục này, chúng tôi đề cập ba biến thể phổ biến nhất và nhận xét về một số biến thể khác. Lưu ý rằng chúng tôi phân biệt các biến thể mở rộng hệ hình thức DEVS, tức cung cấp thêm cấu trúc, với các biến thể thu hẹp nó, tức loại trừ một số trường hợp. Cả hai đều có lý do, chủ yếu liên quan đến triển khai: mở rộng DEVS giúp người mô hình hóa dễ tạo mô hình trong một số miền, còn giới hạn DEVS khiến một số thao tác, chẳng hạn phân tích, trở nên khả thi hoặc dễ triển khai hơn.
+
+\subsection{DEVS song song}
+Một trong những vấn đề chính được xác định ở DEVS liên quan đến hiệu năng: khi nhiều mô hình sắp chuyển trạng thái, chúng được xử lý tuần tự. Dù DEVS cho phép thực hiện song song một số phần, chẳng hạn các phép chuyển trạng thái bên ngoài xảy ra đồng thời, việc có nhiều phép chuyển trạng thái nội bộ là một tình huống thường gặp.
+% Source: printed 151 / PDF 166
+
+DEVS song song (Parallel DEVS) [72] được giới thiệu như một biến thể của hệ hình thức DEVS, cho phép thực hiện song song các hàm chuyển trạng thái nội bộ. Tuy nhiên, điều này thay đổi ngữ nghĩa của mô hình, nên đòi hỏi sửa bộ mô phỏng trừu tượng [73]. Vì vậy, những thay đổi được đề xuất không chỉ là cách viết cú pháp thuận tiện hơn: chúng thay đổi tường minh ngữ nghĩa của mô hình.
+
+Cho phép thực hiện song song không phải một việc đơn giản: cần một số sửa đổi mà chúng tôi đề cập ngắn gọn ở đây. Thay đổi hợp lý đầu tiên là loại bỏ hàm $select$: thay vì chọn một mô hình chuyển trạng thái trước, mọi mô hình sắp chuyển trạng thái đều được phép chuyển trạng thái đồng thời. Việc điều này có thực sự diễn ra song song hay không tùy vào triển khai, vì thực hiện song song chưa chắc nhanh hơn [148]. Điều này dẫn đến hệ quả đối với phần còn lại của hệ hình thức, vì hàm $select$ đã được đưa vào vì những lý do xác đáng.
+
+Vì các mô hình lúc này có thể thực hiện phép chuyển trạng thái nội bộ đồng thời, các hàm đầu ra cũng được thực hiện đồng thời. Tự thân điều đó không phải vấn đề, nhưng việc định tuyến có thể đòi hỏi gộp các sự kiện, chẳng hạn khi hai sự kiện được định tuyến đến cùng một mô hình. Bộ mô phỏng trừu tượng không được thiết kế cho tình huống này, vì phép chuyển trạng thái bên ngoài được gọi ngay khi nhận một sự kiện bên ngoài. Vì vậy, trong DEVS song song, các sự kiện luôn được đóng gói trong \emph{đa tập} (bag), có thể dễ dàng gộp lại. Đa tập là một loại tập hợp có thể chứa cùng một phần tử nhiều lần. Nhờ đó, có thể gộp nhiều đa tập một cách đơn giản mà không mất thông tin. Lưu ý rằng thứ tự không được xác định; nếu có, nó sẽ phụ thuộc vào sự đồng bộ giữa các hàm đầu ra khác nhau: hàm nào được thực hiện trước. Do thay đổi giao diện này, phép chuyển trạng thái bên ngoài cần được sửa để làm việc với một đa tập sự kiện đầu vào, và hàm đầu ra phải tạo ra một đa tập sự kiện đầu ra.
+
+Vấn đề chưa dừng ở đó, vì phép chuyển trạng thái nội bộ và bên ngoài có thể xảy ra đồng thời. Hãy nhớ rằng DEVS không cho phép liên kết tự quay về chính mô hình vì lý do này. Tuy nhiên, trong DEVS song song, hai mô hình có thể chuyển trạng thái nội bộ đồng thời, trong đó một mô hình phát sự kiện cho mô hình kia. Khi ấy, mô hình cần xử lý cả phép chuyển trạng thái nội bộ lẫn phép chuyển trạng thái bên ngoài do phép chuyển của mô hình kia gây ra. Vì chưa định nghĩa độ ưu tiên giữa chúng, vốn là một phần mục đích của hàm $select$, chúng phải được thực hiện đồng thời. Để cho phép điều đó, một loại phép chuyển mới được định nghĩa: \emph{hàm chuyển trạng thái hợp lưu} (confluent transition function). Phép chuyển này chỉ được thực hiện khi cả phép chuyển trạng thái nội bộ và bên ngoài xảy ra đồng thời. DEVS song song để ngỏ ngữ nghĩa của phép chuyển này, dù một mặc định hợp lý là thực hiện phép chuyển trạng thái nội bộ trước, rồi đến phép chuyển trạng thái bên ngoài.
+
+Nhờ khả năng cải thiện hiệu năng, nhiều công cụ ưu tiên DEVS song song hơn DEVS khi triển khai. Một số vẫn giữ sự gọn gàng của hệ hình thức DEVS gốc dù phải chịu giảm hiệu năng.
+
+% Source: printed 152 / PDF 167
+\subsection{DEVS cấu trúc động}
+Một hạn chế khác của hệ hình thức DEVS, cũng có trong DEVS song song, là thiếu cấu trúc động. Một số hệ thống vốn đòi hỏi cấu trúc động để tạo, sửa hoặc xóa mô hình trong khi mô phỏng. Dù có thể thực hiện điều này bằng DEVS bằng cách định nghĩa một tập bao chứa tất cả cấu hình có thể có rồi chỉ kích hoạt một cấu hình, cách đó gây độ phức tạp lớn ngoài bản chất bài toán và làm giảm hiệu năng. Hơn nữa, các hệ thống có thể trở nên rất lớn, khiến việc tạo sẵn mọi cấu hình có thể có gần như không khả thi trong thực tế.
+
+Để giải quyết các vấn đề ấy, DEVS cấu trúc động (Dynamic Structure DEVS) [23] được đề xuất như một phần mở rộng của DEVS. Trong DEVS cấu trúc động, cấu hình mô hình được xem là một phần trạng thái, nên có thể sửa trong khi mô phỏng. Vì mô hình ghép không có trạng thái riêng, một \emph{bộ điều hành mạng} (network executive) được bổ sung để quản lý trạng thái cấu trúc trong một phạm vi cụ thể. Trong một pha riêng, các mô hình có thể gửi sự kiện đến bộ điều hành mạng để yêu cầu thay đổi cấu trúc.
+
+Tuy nhiên, phần mở rộng được đề xuất chỉ là một mô hình toán học cho cách thực hiện khả năng này. Tương tự các hệ hình thức trước, một bộ mô phỏng trừu tượng [25] có cấu trúc như vậy được cung cấp. Nhưng các triển khai thực tế có thể tự chọn cách triển khai. Vì thế, bộ điều hành mạng thậm chí có thể không tồn tại trong triển khai, mà mọi thông điệp thay đổi cấu trúc được chặn và xử lý trong triển khai.
+
+Dù cấu trúc động lúc này đã khả thi trong mô hình DEVS, hệ hình thức này chưa phù hợp để xử lý một lượng thay đổi rất lớn. Công việc cần thực hiện cho mỗi thay đổi, đối với cả người dùng lẫn triển khai, quá tốn thời gian để thực hiện thường xuyên. Tuy các mô hình có mức biến động cao chưa phù hợp, các thay đổi cấu trúc ít xảy ra đã trở nên hoàn toàn khả thi.
+
+\subsection{Cell-DEVS}
+Một biến thể DEVS khác được trình bày ở đây là hệ hình thức Cell-DEVS. Dù DEVS gọn gàng, việc sử dụng nó trong nhiều tình huống vẫn khó, đặc biệt với các mô hình ô. Ôtômát tế bào (Cellular Automata) [305] là một lựa chọn phổ biến trong miền mô hình ô, nhưng trái với bản chất sự kiện rời rạc của DEVS, ôtômát tế bào dựa trên thời gian rời rạc. Dù thời gian rời rạc phù hợp với phần lớn mô hình trong miền bài toán của ôtômát tế bào, một số mô hình sẽ hưởng lợi nếu dựa trên sự kiện rời rạc. Tuy không thường gây vấn đề, các mô hình ô bị giới hạn bởi độ hạt của bước thời gian, dẫn đến hiệu năng thấp khi bước thời gian không phù hợp với thời điểm chuyển trạng thái của mô hình.
+
+Cell-DEVS được giới thiệu như một kết hợp giữa DEVS và ôtômát tế bào, kết hợp ưu điểm của cả hai. Đặc tả mô hình tương tự các mô hình ôtômát tế bào, nhưng hệ hình thức nền dùng để mô phỏng thực ra là DEVS. Nhờ thay đổi này, các mô hình kiểm soát thời gian mô phỏng tốt hơn. Ngoài ra, mô hình ô lúc này có thể được ghép với các mô hình DEVS khác không nhất thiết là mô hình ô.
+
+\subsection{Các biến thể khác}
+Ngoài những hệ hình thức đã giới thiệu, còn nhiều biến thể khác giải quyết những vấn đề rất cụ thể trong DEVS. Chúng tôi không có đủ chỗ để thảo luận tất cả, nhưng muốn chỉ ra một số phần mở rộng hữu ích khác. Ví dụ gồm những giải pháp khác cho bài toán cấu trúc động (DynDEVS [275]), các giới hạn để có thể phân tích mô hình DEVS (FD-DEVS [152]), và các phần mở rộng cho phép tính không tất định (Fuzzy DEVS [177]). Nhiều hệ hình thức được đề xuất trước đó cũng đã tiếp nhận những thay đổi của DEVS song song, tạo ra phiên bản song song của DEVS cấu trúc động [24] và Cell-DEVS [273].
+
+\paragraph{Câu hỏi suy ngẫm.} Sự tồn tại của các phần mở rộng DEVS có ý nghĩa gì khi trước đó chúng ta nói rằng có thể xem DEVS là một hợp ngữ mô phỏng?
+
+% Source: printed 153 / PDF 168
+\section{Tổng kết}
+Trong chương này, chúng tôi đã trình bày ngắn gọn các ý tưởng cốt lõi của DEVS, một hệ hình thức phổ biến để mô hình hóa các hệ thống động phức tạp bằng trừu tượng hóa sự kiện rời rạc. DEVS chủ yếu được dùng để mô phỏng mạng hàng đợi, như ví dụ đã trình bày, và các mô hình hiệu năng. Nó phù hợp nhất để mô hình hóa các hệ thống sự kiện rời rạc có tính mô-đun dựa trên thành phần. Tuy nhiên, có thể dùng DEVS rộng hơn nhiều như một hợp ngữ mô phỏng hoặc như nền tảng lý thuyết cho những hệ hình thức ấy.
+
+Các hướng học tiếp về DEVS có trong mục Đọc thêm, nơi liệt kê những phần mở rộng liên quan đến DEVS và đề cập một số vấn đề DEVS đang đối mặt.
+
+\section{Tài liệu và đọc thêm}
+Sách của Zeigler [309] là tài liệu tham chiếu tiêu chuẩn cho hệ hình thức DEVS và có thêm thông tin về những hệ hình thức liên quan. Sách chủ yếu tập trung vào các khía cạnh lý thuyết của mô hình hóa và mô phỏng, dù có một số ví dụ. Wainer [301] trình bày phần nhập môn thực hành hơn về hệ hình thức DEVS, các ví dụ và cách thực sự sử dụng hệ hình thức cùng công cụ CD++. Cuối cùng, một tài liệu khác của Nutaro [218] trình bày việc thiết kế và phát triển các bộ mô phỏng hiệu quả.
+
+Những đóng góp dẫn đến biến thể DEVS phổ biến nhất đang được dùng hiện nay đã được trình bày trong một số bài báo có ảnh hưởng. Phần lớn nghiên cứu DEVS hiện nay tập trung vào DEVS song song [72]. Một hình thức hóa đầy đủ các hệ hình thức mô phỏng bắt đầu từ DEVS được trình bày trong [24]. Một bài báo khác của Chen [70] trình bày phép làm phẳng ký hiệu, tức tính đóng đối với phép ghép, thực sự được triển khai trong DEVS song song. Ý tưởng xem DEVS là một hợp ngữ mô phỏng, cùng chi tiết về lý do cần một ngôn ngữ như vậy và các hệ quả của nó, có trong [287]. Hiện có nhiều công cụ DEVS nhưng gần như không có khả năng liên tác giữa chúng. Ngay cả hiện nay, việc tiêu chuẩn hóa DEVS vẫn đang tiếp diễn [252].
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Trình bày ký hiệu hình thức của một mô hình DEVS nguyên tử. Sau đó, trình bày ký hiệu hình thức của một mô hình DEVS ghép.
+\item Đưa ra một mô hình DEVS nguyên tử tương đương cho một mô hình DEVS ghép.
+\item Vì sao cần cho phép thời gian tiến bằng 0?
+\item Vì sao hàm $select$ cần thiết?
+\item Nêu ưu điểm và nhược điểm của việc dùng mô phỏng bằng DEVS thay cho mô hình toán học để phân tích hiệu năng.
+\end{enumerate}
+
+\section*{Lời cảm ơn}
+Công trình này được tài trợ một phần bởi học bổng tiến sĩ của Research Foundation -- Flanders (FWO). Các tác giả cũng trân trọng ghi nhận sự hỗ trợ một phần của Flanders Make, trung tâm nghiên cứu chiến lược cho ngành công nghiệp chế tạo.
+
+\paragraph{Truy cập mở.} Chương này được cấp phép theo Creative Commons Ghi công 4.0 Quốc tế (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, chuyển thể, phân phối và sao chép bằng bất kỳ phương tiện hoặc định dạng nào, miễn là ghi công phù hợp cho tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons, và nêu rõ nếu đã thực hiện thay đổi.
+
+Các hình ảnh hoặc tư liệu của bên thứ ba trong chương này thuộc giấy phép Creative Commons của chương, trừ khi dòng ghi công của tư liệu có quy định khác. Nếu tư liệu không thuộc giấy phép Creative Commons của chương và mục đích sử dụng không được quy định pháp luật cho phép hoặc vượt quá phạm vi được phép, người dùng cần xin phép trực tiếp chủ sở hữu quyền tác giả.

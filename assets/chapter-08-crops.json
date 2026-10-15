@@ -1,0 +1,383 @@
+{
+  "coordinate_system": "PDF points, top-left origin; artwork only, caption excluded",
+  "figures": [
+    {
+      "number": "8.1",
+      "pdf_page": 224,
+      "bounds": [
+        77.9,
+        444.1,
+        517.9,
+        682.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 10
+    },
+    {
+      "number": "8.2",
+      "pdf_page": 225,
+      "bounds": [
+        77.9,
+        217.9,
+        517.8,
+        489.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 20
+    },
+    {
+      "number": "8.3",
+      "pdf_page": 227,
+      "bounds": [
+        77.9,
+        54.4,
+        517.8,
+        311.5
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 23
+    },
+    {
+      "number": "8.4",
+      "pdf_page": 227,
+      "bounds": [
+        165.6,
+        357.3,
+        430.0,
+        523.7
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 21
+    },
+    {
+      "number": "8.5",
+      "pdf_page": 229,
+      "bounds": [
+        77.9,
+        54.4,
+        517.8,
+        350.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 7
+    },
+    {
+      "number": "8.6",
+      "pdf_page": 230,
+      "bounds": [
+        199.4,
+        54.4,
+        396.4,
+        299.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.7",
+      "pdf_page": 230,
+      "bounds": [
+        259.7,
+        345.0,
+        336.0,
+        448.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.8",
+      "pdf_page": 230,
+      "bounds": [
+        77.9,
+        482.5,
+        517.9,
+        606.7
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 8
+    },
+    {
+      "number": "8.10",
+      "pdf_page": 236,
+      "bounds": [
+        136.0,
+        463.0,
+        459.7,
+        567.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.11",
+      "pdf_page": 240,
+      "bounds": [
+        77.9,
+        240.4,
+        517.9,
+        523.9
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.12",
+      "pdf_page": 241,
+      "bounds": [
+        149.0,
+        133.8,
+        446.7,
+        273.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 14
+    },
+    {
+      "number": "8.13",
+      "pdf_page": 246,
+      "bounds": [
+        77.9,
+        327.0,
+        517.9,
+        420.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.14",
+      "pdf_page": 248,
+      "bounds": [
+        165.2,
+        237.9,
+        430.6,
+        460.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 11
+    },
+    {
+      "number": "8.15",
+      "pdf_page": 250,
+      "bounds": [
+        238.6,
+        54.4,
+        357.2,
+        192.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.16",
+      "pdf_page": 252,
+      "bounds": [
+        77.9,
+        54.4,
+        517.9,
+        274.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.17",
+      "pdf_page": 254,
+      "bounds": [
+        77.9,
+        409.2,
+        517.9,
+        682.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.18",
+      "pdf_page": 259,
+      "bounds": [
+        77.9,
+        291.1,
+        517.8,
+        432.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.19",
+      "pdf_page": 262,
+      "bounds": [
+        77.9,
+        195.5,
+        517.9,
+        389.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.20",
+      "pdf_page": 263,
+      "bounds": [
+        77.9,
+        54.4,
+        517.8,
+        184.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.21",
+      "pdf_page": 264,
+      "bounds": [
+        77.9,
+        177.9,
+        517.8,
+        407.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.22",
+      "pdf_page": 265,
+      "bounds": [
+        75.9,
+        299.6,
+        518.1,
+        468.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese ordinary labels; original mathematical notation retained",
+      "treatment": "Original native PDF artwork clipped and normalized; ordinary labels overlaid in Vietnamese",
+      "localized_label_count": 4
+    },
+    {
+      "number": "8.23",
+      "pdf_page": 266,
+      "bounds": [
+        77.9,
+        158.2,
+        517.8,
+        299.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original screenshot/UI labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.24",
+      "pdf_page": 266,
+      "bounds": [
+        165.9,
+        361.1,
+        429.9,
+        462.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original screenshot/UI labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.25",
+      "pdf_page": 267,
+      "bounds": [
+        77.9,
+        341.0,
+        517.8,
+        415.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0
+    },
+    {
+      "number": "8.26",
+      "pdf_page": 269,
+      "bounds": [
+        81.6,
+        286.1,
+        518.9,
+        406.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese ordinary labels; original mathematical notation retained",
+      "treatment": "Original native PDF artwork clipped and normalized; ordinary labels overlaid in Vietnamese",
+      "localized_label_count": 7
+    },
+    {
+      "number": "8.27",
+      "pdf_page": 270,
+      "bounds": [
+        143.9,
+        120.3,
+        451.9,
+        420.9
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 9
+    },
+    {
+      "number": "8.9",
+      "pdf_page": 232,
+      "bounds": [
+        77.9,
+        54.4,
+        517.9,
+        399.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 29
+    }
+  ]
+}

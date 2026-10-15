@@ -1,0 +1,18 @@
+{
+  "photographer": "Donald Giannatti",
+  "copyright_year": 2018,
+  "photo_url": "https://unsplash.com/photos/white-radar-telescope-on-grass-field-4qk3nQI3WHY",
+  "license": "Unsplash License",
+  "license_url": "https://unsplash.com/license",
+  "source": "Exact embedded Im0.jpg from source/original.pdf PDFpage1; originalphoto identified by source copyright notice PDFpage4 and officialUnsplashpage",
+  "source_pdf_sha256": "bcb1771d9936504d1e1c29fd7572888da170f67c8a6e77a55ef34eb6e542c5c9",
+  "asset": "assets/cover-donald-giannatti-unsplash.jpg",
+  "sha256": "fcd1695a6328e332c4da331e1ebf3d265a469b125b36c470d620d8bfc3789ca6",
+  "dimensions_px": [
+    1411,
+    1653
+  ],
+  "retrieved_from_local_source": "2026-10-14",
+  "changes": "OriginalJPEG bytes preserved; coverlayout crops toA4 and adds vector typography/overlays",
+  "separate_license_not_cc_by": true
+}

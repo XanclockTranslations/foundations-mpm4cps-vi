@@ -1,0 +1,25 @@
+name: Góp ý bản dịch / Translation correction
+description: Báo lỗi thuật ngữ, nội dung hoặc hình trong bản dịch máy.
+title: "[Bản dịch] "
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Vị trí / Location
+      description: Chương, mục, số hình/bảng, trang và phiên bản PDF đang đọc.
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Nội dung hiện tại / Current content
+      description: Trích đoạn ngắn hoặc mô tả rõ lỗi.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Đề xuất sửa / Proposed correction
+      description: Giải thích đề xuất và dẫn vị trí tương ứng trong sách gốc nếu có.
+    validations:
+      required: true

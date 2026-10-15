@@ -1,0 +1,4118 @@
+{
+  "coordinate_system": "PDF points, top-left origin; artwork only, caption excluded",
+  "figures": [
+    {
+      "number": "1.1",
+      "pdf_page": 22,
+      "bounds": [
+        150,
+        61,
+        440,
+        235
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese",
+      "reading_copy": "assets/clean/figure-1-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "1.2",
+      "pdf_page": 23,
+      "bounds": [
+        164,
+        60,
+        428,
+        175
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese",
+      "reading_copy": "assets/clean/figure-1-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.1",
+      "pdf_page": 32,
+      "bounds": [
+        206.14431214421253,
+        458.1310035714286,
+        389.1326878557875,
+        542.3005714285715
+      ],
+      "source_inspection_pixel_bounds": [
+        365,
+        811,
+        689,
+        960
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.2",
+      "pdf_page": 33,
+      "bounds": [
+        214.6159962049336,
+        206.18719642857144,
+        375.57799335863376,
+        320.8611714285715
+      ],
+      "source_inspection_pixel_bounds": [
+        380,
+        365,
+        665,
+        568
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.3",
+      "pdf_page": 34,
+      "bounds": [
+        89.79985104364326,
+        59.879021428571434,
+        495.31112808349144,
+        242.90546428571432
+      ],
+      "source_inspection_pixel_bounds": [
+        159,
+        106,
+        877,
+        430
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.4",
+      "pdf_page": 34,
+      "bounds": [
+        206.14431214421253,
+        305.04407142857144,
+        392.5213614800759,
+        396.5572928571429
+      ],
+      "source_inspection_pixel_bounds": [
+        365,
+        540,
+        695,
+        702
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Damper",
+          "Vietnamese": "Bộ giảm chấn",
+          "source_pixel_rect": [
+            433,
+            542,
+            505,
+            566
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Force",
+          "Vietnamese": "Lực",
+          "source_pixel_rect": [
+            604,
+            596,
+            655,
+            614
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "Mass",
+          "Vietnamese": "Khối lượng",
+          "source_pixel_rect": [
+            522,
+            618,
+            567,
+            637
+          ],
+          "font_size": 6.8
+        },
+        {
+          "original": "Spring",
+          "Vietnamese": "Lò xo",
+          "source_pixel_rect": [
+            449,
+            671,
+            509,
+            699
+          ],
+          "font_size": 8
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.5",
+      "pdf_page": 35,
+      "bounds": [
+        89.79985104364326,
+        56.48964285714286,
+        494.18157020872866,
+        246.2948428571429
+      ],
+      "source_inspection_pixel_bounds": [
+        159,
+        100,
+        875,
+        436
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.6",
+      "pdf_page": 36,
+      "bounds": [
+        220.26378557874762,
+        147.43796785714287,
+        375.57799335863376,
+        202.23292142857144
+      ],
+      "source_inspection_pixel_bounds": [
+        390,
+        261,
+        665,
+        358
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            408,
+            298,
+            469,
+            318
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            587,
+            298,
+            648,
+            318
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "bond",
+          "Vietnamese": "liên kết",
+          "source_pixel_rect": [
+            510,
+            282,
+            546,
+            301
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Ports",
+          "Vietnamese": "Cổng",
+          "source_pixel_rect": [
+            506,
+            338,
+            550,
+            357
+          ],
+          "font_size": 8
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.7",
+      "pdf_page": 37,
+      "bounds": [
+        135.546944971537,
+        53.10026428571429,
+        459.73005502846297,
+        168.33913571428573
+      ],
+      "source_inspection_pixel_bounds": [
+        240,
+        94,
+        814,
+        298
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            255,
+            119,
+            312,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            255,
+            238,
+            312,
+            257
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            422,
+            119,
+            479,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            422,
+            238,
+            479,
+            257
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            576,
+            119,
+            633,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            576,
+            238,
+            633,
+            257
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            744,
+            119,
+            801,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            744,
+            238,
+            801,
+            257
+          ],
+          "font_size": 7.5
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.8",
+      "pdf_page": 38,
+      "bounds": [
+        124.81614516129032,
+        84.7344642857143,
+        459.73005502846297,
+        215.22553928571432
+      ],
+      "source_inspection_pixel_bounds": [
+        221,
+        150,
+        814,
+        381
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Capacitor",
+          "Vietnamese": "Tụ điện",
+          "source_pixel_rect": [
+            255,
+            233,
+            324,
+            248
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Translational spring",
+          "Vietnamese": "Lò xo tịnh tiến",
+          "source_pixel_rect": [
+            224,
+            300,
+            348,
+            318
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Rotational spring",
+          "Vietnamese": "Lò xo quay",
+          "source_pixel_rect": [
+            231,
+            364,
+            343,
+            380
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            230,
+            151,
+            340,
+            184
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            395,
+            151,
+            493,
+            184
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            545,
+            151,
+            613,
+            169
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            703,
+            151,
+            802,
+            184
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "2.9",
+      "pdf_page": 39,
+      "bounds": [
+        134.9821660341556,
+        73.43653571428572,
+        457.47093927893735,
+        226.5234678571429
+      ],
+      "source_inspection_pixel_bounds": [
+        239,
+        130,
+        810,
+        401
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Inductor",
+          "Vietnamese": "Cuộn cảm",
+          "source_pixel_rect": [
+            253,
+            191,
+            315,
+            208
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Mass",
+          "Vietnamese": "Khối lượng",
+          "source_pixel_rect": [
+            266,
+            285,
+            303,
+            301
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Inertance",
+          "Vietnamese": "Quán tính",
+          "source_pixel_rect": [
+            249,
+            382,
+            317,
+            398
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            240,
+            130,
+            347,
+            162
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            373,
+            130,
+            465,
+            162
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            546,
+            130,
+            616,
+            148
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            698,
+            130,
+            797,
+            162
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.10",
+      "pdf_page": 39,
+      "bounds": [
+        89.23507210626185,
+        399.94667142857145,
+        506.04192789373815,
+        568.2858071428572
+      ],
+      "source_inspection_pixel_bounds": [
+        158,
+        708,
+        896,
+        1006
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Resistor",
+          "Vietnamese": "Điện trở",
+          "source_pixel_rect": [
+            233,
+            789,
+            300,
+            806
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "Friction",
+          "Vietnamese": "Ma sát",
+          "source_pixel_rect": [
+            191,
+            886,
+            253,
+            905
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "Damper",
+          "Vietnamese": "Bộ giảm chấn",
+          "source_pixel_rect": [
+            302,
+            886,
+            365,
+            905
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            201,
+            710,
+            326,
+            747
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            413,
+            710,
+            573,
+            729
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            628,
+            710,
+            708,
+            729
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            775,
+            710,
+            891,
+            747
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.11",
+      "pdf_page": 40,
+      "bounds": [
+        107.3079981024668,
+        348.54109642857145,
+        496.4406859582543,
+        539.4760892857144
+      ],
+      "source_inspection_pixel_bounds": [
+        190,
+        617,
+        879,
+        955
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Voltage source",
+          "Vietnamese": "Nguồn điện áp",
+          "source_pixel_rect": [
+            260,
+            704,
+            369,
+            722
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Force source",
+          "Vietnamese": "Nguồn lực",
+          "source_pixel_rect": [
+            209,
+            782,
+            303,
+            801
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Torque source",
+          "Vietnamese": "Nguồn mômen",
+          "source_pixel_rect": [
+            318,
+            782,
+            419,
+            801
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Current source",
+          "Vietnamese": "Nguồn dòng điện",
+          "source_pixel_rect": [
+            256,
+            850,
+            361,
+            868
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Velocity source",
+          "Vietnamese": "Nguồn vận tốc",
+          "source_pixel_rect": [
+            190,
+            916,
+            304,
+            934
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Angular velocity source",
+          "Vietnamese": "Nguồn vận\ntốc góc",
+          "source_pixel_rect": [
+            321,
+            916,
+            443,
+            951
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            257,
+            618,
+            373,
+            653
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            478,
+            618,
+            570,
+            653
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            636,
+            618,
+            711,
+            637
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            773,
+            618,
+            878,
+            653
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "2.12",
+      "pdf_page": 40,
+      "bounds": [
+        170.56323908918407,
+        607.2636607142858,
+        429.7967713472486,
+        643.9819285714286
+      ],
+      "source_inspection_pixel_bounds": [
+        302,
+        1075,
+        761,
+        1140
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Signal",
+          "Vietnamese": "Tín hiệu",
+          "source_pixel_rect": [
+            377,
+            1082,
+            426,
+            1100
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Pulse",
+          "Vietnamese": "Xung",
+          "source_pixel_rect": [
+            312,
+            1112,
+            357,
+            1130
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Power",
+          "Vietnamese": "Công suất",
+          "source_pixel_rect": [
+            570,
+            1082,
+            619,
+            1101
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Voltage pulse",
+          "Vietnamese": "Xung điện áp",
+          "source_pixel_rect": [
+            652,
+            1099,
+            755,
+            1118
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-12-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "2.13",
+      "pdf_page": 41,
+      "bounds": [
+        125.38092409867173,
+        280.753525,
+        456.90616034155596,
+        466.60445000000004
+      ],
+      "source_inspection_pixel_bounds": [
+        222,
+        497,
+        809,
+        826
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Transformer",
+          "Vietnamese": "Máy biến áp",
+          "source_pixel_rect": [
+            241,
+            604,
+            334,
+            623
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Cantilever",
+          "Vietnamese": "Dầm công xôn",
+          "source_pixel_rect": [
+            248,
+            708,
+            326,
+            728
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Mechanical gear",
+          "Vietnamese": "Bánh răng cơ",
+          "source_pixel_rect": [
+            228,
+            803,
+            348,
+            822
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            229,
+            500,
+            348,
+            535
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            394,
+            500,
+            490,
+            535
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            548,
+            500,
+            622,
+            519
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            692,
+            500,
+            809,
+            535
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-13-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.14",
+      "pdf_page": 42,
+      "bounds": [
+        138.37083965844403,
+        64.39819285714286,
+        482.88599146110056,
+        242.90546428571432
+      ],
+      "source_inspection_pixel_bounds": [
+        245,
+        114,
+        855,
+        430
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Motor",
+          "Vietnamese": "Động cơ",
+          "source_pixel_rect": [
+            271,
+            251,
+            314,
+            270
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Generator",
+          "Vietnamese": "Máy phát",
+          "source_pixel_rect": [
+            247,
+            271,
+            314,
+            289
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Pump",
+          "Vietnamese": "Bơm",
+          "source_pixel_rect": [
+            262,
+            385,
+            305,
+            403
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Turbine",
+          "Vietnamese": "Tuabin",
+          "source_pixel_rect": [
+            253,
+            405,
+            309,
+            423
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            274,
+            118,
+            377,
+            151
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            420,
+            118,
+            510,
+            151
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            583,
+            118,
+            652,
+            137
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            731,
+            118,
+            833,
+            151
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-14-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "2.15",
+      "pdf_page": 43,
+      "bounds": [
+        130.46393453510436,
+        93.77280714285715,
+        476.6734231499051,
+        199.97333571428572
+      ],
+      "source_inspection_pixel_bounds": [
+        231,
+        166,
+        844,
+        354
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            248,
+            168,
+            355,
+            203
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            432,
+            168,
+            511,
+            203
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            573,
+            168,
+            643,
+            187
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            721,
+            168,
+            828,
+            203
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-15-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.16",
+      "pdf_page": 43,
+      "bounds": [
+        105.61366129032258,
+        328.204825,
+        478.3677599620493,
+        438.9245250000001
+      ],
+      "source_inspection_pixel_bounds": [
+        187,
+        581,
+        847,
+        777
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            265,
+            584,
+            384,
+            618
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            412,
+            584,
+            563,
+            603
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            577,
+            584,
+            651,
+            603
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            725,
+            584,
+            837,
+            618
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-16-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.17",
+      "pdf_page": 45,
+      "bounds": [
+        127.64003984819735,
+        96.03239285714287,
+        469.33129696394684,
+        189.8052
+      ],
+      "source_inspection_pixel_bounds": [
+        226,
+        170,
+        831,
+        336
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-17-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.18",
+      "pdf_page": 45,
+      "bounds": [
+        93.75330360531309,
+        334.9835821428572,
+        438.83323434535106,
+        477.90237857142864
+      ],
+      "source_inspection_pixel_bounds": [
+        166,
+        593,
+        777,
+        846
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-18-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.19",
+      "pdf_page": 46,
+      "bounds": [
+        227.04113282732447,
+        51.970471428571436,
+        359.7641831119545,
+        140.0943142857143
+      ],
+      "source_inspection_pixel_bounds": [
+        402,
+        92,
+        637,
+        248
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Mains",
+          "Vietnamese": "Nguồn điện",
+          "source_pixel_rect": [
+            411,
+            160,
+            455,
+            177
+          ],
+          "font_size": 6.5
+        },
+        {
+          "original": "Motor",
+          "Vietnamese": "Động cơ",
+          "source_pixel_rect": [
+            477,
+            160,
+            520,
+            177
+          ],
+          "font_size": 6.5
+        },
+        {
+          "original": "Cable drum",
+          "Vietnamese": "Tang cuốn cáp",
+          "source_pixel_rect": [
+            561,
+            94,
+            637,
+            110
+          ],
+          "font_size": 6.5
+        },
+        {
+          "original": "Load",
+          "Vietnamese": "Tải",
+          "source_pixel_rect": [
+            542,
+            212,
+            579,
+            231
+          ],
+          "font_size": 6.5
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-19-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "2.20",
+      "pdf_page": 46,
+      "bounds": [
+        176.2110284629981,
+        180.20196071428575,
+        421.3250872865275,
+        297.13552142857145
+      ],
+      "source_inspection_pixel_bounds": [
+        312,
+        319,
+        746,
+        526
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Electric domain",
+          "Vietnamese": "Miền điện",
+          "source_pixel_rect": [
+            422,
+            459,
+            508,
+            475
+          ],
+          "font_size": 6
+        },
+        {
+          "original": "Mechanic domain",
+          "Vietnamese": "Miền cơ",
+          "source_pixel_rect": [
+            522,
+            459,
+            620,
+            475
+          ],
+          "font_size": 6
+        },
+        {
+          "original": "Rotation",
+          "Vietnamese": "Quay",
+          "source_pixel_rect": [
+            600,
+            439,
+            650,
+            455
+          ],
+          "font_size": 6
+        },
+        {
+          "original": "Translation",
+          "Vietnamese": "Tịnh tiến",
+          "source_pixel_rect": [
+            674,
+            439,
+            741,
+            455
+          ],
+          "font_size": 6
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-20-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "2.21",
+      "pdf_page": 46,
+      "bounds": [
+        163.7858918406072,
+        555.2931892857143,
+        431.4911081593928,
+        668.8373714285715
+      ],
+      "source_inspection_pixel_bounds": [
+        290,
+        983,
+        764,
+        1184
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-21-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.22",
+      "pdf_page": 47,
+      "bounds": [
+        167.17456546489564,
+        116.93356071428573,
+        424.1489819734345,
+        231.60753571428575
+      ],
+      "source_inspection_pixel_bounds": [
+        296,
+        207,
+        751,
+        410
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-22-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.23",
+      "pdf_page": 47,
+      "bounds": [
+        187.50660721062619,
+        366.05288571428576,
+        407.2056138519924,
+        421.41273571428576
+      ],
+      "source_inspection_pixel_bounds": [
+        332,
+        648,
+        721,
+        746
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-23-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.24",
+      "pdf_page": 48,
+      "bounds": [
+        158.13810246679316,
+        55.35985000000001,
+        438.2684554079696,
+        165.5146535714286
+      ],
+      "source_inspection_pixel_bounds": [
+        280,
+        98,
+        776,
+        293
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-24-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.25",
+      "pdf_page": 48,
+      "bounds": [
+        107.8727770398482,
+        211.83616071428574,
+        491.92245445920304,
+        381.86998571428575
+      ],
+      "source_inspection_pixel_bounds": [
+        191,
+        375,
+        871,
+        676
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-25-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.26",
+      "pdf_page": 48,
+      "bounds": [
+        179.59970208728652,
+        423.6723214285715,
+        420.1955294117647,
+        563.2017392857143
+      ],
+      "source_inspection_pixel_bounds": [
+        318,
+        750,
+        744,
+        997
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-26-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.27",
+      "pdf_page": 51,
+      "bounds": [
+        151.92553415559772,
+        303.34938214285717,
+        440.52757115749523,
+        473.3832071428572
+      ],
+      "source_inspection_pixel_bounds": [
+        269,
+        537,
+        780,
+        838
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-27-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.28",
+      "pdf_page": 53,
+      "bounds": [
+        78.50427229601517,
+        53.66516071428572,
+        517.3375066413662,
+        119.75804285714287
+      ],
+      "source_inspection_pixel_bounds": [
+        139,
+        95,
+        916,
+        212
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-28-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.29",
+      "pdf_page": 53,
+      "bounds": [
+        155.31420777988615,
+        173.4232035714286,
+        441.0923500948767,
+        345.71661428571434
+      ],
+      "source_inspection_pixel_bounds": [
+        275,
+        307,
+        781,
+        612
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-29-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.30",
+      "pdf_page": 55,
+      "bounds": [
+        175.0814705882353,
+        54.79495357142858,
+        423.5842030360531,
+        323.6856535714286
+      ],
+      "source_inspection_pixel_bounds": [
+        310,
+        97,
+        750,
+        573
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-30-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.31",
+      "pdf_page": 55,
+      "bounds": [
+        193.71917552182163,
+        364.9230928571429,
+        407.77039278937383,
+        464.90976071428577
+      ],
+      "source_inspection_pixel_bounds": [
+        343,
+        646,
+        722,
+        823
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-31-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.32",
+      "pdf_page": 55,
+      "bounds": [
+        122.5570294117647,
+        503.3227178571429,
+        477.23820208728654,
+        600.4849035714286
+      ],
+      "source_inspection_pixel_bounds": [
+        217,
+        891,
+        845,
+        1063
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-32-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.33",
+      "pdf_page": 56,
+      "bounds": [
+        186.37704933586338,
+        54.79495357142858,
+        408.8999506641366,
+        225.39367500000003
+      ],
+      "source_inspection_pixel_bounds": [
+        330,
+        97,
+        724,
+        399
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-33-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.34",
+      "pdf_page": 56,
+      "bounds": [
+        145.71296584440228,
+        326.51013571428575,
+        452.95270777988617,
+        433.27556071428575
+      ],
+      "source_inspection_pixel_bounds": [
+        258,
+        578,
+        802,
+        767
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-34-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.35",
+      "pdf_page": 57,
+      "bounds": [
+        131.59349240986717,
+        151.9571392857143,
+        465.94262333965844,
+        352.49537142857145
+      ],
+      "source_inspection_pixel_bounds": [
+        233,
+        269,
+        825,
+        624
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-35-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.36",
+      "pdf_page": 57,
+      "bounds": [
+        106.74321916508539,
+        434.97025,
+        487.9690018975332,
+        562.6368428571429
+      ],
+      "source_inspection_pixel_bounds": [
+        189,
+        770,
+        864,
+        996
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-36-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.37",
+      "pdf_page": 58,
+      "bounds": [
+        85.84639848197344,
+        62.70350357142858,
+        520.7261802656546,
+        176.81258214285717
+      ],
+      "source_inspection_pixel_bounds": [
+        152,
+        111,
+        922,
+        313
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly",
+      "reading_copy": "assets/clean/figure-2-37-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.1",
+      "pdf_page": 63,
+      "bounds": [
+        199.9,
+        107.4,
+        395.8,
+        228.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.2",
+      "pdf_page": 64,
+      "bounds": [
+        225.5,
+        54.4,
+        370.2,
+        169.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.3",
+      "pdf_page": 65,
+      "bounds": [
+        212.5,
+        54.4,
+        383.1,
+        142.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.4",
+      "pdf_page": 66,
+      "bounds": [
+        196.7,
+        432.0,
+        399.1,
+        557.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.5",
+      "pdf_page": 74,
+      "bounds": [
+        155.3,
+        54.4,
+        440.5,
+        145.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 3,
+      "reading_copy": "assets/clean/figure-3-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.6",
+      "pdf_page": 75,
+      "bounds": [
+        103.4,
+        176.4,
+        492.2,
+        303.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 3,
+      "reading_copy": "assets/clean/figure-3-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.7",
+      "pdf_page": 78,
+      "bounds": [
+        201.4,
+        147.2,
+        394.4,
+        340.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.8",
+      "pdf_page": 79,
+      "bounds": [
+        149.2,
+        54.4,
+        446.5,
+        221.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.9",
+      "pdf_page": 80,
+      "bounds": [
+        177.3,
+        328.2,
+        418.5,
+        413.9
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.10",
+      "pdf_page": 80,
+      "bounds": [
+        152.8,
+        548.0,
+        443.0,
+        653.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 4,
+      "reading_copy": "assets/clean/figure-3-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.11",
+      "pdf_page": 81,
+      "bounds": [
+        217.9,
+        374.8,
+        377.8,
+        420.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.12",
+      "pdf_page": 82,
+      "bounds": [
+        200.0,
+        99.4,
+        395.8,
+        149.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-12-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.13",
+      "pdf_page": 85,
+      "bounds": [
+        186.6,
+        54.4,
+        409.1,
+        99.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-13-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.14",
+      "pdf_page": 85,
+      "bounds": [
+        229.1,
+        325.6,
+        366.6,
+        368.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-14-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.15",
+      "pdf_page": 85,
+      "bounds": [
+        240.6,
+        535.2,
+        355.1,
+        600.7
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-15-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.16",
+      "pdf_page": 86,
+      "bounds": [
+        250.4,
+        287.7,
+        345.4,
+        346.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-16-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.17",
+      "pdf_page": 86,
+      "bounds": [
+        250.7,
+        538.6,
+        345.0,
+        591.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-17-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.18",
+      "pdf_page": 87,
+      "bounds": [
+        250.7,
+        97.4,
+        345.0,
+        146.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-18-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.19",
+      "pdf_page": 87,
+      "bounds": [
+        253.6,
+        438.3,
+        342.1,
+        494.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-19-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.20",
+      "pdf_page": 88,
+      "bounds": [
+        265.5,
+        175.1,
+        330.3,
+        224.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-20-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.21",
+      "pdf_page": 88,
+      "bounds": [
+        208.3,
+        503.9,
+        387.5,
+        684.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-21-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.22",
+      "pdf_page": 97,
+      "bounds": [
+        177.6,
+        97.4,
+        418.1,
+        223.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 4,
+      "reading_copy": "assets/clean/figure-3-22-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.23",
+      "pdf_page": 97,
+      "bounds": [
+        239.2,
+        479.6,
+        356.5,
+        597.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-23-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.24",
+      "pdf_page": 98,
+      "bounds": [
+        225.5,
+        54.4,
+        370.3,
+        218.5
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-24-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.25",
+      "pdf_page": 99,
+      "bounds": [
+        187.3,
+        54.4,
+        408.3,
+        175.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-25-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.26",
+      "pdf_page": 100,
+      "bounds": [
+        164.3,
+        232.3,
+        431.5,
+        415.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-26-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.27",
+      "pdf_page": 104,
+      "bounds": [
+        157.1,
+        54.4,
+        438.7,
+        176.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-27-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.28",
+      "pdf_page": 104,
+      "bounds": [
+        88.7,
+        310.8,
+        507.1,
+        588.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original screenshot/UI labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-28-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.29",
+      "pdf_page": 105,
+      "bounds": [
+        224.4,
+        374.0,
+        371.3,
+        628.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 13,
+      "reading_copy": "assets/clean/figure-3-29-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.30",
+      "pdf_page": 106,
+      "bounds": [
+        209.0,
+        139.2,
+        386.8,
+        306.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-30-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "3.31",
+      "pdf_page": 110,
+      "bounds": [
+        156.2,
+        218.7,
+        439.6,
+        360.5
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-3-31-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.1",
+      "pdf_page": 114,
+      "bounds": [
+        186.37704933586338,
+        581.8433214285715,
+        409.46472960151806,
+        682.3948857142857
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "4.2",
+      "pdf_page": 115,
+      "bounds": [
+        175.0814705882353,
+        292.61635,
+        420.76030834914616,
+        372.2667464285714
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "quality_review": "Tachometer label corrected to Cảm biến tốc độ quay; complete220dpi native artwork visually checked, boxes/arrows preserved",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "4.3",
+      "pdf_page": 118,
+      "bounds": [
+        107.3079981024668,
+        389.2136392857143,
+        474.4143074003795,
+        520.2696107142858
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.4",
+      "pdf_page": 120,
+      "bounds": [
+        142.32429222011385,
+        53.66516071428572,
+        461.98917077798865,
+        310.1281392857143
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.5",
+      "pdf_page": 122,
+      "bounds": [
+        186.37704933586338,
+        361.53371428571427,
+        409.46472960151806,
+        560.9421535714285
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.6",
+      "pdf_page": 124,
+      "bounds": [
+        193.71917552182165,
+        606.6987642857143,
+        440.5275711574953,
+        689.1736428571428
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese",
+      "treatment": "Vector reconstruction retaining source semantic paths and comparison",
+      "reading_copy": "assets/clean/figure-4-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.7",
+      "pdf_page": 125,
+      "bounds": [
+        158.13810246679316,
+        298.8302107142857,
+        416.8068557874763,
+        475.0778964285715
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.8",
+      "pdf_page": 126,
+      "bounds": [
+        203.32041745730552,
+        531.0026428571429,
+        410.59428747628084,
+        658.1043392857143
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.9",
+      "pdf_page": 128,
+      "bounds": [
+        106.17844022770399,
+        307.30365714285716,
+        459.16527609108164,
+        414.6339785714286
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.10",
+      "pdf_page": 129,
+      "bounds": [
+        208.96820683111957,
+        234.43201785714285,
+        387.4383510436433,
+        375.09122857142853
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.11",
+      "pdf_page": 132,
+      "bounds": [
+        98.27153510436433,
+        51.97047142857143,
+        497.5702438330171,
+        317.4717928571429
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.12",
+      "pdf_page": 137,
+      "bounds": [
+        240.03104838709677,
+        185.85092500000002,
+        360.8937409867173,
+        272.2800785714286
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-12-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.13",
+      "pdf_page": 138,
+      "bounds": [
+        163.78589184060723,
+        120.88783571428571,
+        463.11872865275143,
+        257.027875
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-13-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "4.14",
+      "pdf_page": 138,
+      "bounds": [
+        160.9619971537002,
+        316.342,
+        436.00933965844405,
+        466.60445
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native artwork retained; descriptive labels localized",
+      "reading_copy": "assets/clean/figure-4-14-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.1",
+      "pdf_page": 144,
+      "bounds": [
+        76,
+        53,
+        347,
+        365
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.2",
+      "pdf_page": 144,
+      "bounds": [
+        362,
+        144,
+        429,
+        259
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.3",
+      "pdf_page": 146,
+      "bounds": [
+        76,
+        52,
+        347,
+        342
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "5.4",
+      "pdf_page": 146,
+      "bounds": [
+        362,
+        122,
+        520,
+        258
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.5",
+      "pdf_page": 148,
+      "bounds": [
+        76,
+        53,
+        347,
+        347
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "5.6",
+      "pdf_page": 148,
+      "bounds": [
+        362,
+        132,
+        521,
+        247
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.7",
+      "pdf_page": 149,
+      "bounds": [
+        76,
+        53,
+        347,
+        344
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "5.8",
+      "pdf_page": 149,
+      "bounds": [
+        362,
+        143,
+        521,
+        253
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.9",
+      "pdf_page": 158,
+      "bounds": [
+        164,
+        94,
+        435,
+        280
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "5.10",
+      "pdf_page": 166,
+      "bounds": [
+        85,
+        59,
+        297,
+        303
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "5.11",
+      "pdf_page": 166,
+      "bounds": [
+        299,
+        59,
+        516,
+        302
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels; original state/event/model identifiers retained",
+      "treatment": "Original artwork and numeric data preserved; ordinary labels overlaid",
+      "reading_copy": "assets/clean/figure-5-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.1",
+      "pdf_page": 171,
+      "bounds": [
+        228.0,
+        53.0,
+        368.0,
+        201.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.2",
+      "pdf_page": 172,
+      "bounds": [
+        77,
+        52,
+        300,
+        309
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 6,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.3",
+      "pdf_page": 172,
+      "bounds": [
+        318.0,
+        88.0,
+        527.0,
+        303.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.4",
+      "pdf_page": 173,
+      "bounds": [
+        77,
+        53.0,
+        520.0,
+        408.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 6,
+      "key_entries": 2,
+      "reading_copy": "assets/clean/figure-6-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.5",
+      "pdf_page": 175,
+      "bounds": [
+        78.0,
+        55.0,
+        234.0,
+        263.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.6",
+      "pdf_page": 175,
+      "bounds": [
+        267.0,
+        73.0,
+        509.0,
+        244.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.7",
+      "pdf_page": 177,
+      "bounds": [
+        82.0,
+        65.0,
+        518.0,
+        452.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.8",
+      "pdf_page": 178,
+      "bounds": [
+        124.0,
+        53.0,
+        472.0,
+        313.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.9",
+      "pdf_page": 179,
+      "bounds": [
+        82.0,
+        59.0,
+        518.0,
+        680.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.10",
+      "pdf_page": 181,
+      "bounds": [
+        90.0,
+        82.0,
+        522.0,
+        363.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.11",
+      "pdf_page": 183,
+      "bounds": [
+        83.0,
+        56.0,
+        511.0,
+        361.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.12",
+      "pdf_page": 187,
+      "bounds": [
+        140.0,
+        53.0,
+        459.0,
+        329.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 12,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-6-12-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.13",
+      "pdf_page": 189,
+      "bounds": [
+        87.0,
+        54.0,
+        510.0,
+        444.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 5,
+      "reading_copy": "assets/clean/figure-6-13-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.1",
+      "pdf_page": 193,
+      "bounds": [
+        107.0,
+        337,
+        490.0,
+        576.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 4,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.2",
+      "pdf_page": 194,
+      "bounds": [
+        76.0,
+        115.0,
+        520.0,
+        227.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.3",
+      "pdf_page": 195,
+      "bounds": [
+        76.0,
+        55,
+        520.0,
+        331.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 4,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.4",
+      "pdf_page": 195,
+      "bounds": [
+        76.0,
+        386.0,
+        520.0,
+        530.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 2,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.5",
+      "pdf_page": 196,
+      "bounds": [
+        76.0,
+        49,
+        515.0,
+        173.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 4,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.6",
+      "pdf_page": 197,
+      "bounds": [
+        98.0,
+        487.0,
+        497.0,
+        581.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.7",
+      "pdf_page": 201,
+      "bounds": [
+        76.0,
+        55,
+        520.0,
+        282.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.8",
+      "pdf_page": 202,
+      "bounds": [
+        98.0,
+        428.0,
+        497.0,
+        611.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.9",
+      "pdf_page": 204,
+      "bounds": [
+        98.0,
+        55,
+        497.0,
+        371.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.10",
+      "pdf_page": 205,
+      "bounds": [
+        222.0,
+        416.0,
+        375.0,
+        557.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.11",
+      "pdf_page": 211,
+      "bounds": [
+        76.0,
+        53.0,
+        521.0,
+        475.0
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 13,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.12",
+      "pdf_page": 213,
+      "bounds": [
+        128.0,
+        481.0,
+        466.0,
+        564.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-12-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.13",
+      "pdf_page": 215,
+      "bounds": [
+        84.0,
+        454.0,
+        522.0,
+        646.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-13-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.14",
+      "pdf_page": 216,
+      "bounds": [
+        77.0,
+        353.0,
+        519.0,
+        470.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 6,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-14-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.15",
+      "pdf_page": 220,
+      "bounds": [
+        78.0,
+        49,
+        468.0,
+        550.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 4,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-15-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.E7",
+      "pdf_page": 221,
+      "bounds": [
+        92.0,
+        320.0,
+        314.0,
+        393.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-E7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.E8",
+      "pdf_page": 221,
+      "bounds": [
+        92.0,
+        405.0,
+        218.0,
+        481.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-E8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.E9",
+      "pdf_page": 221,
+      "bounds": [
+        92.0,
+        497.0,
+        397.0,
+        582.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-E9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.E10",
+      "pdf_page": 221,
+      "bounds": [
+        92.0,
+        597,
+        244.0,
+        718.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Original native PDF artwork, with explicit clipping; no topology or code reconstruction",
+      "localized_label_count": 0,
+      "key_entries": 0,
+      "reading_copy": "assets/clean/figure-7-E10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.1",
+      "pdf_page": 224,
+      "bounds": [
+        77.9,
+        444.1,
+        517.9,
+        682.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 10,
+      "reading_copy": "assets/clean/figure-8-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.2",
+      "pdf_page": 225,
+      "bounds": [
+        77.9,
+        217.9,
+        517.8,
+        489.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 20,
+      "reading_copy": "assets/clean/figure-8-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.3",
+      "pdf_page": 227,
+      "bounds": [
+        77.9,
+        54.4,
+        517.8,
+        311.5
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 23,
+      "reading_copy": "assets/clean/figure-8-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.4",
+      "pdf_page": 227,
+      "bounds": [
+        165.6,
+        357.3,
+        430.0,
+        523.7
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 21,
+      "reading_copy": "assets/clean/figure-8-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.5",
+      "pdf_page": 229,
+      "bounds": [
+        77.9,
+        54.4,
+        517.8,
+        350.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 7,
+      "reading_copy": "assets/clean/figure-8-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.6",
+      "pdf_page": 230,
+      "bounds": [
+        199.4,
+        54.4,
+        396.4,
+        299.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.7",
+      "pdf_page": 230,
+      "bounds": [
+        259.7,
+        345.0,
+        336.0,
+        448.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.8",
+      "pdf_page": 230,
+      "bounds": [
+        77.9,
+        482.5,
+        517.9,
+        606.7
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 8,
+      "reading_copy": "assets/clean/figure-8-8-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.9",
+      "pdf_page": 232,
+      "bounds": [
+        77.9,
+        54.4,
+        517.9,
+        399.3
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 29,
+      "reading_copy": "assets/clean/figure-8-9-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.10",
+      "pdf_page": 236,
+      "bounds": [
+        136.0,
+        463.0,
+        459.7,
+        567.3
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-10-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.11",
+      "pdf_page": 240,
+      "bounds": [
+        77.9,
+        240.4,
+        517.9,
+        523.9
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-11-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.12",
+      "pdf_page": 241,
+      "bounds": [
+        149.0,
+        133.8,
+        446.7,
+        273.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 14,
+      "reading_copy": "assets/clean/figure-8-12-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.13",
+      "pdf_page": 246,
+      "bounds": [
+        77.9,
+        327.0,
+        517.9,
+        420.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-13-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.14",
+      "pdf_page": 248,
+      "bounds": [
+        165.2,
+        237.9,
+        430.6,
+        460.8
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 11,
+      "reading_copy": "assets/clean/figure-8-14-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.15",
+      "pdf_page": 250,
+      "bounds": [
+        238.6,
+        54.4,
+        357.2,
+        192.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-15-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.16",
+      "pdf_page": 252,
+      "bounds": [
+        77.9,
+        54.4,
+        517.9,
+        274.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-16-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.17",
+      "pdf_page": 254,
+      "bounds": [
+        77.9,
+        409.2,
+        517.9,
+        682.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-17-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.18",
+      "pdf_page": 259,
+      "bounds": [
+        77.9,
+        291.1,
+        517.8,
+        432.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-18-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.19",
+      "pdf_page": 262,
+      "bounds": [
+        77.9,
+        195.5,
+        517.9,
+        389.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-19-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.20",
+      "pdf_page": 263,
+      "bounds": [
+        77.9,
+        54.4,
+        517.8,
+        184.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-20-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.21",
+      "pdf_page": 264,
+      "bounds": [
+        77.9,
+        177.9,
+        517.8,
+        407.1
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-21-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.22",
+      "pdf_page": 265,
+      "bounds": [
+        75.9,
+        299.6,
+        518.1,
+        468.6
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese ordinary labels; original mathematical notation retained",
+      "treatment": "Original native PDF artwork clipped and normalized; ordinary labels overlaid in Vietnamese",
+      "localized_label_count": 4,
+      "reading_copy": "assets/clean/figure-8-22-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.23",
+      "pdf_page": 266,
+      "bounds": [
+        77.9,
+        158.2,
+        517.8,
+        299.4
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original screenshot/UI labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-23-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.24",
+      "pdf_page": 266,
+      "bounds": [
+        165.9,
+        361.1,
+        429.9,
+        462.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original screenshot/UI labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-24-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.25",
+      "pdf_page": 267,
+      "bounds": [
+        77.9,
+        341.0,
+        517.8,
+        415.2
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers and numerical/mathematical labels retained",
+      "treatment": "Original native PDF artwork clipped and normalized",
+      "localized_label_count": 0,
+      "reading_copy": "assets/clean/figure-8-25-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.26",
+      "pdf_page": 269,
+      "bounds": [
+        81.6,
+        286.1,
+        518.9,
+        406.0
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese ordinary labels; original mathematical notation retained",
+      "treatment": "Original native PDF artwork clipped and normalized; ordinary labels overlaid in Vietnamese",
+      "localized_label_count": 7,
+      "reading_copy": "assets/clean/figure-8-26-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "8.27",
+      "pdf_page": 270,
+      "bounds": [
+        143.9,
+        120.3,
+        451.9,
+        420.9
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English artwork with complete Vietnamese descriptive-label key",
+      "treatment": "Original native PDF artwork clipped and normalized; Vietnamese key appended",
+      "localized_label_count": 9,
+      "reading_copy": "assets/clean/figure-8-27-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "9.1",
+      "pdf_page": 276,
+      "bounds": [
+        76,
+        55,
+        520,
+        437
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese",
+      "reading_copy": "assets/clean/figure-9-1-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "9.2",
+      "pdf_page": 278,
+      "bounds": [
+        77,
+        378,
+        520,
+        467
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese",
+      "treatment": "Vector reconstruction of source raster; all four categories and items retained",
+      "reading_copy": "assets/clean/figure-9-2-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "9.3",
+      "pdf_page": 279,
+      "bounds": [
+        78,
+        324,
+        520,
+        579
+      ],
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese",
+      "treatment": "Native vector reconstruction; all source matrix content and caption credit retained",
+      "reading_copy": "assets/clean/figure-9-3-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "9.4",
+      "pdf_page": 280,
+      "bounds": [
+        76,
+        179,
+        520,
+        572
+      ],
+      "status": "reader_revision_source_and_final_page_checked",
+      "labels_language": "Vietnamese descriptive labels; original formal identifiers",
+      "reading_copy": "assets/clean/figure-9-4-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json",
+      "reader_revision_pdf_sha256": "007d2b11243a695baa14058a294ca1e9132d92da30ab02bd856b6fb5f78243de"
+    },
+    {
+      "number": "9.5",
+      "pdf_page": 281,
+      "bounds": [
+        120,
+        170,
+        476,
+        486
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original formal identifiers",
+      "reading_copy": "assets/clean/figure-9-5-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "9.6",
+      "pdf_page": 282,
+      "bounds": [
+        76,
+        120,
+        520,
+        290
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original formal identifiers retained; no ordinary-language legend",
+      "treatment": "Native vector metamodel retained unchanged",
+      "reading_copy": "assets/clean/figure-9-6-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "9.7",
+      "pdf_page": 283,
+      "bounds": [
+        76,
+        53,
+        520,
+        350
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Original English diagram with complete Vietnamese descriptive-label key",
+      "treatment": "Original raster map and topology retained; Vietnamese key added below",
+      "reading_copy": "assets/clean/figure-9-7-vi.pdf",
+      "clean_render_verification": "exact220dpi pixel match",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.18L",
+      "pdf_page": 45,
+      "bounds": [
+        93.75330360531309,
+        334.9835821428572,
+        438.83323434535106,
+        477.90237857142864
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "2.18",
+      "detail_bounds_native": [
+        0,
+        0,
+        170,
+        142.918796
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Rules a–d",
+      "parent_clean_sha256": "59e27f36e7ec8d1d6d445d70afd4edcafecda3d020e5067412a43609fa7b5588",
+      "parent_raw_sha256": "eb78e7fbd0ae6f8669ea362ed38383a45ecff7966a6a29038cfb2c313ad3ebcd",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "2.18R",
+      "pdf_page": 45,
+      "bounds": [
+        93.75330360531309,
+        334.9835821428572,
+        438.83323434535106,
+        477.90237857142864
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "2.18",
+      "detail_bounds_native": [
+        180,
+        0,
+        345.079931,
+        142.918796
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Rules e–f",
+      "parent_clean_sha256": "59e27f36e7ec8d1d6d445d70afd4edcafecda3d020e5067412a43609fa7b5588",
+      "parent_raw_sha256": "eb78e7fbd0ae6f8669ea362ed38383a45ecff7966a6a29038cfb2c313ad3ebcd",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.15C",
+      "pdf_page": 220,
+      "bounds": [
+        78.0,
+        49,
+        468.0,
+        550.0
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "7.15",
+      "detail_bounds_native": [
+        0,
+        114,
+        179,
+        425
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Lower-left excerpt including panel c and context from b",
+      "parent_clean_sha256": "69b445b3b5da990605e5ca96b4203ae7dda4e2ab3a4a07f16d374ed03b8699aa",
+      "parent_raw_sha256": "8624975c676aaca6303cec34044e70e0284a0e0846ccdf389c822d3b1ffb6868",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.15D1",
+      "pdf_page": 220,
+      "bounds": [
+        78.0,
+        49,
+        468.0,
+        550.0
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "7.15",
+      "detail_bounds_native": [
+        174,
+        0,
+        390,
+        290
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Upper-right excerpt from panel d",
+      "parent_clean_sha256": "69b445b3b5da990605e5ca96b4203ae7dda4e2ab3a4a07f16d374ed03b8699aa",
+      "parent_raw_sha256": "8624975c676aaca6303cec34044e70e0284a0e0846ccdf389c822d3b1ffb6868",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "7.15D2",
+      "pdf_page": 220,
+      "bounds": [
+        78.0,
+        49,
+        468.0,
+        550.0
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "7.15",
+      "detail_bounds_native": [
+        174,
+        225,
+        390,
+        501
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Vietnamese descriptive labels/key; source formal identifiers/code retained",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Lower-right excerpt from panel d; 65pt overlap",
+      "parent_clean_sha256": "69b445b3b5da990605e5ca96b4203ae7dda4e2ab3a4a07f16d374ed03b8699aa",
+      "parent_raw_sha256": "8624975c676aaca6303cec34044e70e0284a0e0846ccdf389c822d3b1ffb6868",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.11G",
+      "pdf_page": 183,
+      "bounds": [
+        83.0,
+        56.0,
+        511.0,
+        361.0
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "6.11",
+      "detail_bounds_native": [
+        0,
+        0,
+        203,
+        305
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Enlarged input generator",
+      "parent_raw_sha256": "ea89918ae530777349710157ce8204fc9e4e9c3c99c76c5633731a26585fcf8b",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    },
+    {
+      "number": "6.11C",
+      "pdf_page": 183,
+      "bounds": [
+        83.0,
+        56.0,
+        511.0,
+        361.0
+      ],
+      "role": "presentation_detail",
+      "parent_figure": "6.11",
+      "detail_bounds_native": [
+        203,
+        0,
+        428,
+        305
+      ],
+      "presentation_scale_cap": 3.0,
+      "status": "presentation_reviewed_on_final_pdf",
+      "labels_language": "Original formal identifiers/code; translated caption in chapter",
+      "treatment": "Enlarged native excerpt of complete figure retained in the book",
+      "detail_description": "Enlarged output checker; clipped source guard prefix retained",
+      "parent_raw_sha256": "ea89918ae530777349710157ce8204fc9e4e9c3c99c76c5633731a26585fcf8b",
+      "presentation_pdf_sha256": "668e98fff6b1441ddb8307460082a8d920998ea49620603b399676b6848ce324",
+      "reader_source_geometry_review": "review/reader-artwork-review.json"
+    }
+  ]
+}

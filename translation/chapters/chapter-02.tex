@@ -1,0 +1,579 @@
+% Source: printed 15 / PDF 31
+\chapter{Đồ thị liên kết năng lượng: Một khuôn khổ thống nhất để mô hình hóa các hệ thống vật lý}
+\chapterauthors{Jan F. Broenink}
+\noindent Đại học Twente, Hà Lan\\
+\noindent E-mail: \texttt{j.f.broenink@utwente.nl}
+\begin{quote}\small
+\copyright\ (Các) tác giả 2020. P. Carreira và cộng sự (biên tập),
+\emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+DOI của chương: \url{https://doi.org/10.1007/978-3-030-43946-0_2}.
+\end{quote}
+
+\section*{Tóm tắt}
+Chương này giới thiệu một hệ hình thức dùng để mô hình hóa hành vi động của các hệ thống vật lý, gọi là \emph{đồ thị liên kết năng lượng} (bond graph). Một thuộc tính quan trọng của hệ hình thức này là các hệ thống thuộc những miền khác nhau (chẳng hạn điện, cơ, thủy lực, âm học, nhiệt động lực học, vật liệu) được mô tả theo cùng một cách và được tích hợp dưới khái niệm thống nhất là trao đổi năng lượng. Mô hình đồ thị liên kết năng lượng là các đồ thị có hướng, trong đó những bộ phận được nối với nhau bằng các liên kết, dọc theo đó diễn ra sự trao đổi năng lượng. Chúng tôi trình bày một phương pháp xây dựng đồ thị liên kết năng lượng một cách có hệ thống, xuất phát từ một mô hình vật lý lý tưởng; đồng thời trình bày các phương pháp phân tích nhân quả của đồ thị liên kết năng lượng và các thủ tục sinh phương trình để có thể mô phỏng.
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi mong bạn có thể:
+\begin{itemize}
+\item Sử dụng đồ thị liên kết năng lượng như một cách trừu tượng hóa để mô hình hóa sự trao đổi năng lượng hai chiều giữa các thành phần, theo cách trung lập đối với miền.
+\item Chuyển các sơ đồ phụ thuộc miền thành mô hình vật lý lý tưởng, rồi thành mô hình đồ thị liên kết năng lượng.
+\item Chuyển các mô hình đồ thị liên kết năng lượng thành hệ phương trình vi phân để mô phỏng và phân tích.
+\end{itemize}
+
+\section{Giới thiệu}
+Đồ thị liên kết năng lượng là cách mô tả bằng đồ họa, độc lập với miền, về hành vi động của các hệ thống vật lý. Điều này có nghĩa là các hệ thống thuộc những miền khác nhau (chẳng hạn điện, cơ, thủy lực, âm học, nhiệt động lực học, vật liệu) được mô tả theo cùng một cách. Cơ sở của điều đó là đồ thị liên kết năng lượng dựa trên năng lượng và sự trao đổi năng lượng. Sự tương tự giữa các miền không chỉ nằm ở các phương trình tương tự nhau: những khái niệm vật lý được sử dụng cũng tương tự nhau.
+
+Mô hình hóa bằng đồ thị liên kết năng lượng là một công cụ mạnh để mô hình hóa các hệ thống kỹ thuật, đặc biệt khi có nhiều miền vật lý tham gia. Hơn nữa, các mô hình con của đồ thị liên kết năng lượng có thể được tái sử dụng một cách thuận tiện, vì những mô hình này chưa được gán quan hệ nhân quả. Có thể xem các mô hình con như những \emph{đối tượng}; mô hình hóa bằng đồ thị liên kết năng lượng là một dạng \emph{mô hình hóa hệ thống vật lý hướng đối tượng}.
+
+Đồ thị liên kết năng lượng là đồ thị có nhãn và có hướng, trong đó các đỉnh biểu diễn mô hình con, còn các cạnh biểu diễn một kết nối năng lượng lý tưởng giữa các cổng công suất. Các đỉnh là những mô tả lý tưởng hóa của hiện tượng vật lý: đó là các khái niệm, biểu thị những khía cạnh liên quan (nghĩa là chi phối và đáng quan tâm) trong hành vi động của hệ thống. Bản thân chúng có thể là các đồ thị liên kết năng lượng, nhờ đó cho phép các mô hình phân cấp; hoặc chúng có thể là một tập
+% Source: printed 16 / PDF 32
+phương trình theo các biến của cổng (hai biến ở mỗi cổng). Các cạnh được gọi là \emph{liên kết} (bond). Chúng biểu thị các kết nối điểm tới điểm giữa những cổng của mô hình con.
+
+Khi chuẩn bị cho mô phỏng, các liên kết được thể hiện thành những kết nối gồm hai tín hiệu theo hai hướng ngược nhau. Ngoài ra, một liên kết có hướng công suất và hướng nhân quả tính toán. Gán hướng công suất đúng cách sẽ giải quyết vấn đề đặt dấu khi kết nối các cấu trúc mô hình con. Cấu trúc bên trong của các mô hình con tạo ra những ưu tiên đối với hướng tính toán của những liên kết sẽ được nối vào. Quan hệ nhân quả tính toán được gán cuối cùng quy định biến cổng nào sẽ được tính như kết quả (đầu ra), và do đó biến cổng còn lại sẽ là nguyên nhân (đầu vào). Vì vậy, cần viết lại phương trình nếu dạng tính toán được chỉ định khác với dạng cần dùng. Do có thể kết hợp đồ thị liên kết năng lượng với các phần của sơ đồ khối, những mô hình con của đồ thị liên kết năng lượng có thể dùng cổng công suất, đầu vào tín hiệu và đầu ra tín hiệu làm các phần tử giao tiếp. Hơn nữa, những khía cạnh như miền vật lý của một liên kết (dòng năng lượng) có thể được dùng để hỗ trợ quá trình mô hình hóa.
+
+Khái niệm đồ thị liên kết năng lượng được khởi xướng trong [228]. Karnopp và Rosenberg phát triển thêm ý tưởng này trong các giáo trình của họ ([161, 162, 160]), để có thể áp dụng trong thực tế [268, 86]. Thông qua việc Breedveld [43, 44] xây dựng một khuôn khổ dựa trên nhiệt động lực học, các mô tả mô hình bằng đồ thị liên kết năng lượng đã phát triển thành một lý thuyết hệ thống.
+
+Trong mục tiếp theo, chúng tôi sẽ giới thiệu phương pháp đồ thị liên kết năng lượng qua một số ví dụ, bắt đầu từ một mạng cho trước gồm các mô hình vật lý lý tưởng. Việc chuyển đổi sang đồ thị liên kết năng lượng tạo ra một mô hình độc lập với miền. Trong Mục 3, chúng tôi sẽ giới thiệu cơ sở của đồ thị liên kết năng lượng, rồi trình bày các phần tử cơ bản của đồ thị liên kết năng lượng trong Mục 4. Trong Mục 5, chúng tôi sẽ thảo luận một phương pháp có hệ thống để suy ra đồ thị liên kết năng lượng từ các hệ thống kỹ thuật. Cách bổ sung thông tin cho các mô hình đồ thị liên kết năng lượng nhằm sinh các phương trình mô hình và phục vụ phân tích được trình bày trong Mục 6, và được gọi là Phân tích nhân quả. Việc sinh phương trình và triển khai đồ thị liên kết năng lượng đã gán nhân quả thành sơ đồ khối được bàn trong Mục 7 và 8. Mục 9 thảo luận các vấn đề mô phỏng. Trong Mục 10, chúng tôi tổng kết chương này và đưa ra một số gợi ý đọc thêm.
+
+\section{Các ví dụ về đồ thị liên kết năng lượng}
+Để giới thiệu đồ thị liên kết năng lượng, chúng tôi sẽ thảo luận các ví dụ thuộc hai miền vật lý khác nhau: một mạch RLC (miền điện) và một hệ khối lượng--lò xo có giảm chấn (miền cơ, chuyển động tịnh tiến). Mạch RLC được trình bày trong Hình 2.1.
+\sourcefigure{2.1}{32}{Mạch RLC}
+
+Trong mạng điện, các biến cổng của phần tử đồ thị liên kết năng lượng là \emph{điện áp} trên cổng phần tử và \emph{dòng điện} đi qua cổng phần tử. Lưu ý rằng cổng là giao diện của một phần tử với những phần tử khác; đó là điểm kết nối của các liên kết. \emph{Công suất} mà một cổng trao đổi với phần còn lại của hệ thống là tích của điện áp và dòng điện: $P=ui$. Các phương trình của điện trở, tụ điện và cuộn cảm là:
+% Source: printed 17 / PDF 33
+\[
+\begin{aligned}
+u_R &= iR,\\
+u_C &= \frac{1}{C}\int i\,\mathrm{d}t,\\
+i_L &= \frac{1}{I}\int u\,\mathrm{d}t.
+\end{aligned}
+\]
+
+Để thuận tiện cho việc chuyển sang đồ thị liên kết năng lượng, chúng tôi vẽ các phần tử khác nhau của miền điện sao cho các cổng của chúng trở nên rõ ràng. Để ngắn gọn, chúng tôi chỉ minh họa điều này với tụ điện trong Hình 2.2. Chúng tôi nối vào cổng này một \emph{liên kết công suất}, gọi tắt là \emph{liên kết}. Liên kết này biểu thị sự trao đổi năng lượng giữa các phần tử. Một liên kết được vẽ bằng một cạnh có nửa mũi tên. Hướng của nửa mũi tên này biểu thị hướng dương của dòng năng lượng. Về nguyên tắc, nguồn điện áp cung cấp công suất, còn các phần tử khác hấp thụ công suất.
+\sourcefigure{2.2}{33}{Tụ điện: sơ đồ mạch (trái) và biểu diễn với liên kết (phải)}
+
+Xét mạch trong Hình 2.1, ta thấy điện áp trên các phần tử khác nhau, còn dòng điện qua tất cả các phần tử là như nhau. Chúng tôi ký hiệu dòng điện này là $i$ và nối các liên kết của mọi phần tử với dòng điện $i$ này (2.3). Thay các ký hiệu điện bằng những ký hiệu gợi nhớ tương ứng của đồ thị liên kết năng lượng sẽ cho đồ thị liên kết năng lượng của mạch điện. Đại lượng $i$ chung được đổi thành ``1'', gọi là \emph{nút 1} (1-junction). Viết các biến cụ thể dọc theo các liên kết sẽ biến đồ thị liên kết năng lượng thành đồ thị liên kết năng lượng điện. Điện áp được ánh xạ sang biến \emph{đại lượng thế} (effort) độc lập với miền, còn dòng điện được ánh xạ sang biến \emph{đại lượng dòng} (flow) độc lập với miền (dòng điện luôn nằm về phía mũi tên). Nút 1 có nghĩa là dòng điện (đại lượng dòng) qua mọi liên kết được nối vào đều bằng nhau, và tổng các điện áp (đại lượng thế), có xét dấu, bằng không. Dấu này liên quan đến hướng công suất (tức hướng của nửa mũi tên) của liên kết. Phương trình tổng này chính là định luật điện áp Kirchhoff.
+
+Các kết nối song song, trong đó điện áp trên mọi phần tử được nối vào đều bằng nhau, được ký hiệu bằng $u$ trong mạng ký hiệu cổng. Ký hiệu gợi nhớ của đồ thị liên kết năng lượng là 0, gọi là \emph{nút 0} (0-junction). Nút 0 có nghĩa là điện áp (đại lượng thế) trên tất cả các liên kết được nối vào đều bằng nhau, còn tổng các dòng điện (đại lượng dòng), có xét dấu, bằng không. Phương trình tổng này chính là định luật dòng điện Kirchhoff.
+
+Ví dụ thứ hai là hệ khối lượng--lò xo có giảm chấn, một hệ cơ học được trình bày trong 2.4. Trong các sơ đồ cơ học, các biến cổng của phần tử đồ thị liên kết năng lượng là \emph{lực} tác dụng lên cổng phần tử và \emph{vận tốc} của cổng phần tử. Trong miền cơ quay, các biến cổng là \emph{mô-men xoắn} và \emph{vận tốc góc}. Một lần nữa, có hai biến tham gia. \emph{Công suất} mà một cổng trao đổi với phần còn lại của hệ thống là tích của lực và vận tốc: $P=Fv$ ($P=T\omega$ trong trường hợp quay). Các phương trình của bộ giảm chấn, lò xo và khối lượng là (chúng tôi dùng hệ số giảm chấn $a$, hệ số lò xo $K_s$, khối lượng $m$ và lực tác dụng $F_a$):
+\[
+\begin{aligned}
+F_d &= \alpha v,\\
+F_s &= K_s\int v\,\mathrm{d}t = \frac{1}{C_s}\int v\,\mathrm{d}t,\\
+F_m &= m\frac{\mathrm{d}v}{\mathrm{d}t}\quad\text{hoặc}\quad
+v = \frac{1}{m}\int F_m\,\mathrm{d}t,\\
+F_a &= \mathit{force}.
+\end{aligned}
+\]
+% Source: printed 18 / PDF 34
+\sourcefigure{2.3}{34}{Đồ thị liên kết năng lượng với ký hiệu điện (trái) và với ký hiệu chuẩn (phải). Các ký hiệu chuẩn của đồ thị liên kết năng lượng được định nghĩa trong 2.4}
+\sourcefigure{2.4}{34}{Hệ khối lượng--lò xo có giảm chấn}
+
+Theo cách tương tự như với mạch điện, ta có thể vẽ lại phần tử sao cho các cổng của nó trở nên rõ ràng (2.5). Các đầu tự do trong ví dụ đều có cùng vận tốc, được biểu thị bằng $v$. Phần tử nút này cũng hàm ý tổng các lực bằng không, có xét dấu (liên quan đến hướng công suất). Lực được ánh xạ sang đại lượng thế, còn vận tốc được ánh xạ sang đại lượng dòng. Trong miền cơ quay, mô-men xoắn được ánh xạ sang đại lượng thế, còn vận tốc góc được ánh xạ sang đại lượng dòng. Điều này hàm ý lực tương ứng với điện áp, còn vận tốc tương ứng với dòng điện.
+
+Ta thấy những sự tương tự sau đây giữa các phần tử cơ học và điện:
+\begin{itemize}
+\item Bộ giảm chấn tương tự điện trở.
+\item Lò xo tương tự tụ điện; độ mềm cơ học tương ứng với điện dung.
+\item Khối lượng tương tự cuộn cảm.
+\item Nguồn lực tương tự nguồn điện áp.
+\item Vận tốc chung tương tự dòng điện trong vòng mạch.
+\end{itemize}
+
+Bên cạnh các điểm có vận tốc chung, trong các hệ cơ học còn có những điểm có lực chung. Khi đó, mọi lực đều bằng nhau và tổng các vận tốc bằng không, có xét dấu (liên quan đến hướng công suất). Những điểm có lực chung này được ký hiệu là \emph{nút 0} trong đồ thị liên kết năng lượng (một ví dụ là việc nối một khối lượng, một lò xo và một bộ giảm chấn: ba phần tử được nối ``nối tiếp''). Mục tiếp theo, bàn về cơ sở của đồ thị liên kết năng lượng, sẽ giải thích thêm những sự tương tự này.
+
+Qua hai ví dụ này, chúng tôi đã giới thiệu phần lớn các ký hiệu của đồ thị liên kết năng lượng và chỉ ra cách chuyển các phần tử trong hai miền vật lý thành những ký hiệu gợi nhớ của đồ thị liên kết năng lượng. Một nhóm phần tử của đồ thị liên kết năng lượng chưa được giới thiệu: đó là các \emph{bộ chuyển đổi} (transducer). Ví dụ gồm máy biến áp điện, động cơ điện và bánh răng.
+
+Trong mục tiếp theo, chúng tôi sẽ thảo luận cơ sở của đồ thị liên kết năng lượng.
+% Source: printed 19 / PDF 35
+\sourcefigure{2.5}{35}{Đồ thị liên kết năng lượng với ký hiệu cơ học (trái) và với ký hiệu chuẩn (phải)}
+
+\section{Cơ sở của đồ thị liên kết năng lượng}
+Mục trước đã chỉ ra sự tương tự giữa các hệ thống khác nhau: các hệ thống khác nhau có thể được biểu diễn bằng cùng một tập phương trình vi phân. Những sự tương tự này có một \emph{cơ sở vật lý}: các khái niệm vật lý nền tảng tương tự nhau, và do đó các phương trình vi phân thu được cũng tương tự nhau. Các khái niệm vật lý dựa trên năng lượng và sự trao đổi năng lượng. Hành vi xét theo năng lượng độc lập với miền. Nó giống nhau trong mọi ngành kỹ thuật, như có thể kết luận khi so sánh mạch RLC với hệ khối lượng--lò xo có giảm chấn. Điều này dẫn đến những đồ thị liên kết năng lượng giống hệt nhau.
+
+\subsection{Các điểm xuất phát}
+Trước khi bàn về các thuộc tính cụ thể của đồ thị liên kết năng lượng và các khái niệm vật lý cơ bản, chúng tôi nhắc lại các giả định chung đối với những mô tả hệ thống vật lý dạng mạng, như mạng điện, sơ đồ cơ học hoặc thủy lực:
+\begin{itemize}
+\item Định luật bảo toàn năng lượng có thể áp dụng.
+\item Có thể sử dụng một \emph{cách tiếp cận tham số tập trung} (lumped approach).
+\end{itemize}
+
+Điều này hàm ý có thể tách các thuộc tính của hệ thống ra khỏi nhau và biểu thị chúng riêng biệt, trong khi các kết nối giữa những mô hình con này là lý tưởng. \emph{Các thuộc tính hệ thống tách biệt} ở đây là các khái niệm vật lý, còn các kết nối lý tưởng biểu diễn dòng năng lượng, nghĩa là các liên kết giữa những mô hình con. Tính \emph{lý tưởng} của các kết nối có nghĩa là không thể phát sinh hoặc tiêu tán năng lượng trong những kết nối này. Đây được gọi là \emph{tính liên tục công suất} (power continuity). Cấu trúc kết nối này là một cấu trúc khái niệm, không nhất thiết có kích thước. Khái niệm này được gọi là \emph{phân chia thành mạng} (reticulation) [228] hoặc \emph{tách hệ} (tearing) [173]. Xem thêm [304].
+
+Các mô hình con của hệ thống là những khái niệm, những mô tả lý tưởng hóa của các hiện tượng vật lý được nhận diện là hành vi chi phối trong các thành phần (nghĩa là những bộ phận hữu hình của hệ thống trong thực tế). Điều này hàm ý mô hình của một bộ phận cụ thể không nhất thiết chỉ gồm một khái niệm, mà có thể gồm một tập các khái niệm được kết nối với nhau.
+% Source: printed 20 / PDF 36
+\subsection{Liên kết và cổng}
+Điểm tiếp xúc của một mô hình con, nơi sẽ nối một kết nối lý tưởng, được gọi là \emph{cổng công suất}, gọi tắt là \emph{cổng}. Kết nối giữa hai mô hình con được gọi là \emph{liên kết công suất} hay \emph{liên kết}; nó được vẽ bằng một đường đơn (2.6). Liên kết này biểu thị một dòng năng lượng lý tưởng giữa hai mô hình con được nối với nhau. Năng lượng đi vào liên kết ở một đầu sẽ lập tức đi ra ở đầu kia (tính liên tục công suất).
+\sourcefigure{2.6}{36}{Dòng năng lượng giữa hai mô hình con được biểu diễn bằng một liên kết}
+
+\emph{Dòng năng lượng} dọc theo một liên kết có thứ nguyên vật lý là công suất, bằng tích của hai biến. Trong mỗi miền vật lý đều có một tổ hợp biến như vậy, mà việc diễn giải theo ý nghĩa vật lý là hữu ích. Trong mạng điện, hai biến là điện áp và dòng điện. Trong hệ cơ học, các cặp biến là lực và vận tốc đối với chuyển động tịnh tiến, mô-men xoắn và vận tốc góc đối với chuyển động quay. Trong thủy lực, đó là áp suất và lưu lượng thể tích. Đối với các hệ nhiệt động lực học, nhiệt độ và dòng entropy được sử dụng. Những cặp biến này được gọi là \emph{các biến liên hợp (công suất)}.
+
+Để hiểu kết nối được thiết lập bởi một liên kết, có thể diễn giải liên kết đó theo hai cách khác nhau:
+\begin{enumerate}
+\item \emph{Như một tương tác năng lượng.}\\
+Các hệ con được kết nối tạo thành tải đối với nhau thông qua sự trao đổi năng lượng. Một liên kết công suất thể hiện một kết nối trong đó một đại lượng vật lý được trao đổi.
+\item \emph{Như một dòng tín hiệu hai chiều.}\\
+Kết nối được diễn giải như hai tín hiệu, đại lượng thế và đại lượng dòng, truyền theo hai hướng ngược nhau, qua đó xác định hướng tính toán của các biến liên kết. Đối với một trong hai mô hình con được nối, đại lượng thế là đầu vào và đại lượng dòng là đầu ra; đối với mô hình con còn lại, đầu vào và đầu ra tất nhiên lần lượt là đại lượng dòng và đại lượng thế.
+\end{enumerate}
+
+Hai cách nhìn nhận liên kết này là thiết yếu trong mô hình hóa bằng đồ thị liên kết năng lượng. Việc mô hình hóa bắt đầu bằng cách chỉ ra cấu trúc vật lý của hệ thống. Trước hết, các liên kết được diễn giải như những tương tác năng lượng; sau đó, các liên kết được bổ sung hướng tính toán, bằng cách diễn giải chúng như các dòng tín hiệu hai chiều. Trong lúc mô hình hóa, chưa cần quyết định hướng tính toán của các biến liên kết. Lưu ý rằng việc xác định hướng tính toán trong quá trình mô hình hóa sẽ hạn chế khả năng tái sử dụng mô hình con. Tuy nhiên, cần xác định hướng này để suy ra mô hình toán học (tập phương trình vi phân) từ đồ thị. Quá trình xác định hướng tính toán của các biến liên kết được gọi là \emph{phân tích nhân quả}. Kết quả được chỉ ra trên đồ thị bằng cái gọi là \emph{vạch nhân quả} (causal stroke), chỉ hướng của đại lượng thế, và được gọi là \emph{quan hệ nhân quả} của liên kết (2.7).
+
+Ở dạng phương trình, có thể viết 2.7 như sau:
+\[
+\begin{array}{ll}
+\texttt{element1.e}:=\texttt{element2.e}&\texttt{element2.e}:=\texttt{element1.e}\\
+\texttt{element2.f}:=\texttt{element1.f}&\texttt{element1.f}:=\texttt{element2.f}
+\end{array}
+\]
+
+\section{Các phần tử của đồ thị liên kết năng lượng}
+Các phương trình cấu thành của các phần tử đồ thị liên kết năng lượng được giới thiệu thông qua ví dụ trong miền điện và miền cơ. Bản chất của các phương trình cấu thành đặt ra những yêu cầu đối với quan hệ nhân quả của các liên kết được nối vào. Các phần tử đồ thị liên kết năng lượng được vẽ dưới dạng những tổ hợp chữ cái (mã gợi nhớ) chỉ loại phần tử. Các phần tử đồ thị liên kết năng lượng gồm:
+% Source: printed 21 / PDF 37
+\sourcefigure{2.7}{37}{Xác định hướng tín hiệu của đại lượng thế và đại lượng dòng (ở đây không sử dụng hướng công suất trên các liên kết, nên không vẽ hướng đó)}
+\begin{description}
+\item[C] Phần tử tích trữ một biến kiểu $q$, chẳng hạn tụ điện (tích trữ điện tích), lò xo (tích trữ độ dịch chuyển).
+\item[I] Phần tử tích trữ một biến kiểu $p$, chẳng hạn cuộn cảm (tích trữ từ thông móc vòng), khối lượng (tích trữ động lượng).
+\item[R] Phần tử cản tiêu tán năng lượng tự do, chẳng hạn điện trở, ma sát cơ học.
+\item[Se, Sf] Các nguồn, chẳng hạn lưới điện (nguồn điện áp), trọng lực (nguồn lực), bơm (nguồn đại lượng dòng).
+\item[TF] Bộ biến đổi (transformer), chẳng hạn máy biến áp điện, bánh răng, đòn bẩy.
+\item[GY] Gyrator, chẳng hạn động cơ điện, bơm ly tâm.
+\item[0, 1] Nút 0 và nút 1, dùng để kết nối lý tưởng hai hoặc nhiều mô hình con.
+\end{description}
+
+\subsection{Các phần tử tích trữ}
+Các phần tử tích trữ lưu giữ mọi dạng năng lượng tự do. Như đã chỉ ra ở trên, có hai loại phần tử tích trữ: phần tử C và phần tử I. Các biến kiểu $q$ và kiểu $p$ là \emph{đại lượng bảo toàn} và là kết quả của một quá trình tích lũy (hay tích phân). Chúng là các biến trạng thái (liên tục) của hệ thống.
+
+Trong các phần tử C, như tụ điện hoặc lò xo, đại lượng bảo toàn $q$ được tích trữ bằng cách tích lũy đại lượng dòng thuần $f$ đi vào phần tử tích trữ. Điều này dẫn đến phương trình vi phân:
+\[\dot q=f\]
+được gọi là \emph{phương trình cân bằng}, và tạo thành một phần trong các phương trình cấu thành của phần tử tích trữ. Trong phần còn lại của các phương trình cấu thành, biến trạng thái $q$ được liên hệ với đại lượng thế $e$:
+\[e=e(q)\]
+Quan hệ này phụ thuộc vào dạng cụ thể của phần tử tích trữ đang xét.
+
+Trong 2.8, các ví dụ về phần tử C được trình bày cùng với sơ đồ khối tương đương. Các phương trình cho tụ điện tuyến tính và lò xo tuyến tính là:
+\[
+\begin{aligned}
+\dot q&=i, & u&=\frac{1}{C}q,\\
+\dot x&=v, & F&=Kx=\frac{1}{C}x.
+\end{aligned}
+\]
+Đối với tụ điện, $C$ [F] là điện dung; đối với lò xo, $K$ [N/m] là độ cứng và $C$ [m/N] là độ mềm. Trong mọi miền khác, đều có thể định nghĩa một phần tử C.
+
+Biến đại lượng thế bằng nhau khi hai phần tử tích trữ C nối song song, có một phần tử cản ở giữa, ở trạng thái cân bằng. Vì vậy, thuộc tính độc lập với miền của đại lượng thế là \emph{xác định trạng thái cân bằng}.
+
+Trong các phần tử I, như cuộn cảm hoặc khối lượng, đại lượng bảo toàn $p$ được tích trữ bằng cách tích lũy đại lượng dòng thuần $e$ đi vào phần tử tích trữ. Điều này dẫn đến phương trình vi phân:
+% Source: printed 22 / PDF 38
+\sourcefigure{2.8}{38}{Các ví dụ về phần tử C}
+\[\dot p=e\]
+được gọi là \emph{phương trình cân bằng}, và tạo thành một phần trong các phương trình cấu thành của phần tử tích trữ. Trong phần còn lại của các phương trình cấu thành, biến trạng thái $q$ được liên hệ với đại lượng thế $e$:
+\[f=f(q)\]
+Quan hệ này phụ thuộc vào dạng cụ thể của phần tử tích trữ đang xét.
+
+Trong 2.9, các ví dụ về phần tử I được trình bày cùng với sơ đồ khối tương đương. Các phương trình cho cuộn cảm tuyến tính và khối lượng tuyến tính là:
+\begin{equation}\dot\lambda=u,\quad i=\frac{1}{L}\lambda\tag{2.1}\end{equation}
+\begin{equation}\dot p=F,\quad v=\frac{1}{m}p\tag{2.2}\end{equation}
+Đối với cuộn cảm, $L$ [H] là độ tự cảm; đối với khối lượng, $m$ [kg] là khối lượng. Trong mọi miền khác, đều có thể định nghĩa một phần tử I.
+
+Biến đại lượng dòng bằng nhau khi hai phần tử tích trữ I nối song song, có một phần tử cản ở giữa, ở trạng thái cân bằng. Vì vậy, tại các phần tử I, thuộc tính độc lập với miền của đại lượng dòng là \emph{xác định trạng thái cân bằng}. Chẳng hạn, khi hai vật chuyển động tự do trong không gian, mỗi vật có động lượng khác nhau, được ghép với nhau (va chạm và dính vào nhau), động lượng sẽ phân chia giữa các khối lượng sao cho vận tốc của hai khối lượng bằng nhau (đây là định luật bảo toàn động lượng).
+
+Lưu ý rằng tại hai loại phần tử tích trữ, vai trò của đại lượng thế và đại lượng dòng được hoán đổi: phần tử C và phần tử I là \emph{dạng đối ngẫu} của nhau.
+
+Các sơ đồ khối trong 2.8 và 2.9, cũng như trong các Hình 10 đến 16 tiếp theo, thể hiện hướng tính toán của các tín hiệu tham gia. Chúng chính là dạng triển khai của đồ thị liên kết năng lượng đã gán nhân quả tương ứng. Các phương trình được cho ở dạng tính toán, nhất quán với đồ thị liên kết năng lượng đã gán nhân quả và sơ đồ khối.
+
+\subsection{Các phần tử cản}
+Các phần tử cản, hay phần tử R, tiêu tán năng lượng tự do. Ví dụ gồm bộ giảm chấn, ma sát và điện trở (2.10). Trong các thành phần cơ học thực tế, ma sát luôn hiện diện. Năng lượng từ một miền bất kỳ chuyển một cách không thuận nghịch sang miền nhiệt (và sinh ra nhiệt). Điều này có nghĩa là dòng năng lượng hướng tới phần tử cản luôn
+% Source: printed 23 / PDF 39
+dương. Phương trình cấu thành là một quan hệ đại số giữa đại lượng thế và đại lượng dòng, và về nguyên tắc nằm trong góc phần tư thứ nhất hoặc thứ ba.
+\sourcefigure{2.9}{39}{Các ví dụ về phần tử I}
+\[e=f(f)\]
+\sourcefigure{2.10}{39}{Các ví dụ về phần tử cản}
+
+Điện trở thường tuyến tính (ở nhiệt độ không đổi), cụ thể là tuân theo định luật Ohm. Giá trị điện trở có đơn vị [$\Omega$].
+\[u=Ri\]
+Ma sát cơ học thường phi tuyến. Hàm cản là sự kết hợp giữa ma sát khô và ma sát nhớt. Ma sát khô là một lực ma sát không đổi, còn ma sát nhớt là thành phần tuyến tính. Đôi khi còn có ma sát tĩnh,
+% Source: printed 24 / PDF 40
+một lực cần thắng để bắt đầu chuyển động, chỉ áp dụng khi khởi động chuyển động. Tất cả những dạng ma sát này có thể được mô hình hóa bằng phần tử R. Ma sát nhớt có công thức sau ($R$ có đơn vị [Ns/m]):
+\[F=Rv\]
+Nếu giá trị cản có thể được điều khiển bằng một tín hiệu bên ngoài, phần tử cản là một \emph{phần tử cản điều biến}, với ký hiệu gợi nhớ MR. Ví dụ là một van thủy lực: vị trí van được điều khiển từ bên ngoài và quyết định giá trị của tham số cản.
+
+Nếu miền nhiệt được mô hình hóa tường minh, việc sinh năng lượng nhiệt cần được chỉ ra tường minh. Vì phần tử tiêu tán sinh năng lượng nhiệt một cách không thuận nghịch, cổng nhiệt được vẽ như một dạng nguồn năng lượng nhiệt. R trở thành RS.
+
+\subsection{Các nguồn}
+Các nguồn biểu diễn sự tương tác của một hệ thống với môi trường của nó. Ví dụ gồm lực bên ngoài, nguồn điện áp và dòng điện, động cơ lý tưởng, v.v. (2.11). Tùy theo loại biến được áp đặt, các phần tử này được vẽ dưới dạng Se hoặc Sf.
+
+Ngoài vai trò một nguồn ``thực'', phần tử nguồn còn được dùng để gán một giá trị cố định cho một biến. Chẳng hạn, với một điểm trong hệ cơ học có vị trí cố định, dùng một Sf có giá trị 0 (vị trí cố định có nghĩa là vận tốc bằng không). Khi cần kích thích một bộ phận của hệ thống, thường cần một dạng tín hiệu đã biết; có thể mô hình hóa tín hiệu này bằng một nguồn điều biến được dẫn động bởi một dạng tín hiệu nào đó. Một ví dụ được trình bày trong Hình 2.12.
+\sourcefigure{2.11}{40}{Các ví dụ về nguồn}
+\sourcefigure{2.12}{40}{Ví dụ về một nguồn điện áp điều biến. \emph{Chú giải bổ sung của bản dịch:} MSe là nguồn đại lượng thế điều biến (ở đây là nguồn điện áp); Ugen là nhãn nguồn trong hình gốc. Mũi tên đầy biểu diễn tín hiệu điều khiển; nửa mũi tên biểu diễn liên kết công suất.}
+% Source: printed 25 / PDF 41
+\subsection{Bộ biến đổi và gyrator}
+Một \emph{bộ biến đổi} lý tưởng được biểu diễn bằng TF và có tính liên tục công suất (nghĩa là không tích trữ hoặc tiêu tán công suất). Sự biến đổi có thể diễn ra trong cùng một miền (bánh răng, đòn bẩy) hoặc giữa các miền khác nhau (động cơ điện, tời); xem Hình 13. Các phương trình là:
+\begin{equation}e_1=ne_2\tag{2.3}\end{equation}
+\begin{equation}f_2=nf_1\tag{2.4}\end{equation}
+Các đại lượng thế được chuyển đổi thành đại lượng thế, còn các đại lượng dòng được chuyển đổi thành đại lượng dòng. Tham số $n$ là \emph{tỷ số biến đổi}. Do tính liên tục công suất, chỉ cần một tham số không thứ nguyên $n$ để mô tả cả sự chuyển đổi đại lượng thế và sự chuyển đổi đại lượng dòng. Tham số $n$ được định nghĩa một cách không nhập nhằng như sau: $e_1$ và $f_1$ thuộc liên kết hướng vào TF. Cách định nghĩa tỷ số biến đổi này là cách chuẩn trong những công trình quan trọng [160], [44], [269], [67]. Nếu $n$ không phải hằng số, bộ biến đổi là một \emph{bộ biến đổi điều biến}, hay MTF. Khi đó, tỷ số biến đổi trở thành tín hiệu đầu vào của MTF.
+\sourcefigure{2.13}{41}{Các ví dụ về bộ biến đổi}
+
+Một \emph{gyrator} lý tưởng được biểu diễn bằng GY, và cũng có tính liên tục công suất (nghĩa là không tích trữ hoặc tiêu tán công suất). Ví dụ gồm động cơ điện, bơm và tuabin. Các hiện thực gyrator trong thực tế phần lớn là những bộ chuyển đổi biểu diễn sự biến đổi giữa các miền (Hình 14). Các phương trình là:
+\begin{equation}e_1=rf_2\tag{2.5}\end{equation}
+\begin{equation}e_2=rf_1\tag{2.6}\end{equation}
+Tham số $r$ là \emph{tỷ số gyrator}; do tính liên tục công suất, chỉ cần một tham số để mô tả cả hai phương trình. Không cần định nghĩa thêm, vì các phương trình đối xứng (liên kết nào hướng vào không quan trọng; chỉ cần một liên kết hướng vào và liên kết kia hướng ra khỏi gyrator). $r$ có thứ nguyên vật lý, vì $r$ là một quan hệ giữa đại lượng thế và đại lượng dòng (nó có cùng thứ nguyên với tham số của phần tử R). Nếu $r$ không phải hằng số, gyrator là một \emph{gyrator điều biến}, hay MGY.
+% Source: printed 26 / PDF 42
+\sourcefigure{2.14}{42}{Các ví dụ về gyrator}
+
+\subsection{Các nút}
+Các nút ghép hai hoặc nhiều phần tử theo cách liên tục công suất: không có sự tích trữ hoặc tiêu tán năng lượng trong một nút. Ví dụ gồm kết nối nối tiếp hoặc kết nối song song trong mạng điện, hoặc việc ghép cố định các bộ phận của một hệ cơ học. Các nút có tính \emph{đối xứng theo cổng}: các cổng có thể được hoán đổi trong các phương trình cấu thành. Từ các thuộc tính này, có thể chứng minh rằng chỉ tồn tại hai cặp nút: nút 1 và nút 0.
+
+\emph{Nút 0} biểu diễn một nút tại đó mọi đại lượng thế của các liên kết được nối vào đều bằng nhau (2.15). Ví dụ là một kết nối song song trong mạch điện. Do tính liên tục công suất, tổng các đại lượng dòng của những liên kết được nối vào bằng không, có xét dấu. Hướng công suất (tức hướng của nửa mũi tên) quyết định dấu của các đại lượng dòng: mọi liên kết hướng vào mang dấu cộng, còn mọi liên kết hướng ra mang dấu trừ (Hình X). Phép cộng này chính là định luật dòng điện Kirchhoff trong mạng điện: tổng các dòng điện nối vào một nút bằng không, có xét dấu của chúng; mọi dòng điện hướng vào là dương, còn mọi dòng điện hướng ra là âm.
+
+Ta có thể xem nút 0 là biểu diễn của một biến đại lượng thế, và nút 0 thường sẽ được diễn giải theo cách đó. Nút 0 không chỉ là định luật dòng điện Kirchhoff (tổng quát hóa), mà còn bao hàm sự bằng nhau của các đại lượng thế (như điện áp bằng nhau tại một kết nối song song).
+
+\emph{Nút 1} (2.16) là dạng đối ngẫu của nút 0 (vai trò của đại lượng thế và đại lượng dòng được hoán đổi). Nút 1 biểu diễn một nút tại đó mọi đại lượng dòng của các liên kết được nối vào đều bằng nhau. Ví dụ là một kết nối nối tiếp trong mạch điện. Tổng các đại lượng thế bằng không, là hệ quả của tính liên tục công suất. Một lần nữa, hướng công suất (tức hướng của nửa mũi tên) quyết định dấu của các đại lượng thế: mọi liên kết hướng vào mang dấu cộng, còn mọi liên kết hướng ra mang dấu trừ. Phép cộng này chính là định luật điện áp Kirchhoff trong mạng điện: tổng mọi hiệu điện áp dọc theo một vòng kín (một mắt lưới) bằng không. Trong miền cơ học, nút 1 biểu diễn sự cân bằng lực (cũng gọi là nguyên lý d'Alembert), và là một dạng tổng quát hóa của định luật thứ ba Newton, lực tác dụng $=-$ phản lực.
+
+Tương tự nút 0, nút 1 không chỉ bao hàm các phép cộng này, mà còn bao hàm sự bằng nhau của các đại lượng dòng. Vì vậy, ta có thể xem nút 1 là biểu diễn của một biến đại lượng dòng, và nút 1 thường sẽ được diễn giải theo cách đó.
+
+\subsection{Định hướng dương}
+Theo định nghĩa, công suất dương theo hướng của liên kết công suất (tức hướng của nửa mũi tên). Một cổng có liên kết hướng vào nối tới sẽ tiêu thụ công suất nếu công suất này dương (nghĩa là cả đại lượng thế và đại lượng dòng
+% Source: printed 27 / PDF 43
+đều dương hoặc đều âm, vì tích của đại lượng thế và đại lượng dòng là công suất). Nói cách khác: công suất truyền theo hướng của nửa mũi tên nếu nó dương, và theo hướng ngược lại nếu nó âm.
+\sourcefigure{2.15}{43}{Các ví dụ về gyrator \textit{Ghi chú bản dịch (P2-1):} chú thích tiếng Anh cũng ghi “gyrator”, nhưng các bảng trong Hình 2.15 và 2.16 lần lượt trình bày nút 0 và nút 1, đúng như ký hiệu trong cột phần tử. Bản dịch giữ chú thích tác giả; hình này là bảng về nút 0.}
+\sourcefigure{2.16}{43}{Các ví dụ về gyrator \textit{Ghi chú bản dịch (P2-2):} chú thích tiếng Anh cũng ghi “gyrator”, nhưng các bảng trong Hình 2.15 và 2.16 lần lượt trình bày nút 0 và nút 1, đúng như ký hiệu trong cột phần tử. Bản dịch giữ chú thích tác giả; hình này là bảng về nút 1.}
+
+Theo quy ước chuẩn, các phần tử R, C và I có liên kết hướng vào (nửa mũi tên hướng tới phần tử), nhờ đó các tham số dương khi mô hình hóa các thành phần thực tế. Với phần tử nguồn, quy ước chuẩn là hướng ra, vì nguồn thường cung cấp công suất cho phần còn lại của hệ thống. Khi đó, một nguồn thực tế có tham số dương. Với các phần tử TF và GY (bộ biến đổi và gyrator), quy ước chuẩn là một liên kết hướng vào và một liên kết hướng ra, để thể hiện dòng năng lượng ``tự nhiên''. Hơn nữa, dùng định nghĩa chuẩn của tham số tại bộ biến đổi (liên kết hướng vào được nối với cổng 1 và tỷ số $n$ bằng $e_1/e_2$) sẽ cho các tham số dương. Lưu ý rằng gyrator không cần một định nghĩa như vậy, vì các phương trình của nó đối xứng.
+
+Tuy nhiên, các tham số âm vẫn có thể xuất hiện. Cụ thể là ở bộ biến đổi và nguồn trong miền cơ học, khi vận tốc đảo chiều hoặc nguồn tác dụng theo hướng âm.
+
+Sử dụng các định nghĩa được bàn trong mục này, định nghĩa đồ thị liên kết năng lượng không nhập nhằng, hàm ý rằng về nguyên tắc không cần có sự nhầm lẫn. Hơn nữa, cách làm có hệ thống này sẽ giúp giải quyết những vấn đề đặt dấu có thể gặp trong mô hình hóa, đặc biệt trong các hệ cơ học.
+% Source: printed 28 / PDF 44
+\subsection{Tính đối ngẫu và các miền đối ngẫu}
+Như đã chỉ ra trong 2.4.1, hai phần tử tích trữ là dạng đối ngẫu của nhau. Vai trò của đại lượng thế và đại lượng dòng trong phần tử C và phần tử I được hoán đổi. Việc bỏ một phần tử tích trữ (và cả một phần tử nguồn) khỏi danh sách phần tử đồ thị liên kết năng lượng để làm danh sách này ngắn nhất có thể có thể hữu ích về mặt toán học, nhưng không làm tăng hiểu biết về vật lý.
+
+Tuy vậy, phân rã một phần tử I thành một GY và một C mang lại hiểu biết sâu hơn. Phần tử tích trữ duy nhất lúc này là phần tử C. Đại lượng dòng chỉ là đạo hàm theo thời gian của một đại lượng bảo toàn, còn đại lượng thế quyết định trạng thái cân bằng. Điều này hàm ý rằng các miền vật lý thực ra là những cặp gồm hai miền đối ngẫu: trong cơ học, ta có miền \emph{thế năng} và miền \emph{động năng} cho cả chuyển động quay và tịnh tiến; trong mạng điện, ta có miền \emph{điện} và miền \emph{từ}. Tuy nhiên, trong miền nhiệt động lực học, không tồn tại một dạng đối ngẫu như vậy (Breedveld, 1982). Điều này nhất quán với việc không tồn tại sự tích trữ nhiệt kiểu I (là hệ quả của định luật thứ hai nhiệt động lực học: trong một hệ cách nhiệt, entropy không bao giờ giảm).
+
+\section{Thủ tục có hệ thống để suy ra mô hình đồ thị liên kết năng lượng}
+Trong mục trước, chúng tôi đã thảo luận các phần tử cơ bản của đồ thị liên kết năng lượng và các liên kết, nên ta có thể chuyển một \emph{mô hình vật lý lý tưởng} phụ thuộc miền, được viết bằng các ký hiệu phụ thuộc miền, thành một đồ thị liên kết năng lượng. Có một thủ tục có hệ thống cho phép chuyển đổi này, sẽ được trình bày trong mục tiếp theo.
+
+Để sinh mô hình đồ thị liên kết năng lượng từ một mô hình vật lý lý tưởng, có một \emph{phương pháp có hệ thống} mà chúng tôi sẽ trình bày ở đây dưới dạng thủ tục. Thủ tục này, xét tổng thể, gồm nhận diện các miền và phần tử cơ bản, sinh cấu trúc kết nối (gọi là \emph{cấu trúc nút}), đặt các phần tử, và có thể đơn giản hóa đồ thị. Thủ tục cho miền cơ học khác với thủ tục cho các miền khác. Những khác biệt này được ghi trong ngoặc. Lý do là các phần tử cần được nối với \emph{các biến chênh lệch} (across variable). Các đại lượng thế trong những miền phi cơ học và các vận tốc (đại lượng dòng) trong miền cơ học là những biến chênh lệch mà ta cần.
+
+\subsection{Tám bước của thủ tục có hệ thống}
+Bước 1 và 2 liên quan đến việc nhận diện các miền và phần tử.
+\begin{enumerate}
+\item Xác định những miền vật lý nào hiện diện trong hệ thống và nhận diện mọi phần tử cơ bản như C, I, R, Se, Sf, TF và GY. Gán cho mỗi phần tử một tên duy nhất để phân biệt chúng với nhau.
+\item Trong mô hình vật lý lý tưởng, chỉ ra cho mỗi miền một đại lượng thế tham chiếu (vận tốc tham chiếu có hướng dương đối với các miền cơ học).\\
+Lưu ý rằng chỉ các tham chiếu trong miền cơ học mới có hướng.
+\end{enumerate}
+
+Bước 3 đến 6 mô tả việc sinh cấu trúc kết nối (gọi là \emph{cấu trúc nút}).
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item Nhận diện mọi đại lượng thế \emph{khác} (trong các miền cơ học: vận tốc) và gán cho chúng tên duy nhất.
+\item Vẽ các đại lượng thế này (cơ học: vận tốc), không vẽ các tham chiếu, bằng các nút 0 (cơ học: nút 1). Nếu có thể, giữ bố cục giống mô hình vật lý lý tưởng (IPM).
+\item Nhận diện mọi chênh lệch đại lượng thế (cơ học: chênh lệch vận tốc (= đại lượng dòng)) cần để nối các cổng của mọi phần tử đã liệt kê ở bước 1 vào cấu trúc nút. Gán tên duy nhất cho những chênh lệch này, ưu tiên tên thể hiện bản chất chênh lệch. Chênh lệch giữa $e_1$ và $e_2$ có thể được ký hiệu là $e_{12}$.
+\item Xây dựng các chênh lệch đại lượng thế bằng nút 1 (cơ học: các chênh lệch đại lượng dòng bằng nút 0) theo Hình 2.17, và vẽ chúng như vậy trong đồ thị.
+\end{enumerate}
+
+Cấu trúc nút lúc này đã sẵn sàng và có thể nối các phần tử vào.
+\begin{enumerate}
+\setcounter{enumi}{6}
+\item Nối cổng của mọi phần tử tìm được ở bước 1 với các nút 0 của các đại lượng thế hoặc chênh lệch đại lượng thế tương ứng (cơ học: các nút 1 của các đại lượng dòng hoặc chênh lệch đại lượng dòng tương ứng).
+\item Đơn giản hóa đồ thị thu được bằng cách áp dụng các quy tắc đơn giản hóa sau đây (2.18):
+% Source: printed 29 / PDF 45
+\sourcefigure{2.17}{45}{Xây dựng chênh lệch đại lượng thế (chênh lệch đại lượng dòng)}
+\begin{itemize}
+\item Có thể bỏ một nút nằm giữa hai liên kết nếu các liên kết có hướng công suất ``xuyên qua'' (một liên kết hướng vào, liên kết kia hướng ra).
+\item Có thể bỏ một liên kết giữa hai nút cùng loại và gộp các nút thành một nút.
+\item Hai chênh lệch đại lượng thế hoặc đại lượng dòng giống hệt nhau được xây dựng riêng rẽ có thể gộp thành một chênh lệch đại lượng thế hoặc đại lượng dòng.
+\end{itemize}
+\end{enumerate}
+\sourcefigure{2.18}{45}{Các quy tắc đơn giản hóa cấu trúc nút: (a, b): loại bỏ một nút giữa các liên kết; (c, d): gộp hai nút cùng loại; (e, f): hai chênh lệch giống hệt nhau được xây dựng riêng rẽ hợp nhất thành một chênh lệch}
+\sourceillustration{2.18L}{45}{\textbf{Chi tiết phóng to Hình 2.18 (bản dịch):} các quy tắc (a)--(d). Đây là vùng cắt từ hình đầy đủ phía trên; ký hiệu và đường liên kết giữ nguyên.}
+\sourceillustration{2.18R}{45}{\textbf{Chi tiết phóng to Hình 2.18 (bản dịch):} các quy tắc (e)--(f). Ký hiệu và đường liên kết giữ nguyên.}
+\clearpage
+
+\subsection{Minh họa thủ tục có hệ thống}
+Chúng tôi sẽ minh họa các bước này bằng một ví dụ cụ thể gồm một động cơ điện được cấp điện từ lưới, một tang cuốn cáp và một tải (2.19).
+
+Một mô hình vật lý lý tưởng (IPM) có thể dùng được trình bày trong Hình 2.20. Lưới điện được mô hình hóa như một nguồn điện áp lý tưởng. Đối với động cơ điện, độ tự cảm, điện trở của các cuộn dây, ma sát ổ trục và quán tính quay được xét đến. Tang cuốn cáp thực hiện sự biến đổi từ chuyển động quay sang tịnh tiến, mà chúng tôi xem là lý tưởng. Tải gồm một khối lượng và trọng lực. Xuất phát từ IPM trong Hình 2.20, chúng tôi sẽ xây dựng một đồ thị liên kết năng lượng bằng tám bước đã nêu trên.
+% Source: printed 30 / PDF 46
+\sourcefigure{2.19}{46}{Phác họa thiết bị nâng}
+\sourcefigure{2.20}{46}{Một mô hình vật lý lý tưởng có thể dùng, được bổ sung thông tin miền của bước 1}
+
+\paragraph{Bước 1}
+Hệ thống này gồm:
+\begin{itemize}
+\item Một phần thuộc miền điện, có nguồn điện áp (Se), điện trở (R), cuộn cảm (I) và cổng điện của động cơ điện (cổng GY).
+\item Một phần thuộc miền cơ quay, có cổng quay của động cơ điện (cổng GY), ma sát ổ trục (R), quán tính (I) và trục của tang cuốn cáp (cổng TF).
+\item Một phần thuộc miền cơ tịnh tiến, có cáp của tang cuốn cáp (cổng TF), khối lượng của tải (I) và trọng lực tác dụng lên khối lượng (Se).
+\end{itemize}
+Trong Hình 2.20, các miền được chỉ ra và mọi phần tử có tên duy nhất.
+
+\paragraph{Bước 2}
+Các tham chiếu được chỉ ra trong mô hình vật lý lý tưởng: điện áp $u_0$, vận tốc quay $\omega_0$ và vận tốc thẳng $v_0$. Hai vận tốc còn được gán định hướng dương (nghĩa là một hướng mà theo đó vận tốc là dương). Kết quả này được trình bày trong Hình 2.21.
+\sourcefigure{2.21}{46}{Các tham chiếu được bổ sung vào IPM}
+% Source: printed 31 / PDF 47
+\paragraph{Bước 3}
+Các điện áp, vận tốc góc và vận tốc thẳng khác được tìm kiếm và chỉ ra trong IPM (2.22). Các biến này lần lượt là $u_1$, $u_2$, $u_3$, $\omega_1$, $v_1$.
+\sourcefigure{2.22}{47}{IPM được bổ sung các điện áp, vận tốc và vận tốc góc liên quan}
+
+\paragraph{Bước 4}
+Các biến tìm được ở bước 3 được biểu diễn lần lượt bằng nút 0 và nút 1 trong Hình 2.23, theo một bố cục tương thích với IPM. Các tham chiếu không được vẽ, vì có thể nói chúng đã được loại bỏ (các tham chiếu có giá trị 0 và không đóng góp vào hành vi động).
+\sourcefigure{2.23}{47}{Khung ban đầu của đồ thị liên kết năng lượng: điện áp được biểu diễn bằng nút 0, còn vận tốc bằng nút 1}
+
+\paragraph{Bước 5}
+Khi kiểm tra mọi cổng của các phần tử tìm được ở bước 1 để tìm chênh lệch điện áp, chênh lệch vận tốc góc và chênh lệch vận tốc thẳng, chỉ $u_{12}$ và $u_{23}$ được nhận diện. Không cần chênh lệch vận tốc nào.
+
+\paragraph{Bước 6}
+Các biến chênh lệch được vẽ trong đồ thị liên kết năng lượng; xem Hình 2.24. Sau bước này, cấu trúc nút đã được sinh ra và có thể nối các phần tử vào.
+
+\paragraph{Bước 7}
+Mọi phần tử được nối vào các nút thích hợp, như trình bày trong Hình 2.25. Lưu ý rằng các phần tử thuộc miền phi cơ học luôn được nối vào nút 0 (đại lượng thế hoặc chênh lệch đại lượng thế), còn các phần tử thuộc miền cơ học luôn được nối vào nút 1.
+
+\paragraph{Bước 8}
+Thao tác cuối cùng là đơn giản hóa đồ thị liên kết năng lượng để loại bỏ những nút thừa (theo các quy tắc trong Hình 2.18). Đồ thị liên kết năng lượng thu được là kết quả của phương pháp có hệ thống; xem Hình 2.26. Hiển nhiên, phương pháp có hệ thống này không phải phương pháp duy nhất để suy ra đồ thị liên kết năng lượng từ các mô hình vật lý lý tưởng (IPM). Một phương pháp khác là cái gọi là \emph{phương pháp quan sát}, trong đó nhận diện những phần của IPM có thể được
+% Source: printed 32 / PDF 48
+biểu diễn bằng một nút. Ví dụ là một kết nối nối tiếp trong mạng điện, được vẽ bằng một nút 1. Đây chính là trường hợp trong ví dụ trên: nguồn điện áp, cuộn cảm, điện trở và cổng điện của động cơ được nối trực tiếp vào một nút 1. Mặc dù phương pháp quan sát ngắn hơn phương pháp có hệ thống, nó khá dễ dẫn đến sai sót.
+\sourcefigure{2.24}{48}{Cấu trúc nút đã sẵn sàng: các biến chênh lệch ($u_{12}$ và $u_{23}$) được thể hiện trong đồ thị liên kết năng lượng}
+\sourcefigure{2.25}{48}{IPM được bổ sung các điện áp, vận tốc và vận tốc góc liên quan \textit{Khóa đọc thêm của bản dịch:} hình trình bày đồ thị liên kết năng lượng hoàn chỉnh sau bước 7; dòng nhãn trong hình gốc là “The complete bond graph”. Chú thích tác giả vẫn dùng tên IPM.}
+\sourcefigure{2.26}{48}{Đồ thị liên kết năng lượng đã đơn giản hóa, kết quả của phương pháp có hệ thống}
+% Source: printed 33 / PDF 49
+\section{Phân tích nhân quả}
+\emph{Phân tích nhân quả} là việc xác định hướng tín hiệu của các liên kết. Kết nối năng lượng (liên kết) lúc này được diễn giải như một dòng tín hiệu hai chiều. Kết quả là một đồ thị liên kết năng lượng đã gán nhân quả, có thể xem như một sơ đồ khối gọn. Nhìn chung, phân tích nhân quả được thực hiện hoàn toàn bởi các gói phần mềm mô hình hóa và mô phỏng hỗ trợ đồ thị liên kết năng lượng, như Enport [242], MS1 [191], CAMP [129] và 20-sim [46, 48, 49, 50]. Vì vậy, trong thực tế không cần phân tích nhân quả bằng tay. Ngoài việc suy ra các phương trình, phân tích nhân quả còn có thể giúp hiểu tính đúng đắn và khả năng của mô hình. Chính lý do cuối cùng này đặc biệt thúc đẩy việc bàn về phân tích nhân quả trong chương này.
+
+\subsection{Các ràng buộc nhân quả}
+Tùy theo loại phương trình của các phần tử, các cổng phần tử có thể áp đặt những ràng buộc lên các liên kết được nối vào. Có bốn loại ràng buộc khác nhau, sẽ được trình bày trước khi bàn về một thủ tục có hệ thống để phân tích nhân quả của đồ thị liên kết năng lượng.
+
+\subsubsection{Quan hệ nhân quả cố định}
+\emph{Quan hệ nhân quả cố định} là trường hợp các phương trình chỉ cho phép một trong hai biến cổng là biến đầu ra. Điều này xảy ra ở các nguồn: theo định nghĩa, một nguồn đại lượng thế (Se) luôn có biến đại lượng thế làm đầu ra tín hiệu và có vạch nhân quả ở phía ngoài. Quan hệ nhân quả này được gọi là \emph{quan hệ nhân quả đầu ra đại lượng thế} (effort-out causality), hay \emph{quan hệ nhân quả đại lượng thế}. Một nguồn đại lượng dòng (Sf) rõ ràng có \emph{quan hệ nhân quả đầu ra đại lượng dòng} (flow-out causality), hay \emph{quan hệ nhân quả đại lượng dòng}.
+
+Một tình huống khác xuất hiện quan hệ nhân quả cố định là ở các phần tử phi tuyến, nơi các phương trình của cổng đó không thể đảo được (chẳng hạn do chia cho không). Điều này có thể xảy ra ở các phần tử R, GY, TF, C và I. Do đó, có hai lý do để áp đặt quan hệ nhân quả cố định:
+\begin{enumerate}
+\item Không có quan hệ giữa các biến cổng.
+\item Các phương trình không thể đảo được (``suy biến'').
+\end{enumerate}
+
+\subsubsection{Quan hệ nhân quả bị ràng buộc}
+Ở TF, GY, nút 0 và nút 1, tồn tại những quan hệ giữa quan hệ nhân quả của các cổng khác nhau trong phần tử. Các quan hệ này là \emph{ràng buộc nhân quả}, vì quan hệ nhân quả của một cổng cụ thể áp đặt quan hệ nhân quả của các cổng còn lại. Ở một TF, một cổng có quan hệ nhân quả đầu ra đại lượng thế và cổng kia có quan hệ nhân quả đầu ra đại lượng dòng. Ở một GY, cả hai cổng cùng có quan hệ nhân quả đầu ra đại lượng thế hoặc cùng có quan hệ nhân quả đầu ra đại lượng dòng.
+
+Ở một nút 0, nơi mọi đại lượng thế bằng nhau, phải có \emph{đúng một} liên kết đưa đại lượng thế vào. Điều này hàm ý nút 0 luôn có đúng một vạch nhân quả ở phía nút. Điều kiện nhân quả tại nút 1 là dạng đối ngẫu của nút 0. Mọi đại lượng dòng bằng nhau, do đó \emph{đúng một} liên kết sẽ đưa đại lượng dòng vào; điều này hàm ý \emph{đúng một} liên kết có vạch nhân quả ở phía xa nút 1.
+
+\subsubsection{Quan hệ nhân quả ưu tiên}
+Ở các phần tử tích trữ, quan hệ nhân quả quyết định sẽ thực hiện tích phân hay vi phân theo thời gian. Tích phân được ưu tiên hơn vi phân. Ở dạng tích phân, phải chỉ định một điều kiện đầu. Ngoài ra, tích phân theo thời gian là một quá trình có thể hiện thực về mặt vật lý. Vi phân số không thể hiện thực về mặt vật lý, vì cần thông tin tại các thời điểm tương lai. Một nhược điểm khác của vi phân xuất hiện khi đầu vào chứa một hàm bước: khi đó đầu ra sẽ trở thành vô hạn. Vì vậy, quan hệ nhân quả tích phân được xem là \emph{quan hệ nhân quả ưu tiên}. Điều này hàm ý phần tử C ưu tiên quan hệ nhân quả đầu ra đại lượng thế, còn phần tử I ưu tiên quan hệ nhân quả đầu ra đại lượng dòng. Những ưu tiên này cũng được minh họa trong Hình 2.8 và Hình 2.9, khi xét dạng triển khai thành sơ đồ khối.
+% Source: printed 34 / PDF 50
+\paragraph{Quan hệ nhân quả đầu ra đại lượng thế so với đầu ra đại lượng dòng}
+Khi một điện áp $u$ được áp đặt lên một tụ điện (phần tử C), dòng điện $i$ là kết quả của phương trình cấu thành của tụ điện:
+\[i=C\frac{\mathrm{d}u}{\mathrm{d}t}\]
+Như vậy, một phép vi phân đang được thực hiện. Ta gặp vấn đề khi điện áp tức thời nhảy sang một giá trị khác, vì dòng điện sẽ vô hạn (đạo hàm của một hàm bước là vô hạn). Điều này không xảy ra khi dòng điện được áp đặt lên tụ điện. Lúc này, một phép tích phân được dùng:
+\[u=u_0+\int i\,\mathrm{d}t\]
+Trường hợp thứ nhất là quan hệ nhân quả đầu ra đại lượng dòng (áp đặt đại lượng thế, đại lượng dòng là kết quả); trường hợp thứ hai là quan hệ nhân quả đầu ra đại lượng thế, tức quan hệ nhân quả ưu tiên. Hơn nữa, quan hệ nhân quả đầu ra đại lượng thế cũng tạo ra một biến trạng thái với điều kiện đầu $u_0$. Ở cuộn cảm, tình huống là dạng đối ngẫu của phần tử C: quan hệ nhân quả đầu ra đại lượng dòng sẽ tạo ra quan hệ nhân quả tích phân, là lựa chọn ưu tiên.
+
+\subsubsection{Quan hệ nhân quả không phân biệt}
+\emph{Quan hệ nhân quả không phân biệt} được dùng khi không có ràng buộc nhân quả nào! Ở một R tuyến tính, biến cổng nào là đầu ra không quan trọng. Xét một điện trở. Áp đặt dòng điện (đại lượng dòng) cho:
+\[u=Ri\]
+Cũng có thể áp đặt một điện áp (đại lượng thế) lên điện trở tuyến tính:
+\[i=\frac{u}{R}\]
+Không có sự khác biệt giữa việc chọn dòng điện làm biến đầu vào và điện áp làm biến đầu ra, hoặc chọn theo cách ngược lại.
+
+\subsection{Thủ tục phân tích nhân quả}
+Xét theo các ràng buộc nhân quả, có thể nói Se và Sf có quan hệ nhân quả cố định; C và I có quan hệ nhân quả ưu tiên; TF, GY, 0 và 1 có quan hệ nhân quả bị ràng buộc; R có quan hệ nhân quả không phân biệt (với điều kiện mọi phương trình của những phần tử cơ bản này đều có thể đảo được). Những dạng quan hệ nhân quả này đã được trình bày trong 2.4. Khi các phương trình không thể đảo được, phải sử dụng quan hệ nhân quả cố định.
+
+Thủ tục gán quan hệ nhân quả cho một đồ thị liên kết năng lượng bắt đầu từ các phần tử có ràng buộc nhân quả mạnh nhất, tức quan hệ nhân quả cố định (không thể chấp nhận việc vi phạm điều kiện nhân quả bằng cách viết lại phương trình, vì không thể viết lại). Thông qua các liên kết (tức các kết nối) trong đồ thị, một lần gán quan hệ nhân quả có thể dẫn tới việc gán các quan hệ nhân quả khác. Hiệu ứng này được gọi là \emph{lan truyền quan hệ nhân quả}: sau một lần gán, quan hệ nhân quả lan truyền qua đồ thị liên kết năng lượng do các ràng buộc nhân quả.
+
+Thuật toán gán quan hệ nhân quả như sau:
+\begin{description}
+\item[1a] Chọn một quan hệ nhân quả cố định của một phần tử nguồn, gán quan hệ nhân quả của nó, rồi lan truyền phép gán này qua đồ thị bằng các ràng buộc nhân quả. Tiếp tục đến khi quan hệ nhân quả của mọi nguồn đều được gán.
+\item[1b] Chọn một cổng chưa được gán nhân quả có quan hệ nhân quả cố định (phương trình không thể đảo), gán quan hệ nhân quả của nó, rồi lan truyền phép gán này qua đồ thị bằng các ràng buộc nhân quả. Tiếp tục đến khi quan hệ nhân quả của mọi cổng có quan hệ nhân quả cố định đều được gán.
+\item[2] Chọn một cổng chưa được gán nhân quả có quan hệ nhân quả ưu tiên (phần tử tích trữ), gán quan hệ nhân quả của nó, rồi lan truyền phép gán này qua đồ thị bằng các ràng buộc nhân quả. Tiếp tục đến khi quan hệ nhân quả của mọi cổng có quan hệ nhân quả ưu tiên đều được gán.
+% Source: printed 35 / PDF 51
+\item[3] Chọn một cổng chưa được gán nhân quả có quan hệ nhân quả không phân biệt, gán quan hệ nhân quả của nó, rồi lan truyền phép gán này qua đồ thị bằng các ràng buộc nhân quả. Tiếp tục đến khi quan hệ nhân quả của mọi cổng có quan hệ nhân quả không phân biệt đều được gán.
+\end{description}
+
+Thường thì sau bước 2, đồ thị liên kết năng lượng đã được gán nhân quả hoàn toàn, không có xung đột nhân quả nào (mọi điều kiện nhân quả được thỏa mãn). Nếu không như vậy, thời điểm trong thủ tục mà xung đột xuất hiện hoặc đồ thị trở nên được gán nhân quả hoàn toàn có thể giúp hiểu tính đúng đắn và khả năng của mô hình. Trước khi bàn về những vấn đề này, chúng tôi sẽ xét một ví dụ.
+
+\paragraph{Thuật toán nhân quả}
+Để minh họa thuật toán nhân quả, chúng tôi dùng lại ví dụ trong 2.5. Hình 2.27 trình bày đồ thị liên kết năng lượng được gán nhân quả hoàn toàn của thiết bị nâng. Các số tại những vạch nhân quả chỉ thứ tự mà các liên kết được gán nhân quả.
+
+Ở bước 1a, chúng tôi gán quan hệ nhân quả 1 và 2. Bắt đầu từ nguồn nào không quan trọng. Không có quan hệ nhân quả nào có thể lan truyền. Bước 1b không áp dụng vì không có cổng nào thuộc loại đó. Ở bước 2, chúng tôi bắt đầu từ cuộn cảm. Sự lan truyền diễn ra từ vạch 3 đến vạch 6. Phần tử tích trữ tiếp theo (quan hệ nhân quả ưu tiên) là quán tính $J$. Sự lan truyền quan hệ nhân quả này (số 7) hoàn tất việc gán nhân quả cho đồ thị, hàm ý không cần bước 3. Tuy nhiên, khối lượng của tải không nhận được quan hệ nhân quả ưu tiên của nó. Những hệ quả của điều này là chủ đề của mục tiếp theo.
+\sourcefigure{2.27}{51}{Đồ thị liên kết năng lượng đã gán nhân quả của thiết bị nâng}
+
+\subsection{Hiểu mô hình thông qua phân tích nhân quả}
+Ở đây, chúng tôi thảo luận những tình huống xuất hiện xung đột trong thủ tục phân tích nhân quả hoặc khi bước 3 của thuật toán tỏ ra cần thiết. Vị trí trong thủ tục nơi một xung đột xuất hiện hoặc đồ thị liên kết năng lượng được bổ sung quan hệ nhân quả hoàn toàn có thể giúp hiểu tính đúng đắn của mô hình.
+
+Thường thì sau \emph{bước 2}, đồ thị liên kết năng lượng được gán nhân quả hoàn toàn, không có xung đột nhân quả nào (mọi điều kiện nhân quả đều được thỏa mãn). Mỗi phần tử tích trữ biểu diễn một biến trạng thái, và tập phương trình là một tập tường minh các phương trình vi phân thường (không nhất thiết tuyến tính hoặc bất biến theo thời gian).
+
+Khi đồ thị liên kết năng lượng được gán nhân quả hoàn toàn sau \emph{bước 1a}, mô hình không có động lực học. Hành vi của mọi biến lúc này được quyết định bởi quan hệ nhân quả cố định của các nguồn. Nếu xung đột nhân quả xuất hiện ở bước 1a hoặc bước 1b, bài toán được đặt không chỉnh. Phải thay đổi mô hình bằng cách thêm một số phần tử. Ví dụ về
+% Source: printed 36 / PDF 52
+một xung đột nhân quả ở bước 1a là hai nguồn đại lượng thế được nối vào cùng một nút 0. Cả hai nguồn đều ``muốn'' xác định một biến đại lượng thế duy nhất.
+
+Với xung đột ở \emph{bước 1b}, một điều chỉnh có thể thực hiện là thay đổi các phương trình của phần tử có quan hệ nhân quả cố định sao cho những phương trình này có thể đảo được; khi đó tính cố định của ràng buộc biến mất. Ví dụ là một điốt hoặc một van có dòng điện hoặc đại lượng dòng bằng không khi chặn. Cho phép một điện trở hoặc sức cản nhỏ trong khi chặn sẽ làm các phương trình có thể đảo được.
+
+Khi xung đột xuất hiện ở \emph{bước 2}, một phần tử tích trữ nhận quan hệ nhân quả không ưu tiên. Điều này có nghĩa là phần tử tích trữ đó không biểu diễn một \emph{biến trạng thái}. Không thể chọn tự do giá trị đầu của phần tử tích trữ này. Một phần tử tích trữ như vậy thường được gọi là \emph{phần tử tích trữ phụ thuộc}. Điều này cho thấy một phần tử tích trữ đáng lẽ phải có xét theo quan điểm hệ thống vật lý đã không được tính đến trong quá trình mô hình hóa. Nó có thể bị bỏ qua có chủ ý hoặc bị quên. Trong ví dụ thiết bị nâng, tải của thiết bị nâng (phần tử I) là một phần tử tích trữ phụ thuộc như vậy. Tính đàn hồi của cáp không được mô hình hóa. Nếu được mô hình hóa, sẽ xuất hiện một phần tử tích trữ C nối vào nút 0 giữa tang cuốn cáp và tải, và sẽ loại bỏ xung đột nhân quả.
+
+Khi cần \emph{bước 3} của thuật toán nhân quả, cái gọi là \emph{vòng đại số} hiện diện trong đồ thị. Vòng này làm cho tập phương trình vi phân thu được trở thành \emph{ẩn}. Đây thường là dấu hiệu cho thấy một phần tử tích trữ đáng lẽ phải có xét theo quan điểm hệ thống vật lý đã không được mô hình hóa.
+
+Nhìn chung, có thể xử lý các xung đột nhân quả xuất hiện ở bước 2 hoặc bước 3 theo nhiều cách khác nhau:
+\begin{enumerate}
+\item \emph{Thêm phần tử.}\\
+Chẳng hạn, có thể rút lại quyết định bỏ qua một số phần tử. Các phần tử được thêm có thể là phần tử ký sinh; ví dụ, thêm tính đàn hồi (phần tử C) vào một kết nối cơ học đã được mô hình hóa như kết nối cứng. Thêm một phần tử giảm chấn (R) nữa sẽ giảm đáng kể thời gian mô phỏng; việc này được khuyến nghị.
+\item \emph{Thay đổi đồ thị liên kết năng lượng để xung đột biến mất.}\\
+Với xung đột ở bước 2, phần tử tích trữ phụ thuộc được gộp với một phần tử tích trữ độc lập có quan hệ nhân quả tích phân. Với xung đột ở bước 3, đôi khi có thể gộp các phần tử cản để loại bỏ xung đột. Có thể thực hiện điều này qua những biến đổi trong đồ thị. Độ phức tạp của thao tác phụ thuộc vào kích thước và loại mô hình con dọc theo đường đi giữa các phần tử tích trữ hoặc phần tử cản đang xét.
+\item \emph{Không thay đổi đồ thị liên kết năng lượng.}\\
+Để mô phỏng, cần một thủ tục tích phân đặc biệt (ẩn). Các phương trình ẩn được tính bằng một lược đồ lặp, thường là một phần của phương pháp tích phân số.
+\end{enumerate}
+
+Các vòng đại số và các vòng giữa một phần tử tích trữ phụ thuộc với một phần tử tích trữ độc lập được gọi là \emph{đường nhân quả bậc không} (zero-order causal path, ZCP). Ngoài hai loại này, còn có ba loại khác với độ phức tạp tăng dần và dẫn đến những phương trình phức tạp hơn. Chúng xuất hiện, chẳng hạn, trong các hệ cơ học vật rắn (van Dijk và Breedveld, 1991).
+
+Bằng cách diễn giải kết quả phân tích nhân quả, có thể nhận biết một số thuộc tính của mô hình mà nếu không, chỉ có thể nhận biết sau khi suy ra các phương trình.
+
+\subsection{Bậc của tập phương trình trạng thái}
+Phân tích nhân quả cũng cung cấp thông tin về bậc của tập phương trình. Số điều kiện đầu bằng số phần tử tích trữ có quan hệ nhân quả tích phân, cũng là quan hệ nhân quả ưu tiên trong quá trình gán nhân quả. Số này được gọi là bậc của hệ thống. Trong ví dụ (2.28), bậc của hệ thống là 2.
+
+Bậc của tập phương trình trạng thái nhỏ hơn hoặc bằng bậc của hệ thống, vì các phần tử tích trữ có thể phụ thuộc lẫn nhau. Mỗi phần tử tích trữ phụ thuộc thuộc loại này có giá trị đầu riêng, nhưng chúng cùng nhau biểu diễn một biến trạng thái. Các tín hiệu đầu vào của chúng bằng nhau hoặc khác nhau bởi một hệ số (2.28).
+
+Có một cách kiểm tra xem loại phần tử tích trữ phụ thuộc này có xuất hiện hay không: thực hiện phân tích nhân quả một lần nữa, nhưng chọn quan hệ nhân quả vi phân làm ưu tiên. Với ví dụ này, thao tác đó được trình bày trong Hình 2.29.
+
+Những phần tử tích trữ nhận được quan hệ nhân quả ưu tiên của chúng cả khi ưu tiên vi phân lẫn khi ưu tiên tích phân là những phần tử tích trữ \emph{thực} và đóng góp vào trạng thái của hệ thống. Theo định nghĩa, bậc của tập phương trình trạng thái là số phần tử tích trữ nhận được quan hệ nhân quả ưu tiên trong cả hai trường hợp. Ở
+% Source: printed 37 / PDF 53
+thiết bị nâng, số này là 2 (cụ thể là $L$ và $J$). Những phần tử tích trữ không nhận được quan hệ nhân quả ưu tiên của chúng trong cả hai trường hợp là các phần tử tích trữ phụ thuộc. Những phần tử tích trữ chỉ nhận được quan hệ nhân quả ưu tiên của chúng trong trường hợp ưu tiên tích phân được gọi là \emph{phần tử tích trữ bán phụ thuộc}, để phân biệt với các phần tử tích trữ phụ thuộc. Điều này cho thấy một phần tử tích trữ đáng lẽ phải có xét theo quan điểm hệ thống vật lý đã không được tính đến trong quá trình mô hình hóa.
+\sourcefigure{2.28}{53}{Hệ thống có bậc của phương trình trạng thái nhỏ hơn bậc của hệ thống. a) IPM; b) quan hệ nhân quả khi ưu tiên tích phân; c) quan hệ nhân quả khi ưu tiên vi phân}
+\sourcefigure{2.29}{53}{Áp dụng quan hệ nhân quả vi phân làm ưu tiên cho thiết bị nâng}
+
+\subsection{Dạng ma trận của các hệ tuyến tính}
+Nếu hệ thống tuyến tính, ta có thể viết tập phương trình trạng thái thu được ở dạng chuẩn:
+\[\dot{\mathbf{x}}=\mathbf{A}\mathbf{x}+\mathbf{B}\mathbf{u}\]
+trong đó $\mathbf{A}$ là ma trận hệ thống, còn $\mathbf{A}$ là ma trận đầu vào. Bậc của hệ thống là kích thước của ma trận vuông $\mathbf{A}$, và bậc của tập phương trình trạng thái là hạng của $\mathbf{A}$.
+
+Khi có các trạng thái phụ thuộc hoặc vòng đại số, mô tả ma trận như sau:
+\[\mathbf{E}\dot{\mathbf{x}}=\mathbf{A}\mathbf{x}+\mathbf{B}\mathbf{u}\]
+trong đó $\mathbf{E}$ là một ma trận vuông có kích thước bằng số phần tử tích trữ cộng với số vòng đại số. Với mỗi phần tử tích trữ vi phân và mỗi vòng đại số, $\mathbf{E}$ có một hàng toàn số không. Vectơ trạng thái $\mathbf{x}$ được mở rộng bằng các biến của vòng đại số, để các phương pháp tích phân ẩn có thể giải những loại hệ thống này. Thiết bị nâng cho một tập phương trình như vậy.
+% Source: printed 38 / PDF 54
+\section{Sinh phương trình}
+Một đồ thị liên kết năng lượng đã gán nhân quả chứa toàn bộ thông tin để suy ra tập phương trình trạng thái. Đó có thể là một tập phương trình vi phân thường bậc nhất, ODE, khi mô hình tường minh (không có xung đột nhân quả); hoặc một tập phương trình vi phân--đại số, DAE, khi mô hình ẩn (có xung đột nhân quả ở bước 2 của thủ tục hoặc cần bước 3; xem 2.6.2).
+
+Thủ tục suy ra các phương trình được thực hiện bởi phần mềm đồ thị liên kết năng lượng như Enport [242], MS1 [191], CAMP [129] và 20-sim [46, 48, 49, 50]. Vì vậy, trong thực tế không cần sinh phương trình bằng tay. Tuy nhiên, chúng tôi vẫn bàn về việc sinh phương trình: một mặt để trình bày đầy đủ, mặt khác để chỉ ra chính xác những việc phải làm.
+
+Chúng tôi dùng thủ tục sau để sinh phương trình:
+\begin{enumerate}
+\item Trước hết, viết tập các phương trình vi phân và đại số hỗn hợp. Đó là những quan hệ cấu thành của mọi phần tử ở dạng tính toán, hay dạng nhân quả. Tập này gồm $2n$ phương trình cho một đồ thị liên kết năng lượng có $n$ liên kết: $n$ phương trình tính một đại lượng thế và $n$ phương trình tính một đại lượng dòng, hoặc các đạo hàm của chúng.
+\item Sau đó, khử các phương trình đại số. Có thể tổ chức quá trình khử này bằng cách trước hết khử những phương trình đồng nhất đến từ các nguồn và nút. Tiếp theo, thay thế các phép nhân với tham số đến từ các phần tử cản và bộ chuyển đổi (TF, GY). Cuối cùng, thay các phương trình tổng của các nút vào các phương trình vi phân của phần tử tích trữ. Trong quá trình này, đánh dấu các biến trạng thái trước là cách làm hiệu quả. Về nguyên tắc, các biến trạng thái là lượng được chứa trong các phần tử tích trữ (biến kiểu $p$ hoặc $q$). Tuy nhiên, nếu viết các quan hệ cấu thành của phần tử tích trữ thành một phương trình vi phân, ta cũng có thể dùng các \emph{đại lượng thế} tại phần tử C và các \emph{đại lượng dòng} tại phần tử I.
+\end{enumerate}
+
+Nếu định sinh phương trình bằng tay, ta có thể tính đến bước khử thứ nhất ngay khi lập phương trình, bằng cách ở các nguồn, dùng trực tiếp hàm tín hiệu trên liên kết. Hơn nữa, ta có thể viết biến xác định nút dọc theo tất cả các liên kết được nối vào nút đó. \emph{Biến xác định nút} là biến được gán cho các biến liên kết của mọi liên kết khác nối vào nút đó, thông qua các phương trình đồng nhất trong phương trình của nút. Ở nút 0, đây là đại lượng thế của liên kết duy nhất có vạch nhân quả hướng về nút 0. Ở nút 1, đây là đại lượng dòng của liên kết duy nhất có vạch nhân quả ở phía xa nút 1.
+
+Trong trường hợp các phần tử tích trữ phụ thuộc, phải chú ý không khử mất biến trạng thái đi kèm. Đó là cái gọi là \emph{biến bán trạng thái}. Khi đánh dấu các biến trạng thái từ trước, bao gồm cả các biến bán trạng thái trong tình huống này, ta có thể tránh khử nhầm biến. Trong trường hợp vòng đại số, sẽ gặp các phương trình ẩn. Ta chọn một biến trong những vòng này làm \emph{biến ngắt vòng đại số}, và biến đó trở thành một biến bán trạng thái. Xem thêm 2.6.5. Phương trình chứa biến bán trạng thái của một phần tử tích trữ bị khử ở bước khử thứ hai: đó là một phép nhân. Bản thân biến bán trạng thái không được khử.
+
+\paragraph{Suy ra các phương trình vi phân của thiết bị nâng}
+Tập \emph{phương trình vi phân và đại số hỗn hợp} của thiết bị nâng được trình bày dưới đây. Các đại lượng thế và đại lượng dòng được đánh số theo cùng thứ tự mà quan hệ nhân quả của chúng được gán. Có 22 phương trình, trong đó 11 phương trình tính một đại lượng dòng và 11 phương trình tính một đại lượng thế. Vì muốn sinh tập phương trình ở dạng phương trình vi phân, tại các phần tử tích trữ ở dạng tích phân, chúng tôi viết các phương trình thành phương trình vi phân thay vì phương trình tích phân. Cách này được gọi là \emph{tích phân trì hoãn} (deferred integration); xem Hình 2.30.
+
+Các biến trạng thái là $f_3$ và $f_7$, còn $f_{11}$ là biến bán trạng thái thuộc về khối lượng có quan hệ nhân quả đạo hàm (đó là phần tử I). Lưu ý rằng phương trình của khối lượng được viết ở dạng nhân quả: $e_{11}$ là đầu ra. Sau khi khử các phương trình đồng nhất ở các nút và nguồn, còn 12 phương trình. Lưu ý rằng các đại lượng dòng của hai nguồn đại lượng thế ($f_1$ và $f_2$) không được sử dụng ở nơi khác, nên chúng tôi bỏ chúng đi.
+
+Sau khi thay thế các phép nhân với phần tử cản và bộ chuyển đổi, tập phương trình được rút gọn thành 6 phương trình sau: 2 phương trình vi phân, 1 phương trình ràng buộc tính biến bán trạng thái $f_{11}$ và 4 phương trình nút. Lúc này, chỉ các biến trạng thái, biến nút và biến đầu vào được sử dụng.
+
+Sau khi thay các phép cộng tại nút vào các phương trình vi phân và phương trình ràng buộc, kết quả được trình bày trong Hình 2.31.
+
+Đây là một hệ tuyến tính, nên ta có thể viết các phương trình ở dạng ma trận (theo dạng thứ hai trong 2.6.5), được trình bày trong Hình 2.32.
+% Source: printed 39 / PDF 55
+\sourcefigure{2.30}{55}{Các phương trình của thiết bị nâng}
+\sourcefigure{2.31}{55}{Các phương trình vi phân và phương trình ràng buộc của thiết bị nâng}
+\sourcefigure{2.32}{55}{DAE của thiết bị nâng ở dạng ma trận}
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C2-1).} Đặt $r=D/2>0$. Giữ các quan hệ TF mang dấu âm đã in trong Hình 2.30, phép thế vào $\dot f_7=e_7/J$ cho
+\[
+\dot f_7=\frac{K}{J}f_3-\frac{R_{\mathrm{bearing}}}{J}f_7
++\frac{rm}{J}\dot f_{11}+\frac{r}{J}mg.
+\]
+Hai hạng cuối trong Hình 2.31 thiếu $1/J$. Với vectơ trạng thái $(f_3,f_7,f_{11})^{\mathsf{T}}$ và đầu vào $(u_{\mathrm{source}},mg)^{\mathsf{T}}$, các phần tử tương ứng trong Hình 2.32 phải là $E_{23}=-rm/J$ và $B_{22}=r/J$; hệ số đạo hàm đã thiếu cả $m$ lẫn phép chia cho $J$. Kết quả này phụ thuộc vào các dấu của phương trình Hình 2.30. Bản gốc dùng tỷ số TF dương trong các sơ đồ Hình 2.33 và 2.37, nên quy ước dấu giữa các hình không nhất quán. Các công thức của tác giả được giữ nguyên.
+\end{quote}
+
+Khi trước hết làm mô hình trở nên tường minh bằng cách thêm phần tử, theo phương án 1 trong 2.6.3, đồ thị liên kết năng lượng đã gán nhân quả và các phương trình được cho dưới đây. Chúng tôi thêm tính đàn hồi của dây: một phần tử C nối vào nút 0 được chèn trên liên kết giữa TF của tang cuốn cáp và nút 1 của tải (xem Hình 2.33). Các đại lượng thế và đại lượng dòng được đánh số theo cùng thứ tự mà quan hệ nhân quả của chúng được gán. Có 26 phương trình, trong đó 13 phương trình tính một đại lượng dòng và 13 phương trình tính một đại lượng thế.
+% Source: printed 40 / PDF 56
+\sourcefigure{2.33}{56}{Đồ thị liên kết năng lượng đã gán nhân quả của thiết bị nâng, có bổ sung tính đàn hồi}
+
+Các biến trạng thái là $f_3$, $f_7$, $e_{11}$ và $f_{13}$. Như vậy có \emph{bốn} biến trạng thái độc lập. Áp dụng thủ tục suy ra phương trình dẫn đến tập phương trình trạng thái viết ở dạng ma trận, được trình bày trong Hình 2.34.
+\sourcefigure{2.34}{56}{ODE của thiết bị nâng ở dạng ma trận}
+% Quality layout: flush the author's figures before the complete translator note.
+\clearpage
+\begin{quote}\begin{minipage}{\linewidth}\small
+\textbf{Ghi chú bản dịch (C2-2).} Theo số liên kết trong Hình 2.33, phần tử $I:J$ ở liên kết 7, $I:m$ ở liên kết 11 và $C$ ở liên kết 13. Do đó, vectơ trạng thái theo số liên kết là $(f_3,f_7,e_{13},f_{11})^{\mathsf{T}}$, khác với các chỉ số đã in. Đặt $r=D/2>0$, $C=C_{\mathrm{elasticity}}$, $R_b=R_{\mathrm{bearing}}$ và $\mathbf{x}=(i,\omega,F,v)^{\mathsf{T}}=(f_3,f_7,e_{13},f_{11})^{\mathsf{T}}$. Với $L,J,m,C$ là các hằng dương và TF, GY lý tưởng, ma trận sau được suy ra từ tỷ số TF dương trong Hình 2.33 và các dấu của sơ đồ khối Hình 2.37:
+\[
+\dot{\mathbf{x}}=
+\begin{pmatrix}
+-R_{\mathrm{el}}/L & -K/L & 0 & 0\\
+K/J & -R_b/J & -r/J & 0\\
+0 & r/C & 0 & -1/C\\
+0 & 0 & 1/m & 0
+\end{pmatrix}\mathbf{x}
++\begin{pmatrix}u_{\mathrm{source}}/L\\0\\0\\-g\end{pmatrix}.
+\]
+Hệ số phản hồi lực lò xo âm ở hàng 2 phù hợp với sơ đồ; hệ số đó cần chia cho $J$. Hàng 3 phải tác động lên tốc độ góc và vận tốc tải, tức các cột 2 và 4. Đây là ma trận suy ra riêng theo quy ước của các sơ đồ, không thay thế ma trận đã in của tác giả.
+\end{minipage}\end{quote}
+
+\section{Triển khai thành sơ đồ khối}
+Để cho thấy một đồ thị liên kết năng lượng đã gán nhân quả là một sơ đồ khối gọn, trong mục này chúng tôi xét việc triển khai một đồ thị liên kết năng lượng đã gán nhân quả thành sơ đồ khối. Hơn nữa, biểu diễn hệ thống bằng sơ đồ khối có thể quen thuộc hơn biểu diễn bằng đồ thị liên kết năng lượng. Vì vậy, công việc này có thể giúp hiểu đồ thị liên kết năng lượng.
+
+Việc triển khai một đồ thị liên kết năng lượng đã gán nhân quả thành sơ đồ khối gồm ba bước:
+\begin{enumerate}
+\item Triển khai mọi liên kết thành \emph{dòng tín hiệu hai chiều} (hai tín hiệu có hướng ngược nhau). \emph{Vạch nhân quả} xác định hướng truyền của đại lượng thế. Có thể khoanh các phần tử đồ thị liên kết năng lượng để nối các tín hiệu vào chúng.
+\item Thay các phần tử đồ thị liên kết năng lượng bằng biểu diễn sơ đồ khối của chúng (xem 2.4). Suy ra dấu của các phép cộng tại nút từ hướng mũi tên của liên kết (nửa mũi tên; xem 2.4.5). Thường thì xác định những dấu này sau khi mọi phần tử đồ thị liên kết năng lượng đã được viết ở dạng sơ đồ khối là cách làm hiệu quả.\\
+Về nguyên tắc, sơ đồ khối đã sẵn sàng.
+\item Vẽ lại sơ đồ khối ở \emph{dạng chuẩn}: mọi bộ tích phân nằm trong một dòng nối tiếp (từ trái sang phải), còn mọi thao tác khác tạo thành các vòng phản hồi. Tất nhiên, điều này không phải lúc nào cũng thực hiện được. Có thể gộp các khối với nhau.
+% Source: printed 41 / PDF 57
+Vì sơ đồ khối biểu diễn các phép toán, có các tính chất \emph{giao hoán} và \emph{kết hợp}, có thể dùng những tính chất này để biến đổi sơ đồ khối sao cho kết quả có hình thức đủ dễ nhìn.
+\end{enumerate}
+
+Để minh họa, chúng tôi trình bày sơ đồ khối của thiết bị nâng, dùng ba bước trên để xây dựng sơ đồ khối. Hình 2.35 trình bày kết quả sau bước 2, còn Hình 2.36 trình bày sơ đồ khối ở dạng chuẩn. Sơ đồ khối của mô hình có tính đàn hồi được trình bày trong Hình 2.37.
+\sourcefigure{2.35}{57}{Đồ thị liên kết năng lượng được triển khai thành sơ đồ khối theo bố cục của đồ thị liên kết năng lượng (đồ thị liên kết năng lượng được thể hiện bằng màu xám)}
+\sourcefigure{2.36}{57}{Sơ đồ khối được vẽ lại ở dạng chuẩn}
+
+\section{Mô phỏng}
+Tập phương trình thu được từ một mô hình đồ thị liên kết năng lượng được gọi là mô hình mô phỏng. Nó gồm các phương trình vi phân thường bậc nhất (ODE), có thể được mở rộng bằng các phương trình ràng buộc đại số (DAE). Do đó, có thể mô phỏng nó bằng các phương pháp tích phân số chuẩn. Tuy nhiên, vì tích phân số là một phép xấp xỉ của quá trình tích phân thực, việc kiểm tra mô hình mô phỏng về
+% Source: printed 42 / PDF 58
+các khía cạnh quan trọng đối với mô phỏng là hữu ích. Nhờ đó, có thể chọn một phương pháp tích phân thích hợp: khối lượng tính toán là nhỏ nhất và các kết quả vẫn nằm trong một biên sai số được chỉ định.
+\sourcefigure{2.37}{58}{Sơ đồ khối của thiết bị nâng có tính đàn hồi \textit{Khóa đọc nhãn thêm của bản dịch:} các chỉ số chữ nhỏ trong sơ đồ là $U_{\mathrm{source}}$, $R_{\mathrm{el}}$, $R_{\mathrm{bearing}}$ và $C_{\mathrm{elasticity}}$.}
+
+Vì trong phân tích nhân quả có thể quyết định có thay đổi mô hình đồ thị liên kết năng lượng để thu được một mô hình mô phỏng tường minh hay không, việc biết các hệ quả đối với mô phỏng của những đặc trưng liên quan trong mô hình mô phỏng là hữu ích. Bốn khía cạnh sau đây của mô hình mô phỏng liên quan đến việc chọn phương pháp tích phân số:
+\begin{enumerate}
+\item \emph{Sự hiện diện của các phương trình ẩn.}\\
+Các mô hình ẩn (DAE) chỉ có thể được mô phỏng bằng các phương pháp tích phân ẩn. Thủ tục lặp của phương pháp tích phân ẩn cũng được dùng để tính mô hình ẩn. Các mô hình tường minh (ODE) có thể được mô phỏng bằng cả phương pháp tích phân tường minh lẫn phương pháp tích phân ẩn. Đôi khi, phương pháp tích phân ẩn cần nhiều thời gian tính toán hơn phương pháp tích phân tường minh. Trong phân tích nhân quả, có thể thấy mô hình mô phỏng sẽ tường minh hay ẩn; xem 2.6.3.
+\item \emph{Sự hiện diện của các điểm gián đoạn.}\\
+Các phương pháp tích phân có cơ chế đặc biệt dành cho sự kiện sẽ hoạt động tốt nhất. Nếu không có cơ chế đó, có thể dùng các phương pháp bước biến thiên. Các phương pháp đa bước trở nên kém chính xác hơn, vì chúng cần thông tin từ quá khứ, vốn không còn hữu ích sau một điểm gián đoạn. Trong khi xây dựng mô hình, có thể đánh dấu sự hiện diện của các điểm gián đoạn.
+\item \emph{Tính cứng số.}\\
+$S(t)$, tỷ số độ cứng, là một thước đo khoảng cách giữa các phần thực của những giá trị riêng $\lambda$, cụ thể:
+\[S(t)=\frac{\max\bigl(\lvert\operatorname{Re}\lambda(t)\rvert\bigr)}{\min\bigl(\lvert\operatorname{Re}\lambda(t)\rvert\bigr)}\]
+Các mô hình cứng ($S$ lớn) cần những phương pháp tích phân dành cho bài toán cứng. Bước thời gian lúc này được quyết định bởi tính ổn định thay vì độ chính xác (cụ thể, các giá trị riêng được dùng để xác định kích thước bước). Khi các phần tần số cao đã suy giảm hết, chúng không còn ảnh hưởng đến kích thước bước nữa. Do đó, kích thước bước có thể tăng đến các giới hạn do những tần số thấp hơn quyết định.
+\item \emph{Các phần dao động.}\\
+Khi một mô hình \emph{không có giảm chấn}, không nên mô phỏng nó bằng một phương pháp dành cho bài toán cứng. Những phương pháp này hoạt động kém đối với các giá trị riêng nằm trên trục ảo (nghĩa là không có giảm chấn) trong mặt phẳng phức của các giá trị riêng.
+\end{enumerate}
+
+Có thể định vị các giá trị riêng trong một đồ thị liên kết năng lượng đã gán nhân quả, đặc biệt khi mọi phần tử tuyến tính. Có một phiên bản của quy tắc vòng Mason dành cho đồ thị liên kết năng lượng, để xác định hàm truyền từ một đồ thị liên kết năng lượng [53]. Một kết quả phụ là có thể tính được các giá trị riêng. Chúng tôi sẽ không bàn về thủ tục tìm các giá trị riêng từ một đồ thị liên kết năng lượng đã gán nhân quả bằng tay.
+% Source: printed 43 / PDF 59
+\section{Tổng kết}
+Trong chương này, chúng tôi đã giới thiệu đồ thị liên kết năng lượng để mô hình hóa các hệ thống vật lý theo cách \emph{độc lập với miền}. Chỉ các hệ thống \emph{vĩ mô} được xét, nên các \emph{hiệu ứng lượng tử} không đóng vai trò đáng kể. Tính độc lập với miền dựa trên thực tế rằng các khái niệm vật lý tương tự nhau trong những miền vật lý khác nhau. Có sáu khái niệm cơ bản khác nhau: tích trữ năng lượng, tiêu tán, chuyển đổi sang các miền khác, phân phối, truyền tải, đưa năng lượng vào hoặc ra.
+
+Một điểm xuất phát khác là có thể viết các mô hình thành đồ thị có hướng: các bộ phận được kết nối bằng những liên kết, dọc theo đó diễn ra sự trao đổi năng lượng. Một liên kết biểu diễn dòng năng lượng giữa hai mô hình con được nối với nhau. Dòng năng lượng này có thể được mô tả như tích của hai biến (đại lượng thế và đại lượng dòng), cho phép nhìn nhận liên kết như một kết nối \emph{tín hiệu hai chiều}. Trong mô hình hóa, cách diễn giải thứ nhất được sử dụng; trong phân tích và sinh phương trình, cách diễn giải thứ hai được sử dụng.
+
+Hơn nữa, chúng tôi đã trình bày một phương pháp xây dựng đồ thị liên kết năng lượng một cách có hệ thống, xuất phát từ một mô hình vật lý lý tưởng. Ngoài hướng tính toán của các tín hiệu trên liên kết, phân tích nhân quả còn cung cấp thông tin về tính đúng đắn của mô hình. Chúng tôi đã trình bày các phương pháp suy ra quan hệ nhân quả của đồ thị liên kết năng lượng. Ngoài ra, các thủ tục sinh phương trình và sơ đồ khối từ đồ thị liên kết năng lượng đã gán nhân quả cũng được trình bày.
+
+Do văn bản này mang tính nhập môn, một số thủ tục được trình bày mà không giải thích sâu lý do và các phương án thay thế có thể có. Mục đích cũng không phải là đi sâu vào mô hình hóa hệ thống vật lý. Chúng tôi không bàn về các kết nối bội (các mảng liên kết được viết thành một đa liên kết) và các phần tử nhiều cổng (để mô tả bộ chuyển đổi), cũng không bàn về những thuật toán phân tích nhân quả khác nhau. Những thuật toán nhân quả khác nhau đó tạo ra các tập DAE hơi khác nhau, đặc biệt khi áp dụng cho một số lớp mô hình nhất định (chẳng hạn các hệ nhiều vật thể có vòng động học).
+
+Cuối cùng, mô hình hóa bằng đồ thị liên kết năng lượng thực ra là một dạng \emph{mô hình hóa hệ thống vật lý hướng đối tượng}, một thuật ngữ thường được sử dụng. Có thể hiểu điều này như sau: các mô hình đồ thị liên kết năng lượng có tính khai báo, có thể có cấu trúc phân cấp và hỗ trợ đầy đủ sự đóng gói (nhờ cách chỉ định phương trình chưa gán nhân quả và khái niệm cổng). Hơn nữa, nhờ cho phép phân cấp, có sự phân biệt giữa định nghĩa và sử dụng mô hình (nghĩa là khái niệm lớp và việc tạo thể hiện). Vì đồ thị liên kết năng lượng đã xuất hiện trước khi thuật ngữ hướng đối tượng được dùng trong lĩnh vực mô hình hóa hệ thống vật lý, có thể xem đồ thị liên kết năng lượng là một mô thức mô hình hóa hệ thống vật lý hướng đối tượng có trước tên gọi ấy.
+
+Một thư viện đồ thị liên kết năng lượng đã được viết bằng Modelica, một ngôn ngữ mô hình hóa hướng đối tượng đương đại [47]. Các phần tử cơ bản của đồ thị liên kết năng lượng và các phần tử sơ đồ khối đã được chỉ định trong Modelica, dùng những đặc tính hướng đối tượng cốt lõi là kế thừa và đóng gói. Các phương trình được chỉ định ở dạng phi nhân quả. Vì vậy, có thể nói các khái niệm mô hình hóa của Modelica nhất quán với các khái niệm đồ thị liên kết năng lượng. Hơn nữa, việc sinh tự động mã Modelica từ đồ thị liên kết năng lượng tỏ ra khá trực tiếp [46].
+
+\section{Tài liệu và đọc thêm}
+Để có phân tích kỹ lưỡng hơn về đồ thị liên kết năng lượng, xem Paynter [228] và Breedveld [43, 44]; một phần trình bày rộng ở mức giáo trình được Karnopp, Margolis và Rosenberg cung cấp [160]. Cellier [67] đã viết một giáo trình về mô hình hóa hệ thống liên tục, trong đó ngoài đồ thị liên kết năng lượng còn sử dụng những phương pháp mô hình hóa khác. Các nghiên cứu hiện nay về đồ thị liên kết năng lượng được báo cáo tại International Conference on Bond Graph Modelling, tổ chức hai năm một lần (Granda và Cellier [129]). Các tạp chí thường xuyên công bố bài báo về đồ thị liên kết năng lượng gồm \emph{Journal of the Franklin Institute}, cũng đã có các số chuyên đề về đồ thị liên kết năng lượng, và \emph{Journal of Dynamic Systems, Measurement and Control}.
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Liên kết là gì? Vì sao việc bắt đầu bằng các liên kết như phương tiện kết nối các hệ con lại hữu ích và thiết yếu?
+\item Đại lượng bảo toàn là gì? Hãy nêu ví dụ cho mỗi loại đại lượng bảo toàn.
+\item Ràng buộc nhân quả là gì? Vì sao thứ tự sử dụng các ràng buộc nhân quả trong thủ tục phân tích nhân quả lại như đã trình bày?
+\item Việc thực hiện thủ tục phân tích nhân quả mang lại những hiểu biết gì?
+% Source: printed 44 / PDF 60
+\item Những thuộc tính nào của một mô hình đồ thị liên kết năng lượng đã gán nhân quả (hoặc bất kỳ mô hình nào được viết thành các phương trình vi phân) ảnh hưởng đến việc chọn thuật toán tích phân số cần cho mô phỏng mô hình đó?
+\end{enumerate}
+
+\section*{Lời cảm ơn}
+Phần lớn cảm hứng cho chương này đến từ tài liệu khóa học bằng tiếng Hà Lan của Breedveld và Van Amerongen (1994). Tôi chân thành cảm ơn Peter Breedveld và Job van Amerongen vì những gợi ý và thảo luận quý báu của họ.
+
+\section*{Truy cập mở}
+Chương này được cấp phép theo các điều khoản của Giấy phép Creative Commons Attribution 4.0 International (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, chuyển thể, phân phối và sao chép trên bất kỳ phương tiện hoặc định dạng nào, miễn là ghi công thích hợp cho (các) tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons và chỉ rõ nếu đã có thay đổi.
+
+Các hình ảnh hoặc tư liệu của bên thứ ba khác trong chương này thuộc giấy phép Creative Commons của chương, trừ khi có chỉ dẫn khác trong dòng ghi công của tư liệu. Nếu tư liệu không thuộc giấy phép Creative Commons của chương và việc sử dụng dự định của bạn không được pháp luật cho phép hoặc vượt quá phạm vi sử dụng được phép, bạn cần xin phép trực tiếp từ chủ sở hữu bản quyền.

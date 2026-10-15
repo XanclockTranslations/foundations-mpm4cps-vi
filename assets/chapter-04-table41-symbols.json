@@ -1,0 +1,195 @@
+{
+  "coordinate_system": "PDF points, top-left origin; schematic-symbol cells only; table borders excluded",
+  "source_pixel_coordinates": "review/qa-independent-ch04-114.png, 1355x1800",
+  "figures": [
+    {
+      "number": "4.T1.symbol.1",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        263.1789694444445,
+        318.94546273062736,
+        283.82907222222224
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        599,
+        726,
+        646
+      ],
+      "file": "assets/ch04-table41-r1-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.2",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        293.93444166666666,
+        318.94546273062736,
+        317.22072777777777
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        669,
+        726,
+        722
+      ],
+      "file": "assets/ch04-table41-r2-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.3",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        326.00800555555554,
+        318.94546273062736,
+        348.8549277777778
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        742,
+        726,
+        794
+      ],
+      "file": "assets/ch04-table41-r3-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.4",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        356.3241138888889,
+        318.94546273062736,
+        376.9742166666667
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        811,
+        726,
+        858
+      ],
+      "file": "assets/ch04-table41-r4-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.5",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        382.68594722222224,
+        318.94546273062736,
+        403.7754138888889
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        871,
+        726,
+        919
+      ],
+      "file": "assets/ch04-table41-r5-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.6",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        409.92650833333335,
+        318.94546273062736,
+        439.3638888888889
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        933,
+        726,
+        1000
+      ],
+      "file": "assets/ch04-table41-r6-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.7",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        445.51498333333336,
+        318.94546273062736,
+        465.28635833333334
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        1014,
+        726,
+        1059
+      ],
+      "file": "assets/ch04-table41-r7-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.8",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        469.24063333333334,
+        318.94546273062736,
+        486.8151888888889
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        1068,
+        726,
+        1108
+      ],
+      "file": "assets/ch04-table41-r8-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    },
+    {
+      "number": "4.T1.symbol.9",
+      "pdf_page": 114,
+      "bounds": [
+        259.6374221402214,
+        492.52691944444445,
+        318.94546273062736,
+        518.4493888888888
+      ],
+      "source_inspection_pixel_bounds": [
+        591,
+        1121,
+        726,
+        1180
+      ],
+      "file": "assets/ch04-table41-r9-symbol.pdf",
+      "status": "native_and_independently_visually_checked",
+      "labels_language": "original formal identifiers; no descriptive prose in symbol cell",
+      "treatment": "Native source schematic-symbol cell; preserves every port, block number and connection",
+      "visual_review": "Compared each rendered native cell with PDF114 visible Table4.1; all ports, shapes, connections, P1/P2/P3 and n preserved; no table-grid fragments or clipping"
+    }
+  ]
+}

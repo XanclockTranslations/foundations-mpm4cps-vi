@@ -1,0 +1,1504 @@
+% Complete Chapter 8 Vietnamese translation; all 50 source pages self-reviewed.
+% Production rendering and independent review are tracked in review/chapter-08.md.
+% Source: printed 209 / PDF 223
+\chapter{AADL: Ngôn ngữ đặc tả kiến trúc của các hệ thống thực-ảo}
+\chapterauthors{Dominique Blouin và Etienne Borde}
+\begin{flushleft}
+\small
+Dominique Blouin và Etienne Borde\\
+Telecom ParisTech, Paris, Pháp\\
+Thư điện tử: \texttt{\{dominique.blouin,etienne.borde\}@telecom-paristech.fr}\\
+\copyright{} Các tác giả 2020. P. Carreira và cộng sự (chủ biên), \emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+\url{https://doi.org/10.1007/978-3-030-43946-0_8}
+\end{flushleft}
+
+\section*{Tóm tắt}
+Chương này dành cho các hệ hình thức mô tả kiến trúc hệ thống, đặc biệt là Ngôn ngữ phân tích và thiết kế kiến trúc (Architecture Analysis and Design Language, AADL). AADL là một Ngôn ngữ mô tả kiến trúc (Architecture Description Language, ADL), phù hợp để mô hình hóa hệ thống nhúng và hệ thống thực-ảo. Kiến trúc giữ vai trò trung tâm trong mô hình hóa đa mô thức cho hệ thống thực-ảo vì cung cấp mô tả tổng thể hệ thống và môi trường mà hệ thống sẽ hoạt động trong đó. Từ mô tả này, có thể sinh và bổ sung các mô hình thuộc những ngôn ngữ và hệ hình thức khác, như được mô tả trong sách, để nghiên cứu những khía cạnh khác của hệ thống, điều thiết yếu cho thẩm định và kiểm chứng. Sau phần giới thiệu ngắn về ADL và vai trò của chúng trong MPM4CPS, AADL sẽ được trình bày và cách sử dụng được minh họa qua mô hình hóa, phân tích và sinh mã cho một robot Lego Mindstorm đơn giản để vận chuyển vật trong nhà kho. Chúng ta sẽ tuân theo một quy trình thiết kế đơn giản từ trên xuống, lấy kiến trúc làm trung tâm: bắt đầu bằng nắm bắt mục tiêu của các bên liên quan và yêu cầu hệ thống, tiếp đến thiết kế hệ thống, phân tích và kiểm chứng thiết kế, cuối cùng sinh mã tự động.
+
+\section{Mục tiêu học tập}
+Sau khi đọc chương này, bạn đọc cần có đủ kiến thức về họ ngôn ngữ AADL và các cách tiếp cận mô hình hóa để:
+\begin{itemize}
+\item Mô hình hóa một hệ thống thực-ảo đơn giản ở các mức trừu tượng khác nhau: yêu cầu, kiến trúc chức năng, kiến trúc vật lý, kiến trúc phần mềm và triển khai.
+\item Mô hình hóa thư viện thành phần tái sử dụng được và các họ sản phẩm.
+\item Hiểu các khái niệm cơ bản về định thời, lập lịch và các thuộc tính AADL để phân tích lập lịch và độ trễ từ những mô hình trên.
+\item Hiểu các khái niệm sinh mã cơ bản và các thuộc tính AADL để sinh mã tự động bằng công cụ RAMSES [235] từ những mô hình trên.
+\end{itemize}
+
+\section{Giới thiệu}
+Chương này giới thiệu các Ngôn ngữ mô tả kiến trúc (ADL), đặc biệt là Ngôn ngữ phân tích và thiết kế kiến trúc SAE (AADL). Chúng tôi bắt đầu bằng giới thiệu ngắn các vấn đề khi xây dựng những hệ thống thực-ảo phức tạp ngày nay, và giải thích cách tiếp cận tổng thể để giải quyết chúng được cộng đồng AADL thúc đẩy, dựa trên tích hợp ảo lấy kiến trúc làm trung tâm.
+
+Sau đó, chúng tôi giới thiệu AADL qua một tổng quan ngắn về ngôn ngữ, tiếp theo là trình bày chi tiết các cấu trúc và ngữ nghĩa. Chúng tôi chọn cách giới thiệu AADL bằng việc trình bày một
+% Source: printed 210 / PDF 224
+quy trình phát triển điển hình để minh họa rõ hơn cách sử dụng ngôn ngữ. Vì vậy, trước hết quy trình được giới thiệu, tiếp đến là ví dụ robot dò đường Lego Mindstorm dùng để minh họa mô hình hóa AADL. Sau đó, chúng tôi trình bày mô hình hóa chi tiết ví dụ theo từng bước của quy trình phát triển. Lưu ý rằng chúng tôi chọn giới thiệu cấu trúc ngôn ngữ theo cách tăng dần, chỉ đưa vào những cấu trúc cần cho mô hình hóa tương ứng với bước hiện tại của quy trình. Nhờ vậy, bạn đọc có thể thấy ngay cách sử dụng cấu trúc trong bối cảnh quy trình phát triển.
+
+Chúng tôi minh họa quá trình mô hình hóa bằng các bước tinh chỉnh mô hình liên tiếp đến sinh mã tự động. Các liên kết truy vết thiết lập giữa từng bước cũng được minh họa, cùng những khả năng phân tích cơ bản của AADL trên mô hình hệ thống đã triển khai. Cuối cùng, mã C được sinh tự động, có thể biên dịch và triển khai trên robot Lego để xây dựng một hệ thống thực hoạt động được.
+
+\subsection{Độ phức tạp hệ thống tăng và chi phí phát triển vượt khả năng chi trả}
+Độ phức tạp của CPS liên tục tăng do số chức năng mà các hệ thống này phải thực hiện tăng lên; các chức năng thường phải bao gồm ngày càng nhiều trí thông minh và kết nối với nhau ngày càng nhiều. Ngoài ra, các hệ thống phải thỏa mãn ngày càng nhiều ràng buộc do môi trường hoạt động thường bất lợi và có tài nguyên hạn chế. Vì thế, chúng ngày càng khó được phát triển với chi phí chấp nhận được. Điều này đặc biệt đúng trong lĩnh vực điện tử hàng không, nơi có thể đo độ phức tạp bằng số dòng mã phần mềm (Software Lines of Code, SLOC) nhúng trong máy bay. Sự gia tăng độ phức tạp được minh họa trong Hình 8.1, vẽ số SLOC trên máy bay theo năm cho những máy bay phổ biến nhất do Airbus và Boeing chế tạo từ những năm 1970. Với mỗi nhà sản xuất, độ dốc đường cong cho thấy số SLOC gần như tăng gấp đôi sau mỗi bốn năm, khiến độ phức tạp hệ thống tăng phi tuyến.
+
+Nỗ lực phát triển những hệ thống này được chứng minh là tăng theo hàm mũ với số SLOC. Chẳng hạn, dù máy bay quân sự F35 có số SLOC xấp xỉ 175 lần F16, người ta ước tính nó đòi hỏi nỗ lực phát triển gấp 300 lần F16 [253]. Kết quả, như trong Hình 8.1, là chúng ta không còn có thể phát triển máy bay phức tạp hơn bằng phương pháp truyền thống, vì chi phí phát triển vượt khả năng chi trả. Điều này được thể hiện trong hình bằng đường xanh đậm, có độ dốc bị chặn lại sau khoảng năm 2010.
+\sourcefigure{8.1}{224}{Sự tiến triển của số SLOC theo thời gian trong máy bay thương mại (tái hiện từ [133]).}
+
+% Source: printed 211 / PDF 225
+Để hiểu cách đạt đến giới hạn này, hãy xét mô hình chu trình V truyền thống (Hình 8.2), quy trình kỹ nghệ phổ biến nhất cho các hệ thống nhúng có yêu cầu an toàn trọng yếu. Những con số màu xanh trong hình cho biết tỷ lệ lỗi được đưa vào các giai đoạn khác nhau của chu trình khi dùng phương pháp phát triển truyền thống. Có thể thấy phần lớn lỗi (70\%) được đưa vào ở các giai đoạn \emph{đầu} của chu trình (kỹ nghệ yêu cầu và thiết kế), trong khi phần lớn chỉ được phát hiện muộn hơn nhiều, lúc tích hợp và vận hành hệ thống. Vì vậy, chi phí sửa lỗi rất cao, bởi thường phải thay đổi thiết kế ban đầu và hiện thực lại những phần của hệ thống. Thực tế, nghiên cứu về các dự án lớn cho thấy, một mặt, công việc làm lại do lỗi có thể chiếm 60\% đến 80\% tổng chi phí phát triển phần mềm [133]. Mặt khác, chi phí phát triển phần mềm, có thể lên đến 70\% năm 2010, tiếp tục tăng và có thể đạt 88\% tổng chi phí phát triển hệ thống vào năm 2024 [133]. Những số liệu này cho thấy tiềm năng giảm mạnh chi phí bằng cách phát hiện sai sót sớm nhất có thể trong phát triển.
+\sourcefigure{8.2}{225}{Mô hình quy trình phát triển theo chu trình V, được chú thích bằng các số liệu về lỗi đưa vào và chi phí loại bỏ chúng (tái hiện từ [101]).}
+
+\subsection{Các giả định không khớp trong kỹ nghệ cộng tác}
+Nhưng những lỗi dẫn đến chi phí làm lại này được đưa vào như thế nào? Để hiểu, hãy xét một số lỗi nổi tiếng đã gây thiệt hại và chi phí lớn.
+
+\paragraph*{Tên lửa Ariane 5}
+Tháng 6 năm 1996, tên lửa Ariane 5 nổ trong chuyến bay đầu tiên, chưa đầy 40 giây sau khi rời bệ phóng. Nguyên nhân là tràn số nguyên trong phần mềm điều khiển vận tốc ngang của tên lửa. Lỗi đó lan thành lỗi trong hệ thống dẫn đường, kích hoạt cơ chế tự hủy để ngăn thiệt hại trên mặt đất. Lỗi phần mềm này gây tổn thất 370 triệu đô la và được biết đến là lỗi tốn kém nhất trong lịch sử [10].
+
+Tràn số nguyên xảy ra vì phần mềm Ariane 4, với vận tốc nhỏ hơn nhiều, được tái sử dụng cho Ariane 5. Người ta quên rằng phần mềm hoạt động dưới giả định về một vận tốc tối đa
+% Source: printed 212 / PDF 226
+có thể biểu diễn trong phần mềm. Ariane 5, với vận tốc lớn hơn nhiều, không còn thỏa mãn giả định đó.
+
+\paragraph*{iTunes}
+Khi bộ xử lý hai lõi lần đầu được dùng trong máy tính, iTunes gặp sự cố ngẫu nhiên khi trích xuất nhạc từ đĩa CD [156]. Phần mềm có nhiều luồng: một luồng xác định mức âm thanh của bản nhạc, trong khi luồng thứ hai chuyển đổi dữ liệu âm thanh. Bộ xử lý một lõi luôn thực thi tuần tự tác vụ thứ nhất rồi thứ hai. Trên bộ xử lý hai lõi, hai luồng thực thi đồng thời cố cập nhật cùng dữ liệu nhạc mà không có đồng bộ hóa đúng.
+
+Trong trường hợp này, phần mềm ngầm giả định các tác vụ thực thi tuần tự, nhưng bộ xử lý hai lõi không còn thỏa mãn giả định đó.
+
+\paragraph*{Dây cáp Airbus 380}
+Khi chiếc Airbus 380 đầu tiên được lắp ráp tại Toulouse, Pháp, dây điện và bó dây hóa ra ngắn hơn vài centimét so với yêu cầu của khoang máy bay, dẫn đến nhiều tỷ chi phí bổ sung [5].
+
+Vấn đề được truy về việc các nhóm thiết kế dùng những phiên bản khác nhau của công cụ thiết kế có máy tính hỗ trợ (Computer Aided Design, CAD) để tạo bản vẽ. Phiên bản 5 được viết lại từ phiên bản 4, và tính toán bán kính uốn của dây khi đi theo khung máy bay không nhất quán giữa hai phiên bản. Cuối cùng, người ta nhận ra vấn đề xuất hiện khắp thiết kế. Một lần nữa, có thể truy nguyên vấn đề về những giả định khác nhau đối với cách tính độ uốn dây giữa các nhóm dùng công cụ khác nhau.
+
+Những ví dụ này cho thấy một nguồn lỗi quan trọng là các giả định mà hệ thống hoặc thành phần dựa vào để hoạt động đúng không được môi trường sử dụng đáp ứng. Điều đó chỉ ra nhu cầu cải thiện tích hợp hệ thống từ sớm để bảo đảm tính nhất quán của toàn hệ thống được giữ trong các thiết kế cộng tác liên tục tiến hóa.
+
+\subsection{Tích hợp ảo kiến trúc hệ thống: Tích hợp, phân tích rồi xây dựng}
+Tích hợp ảo lấy kiến trúc hệ thống làm trung tâm (System Architecture-centric Virtual Integration, SAVI) thúc đẩy một giải pháp cho vấn đề giả định không khớp này: sử dụng mô hình hệ thống có thể được tích hợp và phân tích ảo để phát hiện lỗi sớm trước khi xây dựng hệ thống vật lý [253]. Quy trình được minh họa trong Hình 8.3, nơi phía trái của quy trình phát triển theo chu trình V quen thuộc được bổ sung các hoạt động thẩm định song song ở phía trái, sử dụng mô hình cho các miền mà hệ thống bao quát ở mức trừu tượng phù hợp với mỗi giai đoạn.
+
+\subsection{Nguồn thông tin chuẩn có thẩm quyền lấy kiến trúc làm trung tâm}
+Quy trình tích hợp ảo nói trên được hỗ trợ bằng một mô hình kiến trúc giữ vai trò Nguồn thông tin chuẩn có thẩm quyền (Authoritative Source of Truth, ASoT) [253]. Mô hình cung cấp góc nhìn toàn cục về hệ thống và môi trường, là nơi trung tâm có thể tích hợp các mô hình khác mô tả chi tiết những phần của hệ thống. Nó tạo thành một mô hình tham chiếu nắm bắt mọi tính chất liên quan để xác định hệ thống có đáp ứng yêu cầu hay không.
+
+Một mô hình ASoT như vậy được mô tả trong Hình 8.4. Có thể sinh từ mô hình kiến trúc các mô hình khác cho những phân tích mà quy trình tích hợp ảo đòi hỏi. Những tính chất như an toàn, an ninh, hiệu năng thời gian thực, tiêu thụ tài nguyên, v.v. được ước lượng từ các hoạt động phân tích hỗ trợ tích hợp ảo, rồi dùng để xác định hệ thống có đáp ứng yêu cầu hay không.
+
+Vì vậy, cách tiếp cận lấy kiến trúc làm trung tâm đặt mô hình kiến trúc vào vai trò hàng đầu trong phát triển CPS để hỗ trợ tích hợp ảo, qua đó củng cố tầm quan trọng của ADL, chủ đề chương này. Quy trình tích hợp ảo hướng kiến trúc như vậy thực sự có thể giảm đáng kể chi phí phát triển hệ thống, như nghiên cứu về lợi tức đầu tư (Return of Investment, ROI) của Sáng kiến SAVI cho thấy [133]. Theo nghiên cứu này, với một hệ thống 27 MSLOC, mức giảm chi phí có thể lên đến 2 tỷ đô la trong tổng chi phí ước tính 9 tỷ đô la, tương đương tiết kiệm khoảng 26\% nhờ sửa sớm lỗi yêu cầu và thiết kế.
+
+% Source: printed 213 / PDF 227
+\sourcefigure{8.3}{227}{Mô hình quy trình phát triển theo chu trình V truyền thống, được bổ sung các hoạt động thẩm định tích hợp ảo lấy kiến trúc làm trung tâm (tái hiện từ [205]).}
+\sourcefigure{8.4}{227}{Cách tiếp cận mô hình hóa một nguồn thông tin chuẩn duy nhất lấy kiến trúc làm trung tâm (tái hiện từ [98]).}
+
+\subsection{Bố cục chương}
+Các mục trước minh họa vai trò trung tâm của ADL trong tích hợp ảo kiến trúc hệ thống lấy kiến trúc làm trung tâm, nhằm giải quyết thách thức phát triển CPS phức tạp. Vì thế, phần còn lại giới thiệu ADL chi tiết hơn, đặc biệt AADL, một ADL phù hợp để mô hình hóa cả phần ảo lẫn vật lý của CPS và triển khai phần ảo trên phần nền tảng thực thi vật lý.
+
+AADL sẽ được giới thiệu theo dạng hướng dẫn thông qua mô hình hóa một CPS robot đơn giản có mục đích vận chuyển vật trong nhà kho. Ví dụ được giới thiệu ở Mục 8.4. Dù bản thân AADL không áp đặt một quy trình phát triển cụ thể, để minh họa tốt hơn cách sử dụng, chúng ta sẽ theo mô hình quy trình thiết kế theo chu trình V từ trên xuống, được bổ sung SAVI như nói trên (Hình 8.3), bắt đầu từ mô hình hóa yêu cầu đến sinh mã tự động từ mô hình kiến trúc phần mềm.
+% Source: printed 214 / PDF 228
+Với mỗi bước, các cấu trúc AADL cần thiết được giới thiệu trước, sau đó cách dùng được minh họa bằng việc mô hình hóa phần tương ứng của hệ thống robot ví dụ.
+
+\section{Tổng quan AADL}
+Việc phát triển AADL bắt đầu từ năm 1999, khi Bruce Lewis, làm việc cho Lục quân Hoa Kỳ, thành lập một ủy ban để đưa AADL thành tiêu chuẩn SAE. Ban đầu viết tắt cho Avionics Architecture Description Language, AADL được phát triển như một ADL cho lĩnh vực điện tử hàng không. Nó chịu ảnh hưởng mạnh từ ngôn ngữ MetaH do Honeywell phát triển trong một dự án nghiên cứu DARPA. Phần lớn cú pháp và đặc tính định kiểu mạnh của MetaH (và do đó AADL) được mượn từ ngôn ngữ lập trình Ada, dành cho hệ thống nhúng có yêu cầu an toàn trọng yếu. Khi sớm nhận ra có thể dùng AADL cho mọi hệ thống nhúng, người ta đổi tên thành Architecture Analysis and Design Language, giữ nguyên chữ viết tắt.
+
+Là tiêu chuẩn SAE AS-5506, AADL được tiểu ban AS2C phát triển, với thành viên từ cả giới học thuật lẫn công nghiệp, như Software Engineering Institute (SEI) của Đại học Carnegie Mellon, ISAE, Đại học Kansas State, Lục quân Hoa Kỳ, NASA, Cơ quan Vũ trụ châu Âu, INRIA, Viện Hàn lâm Khoa học Nga, Adventium Labs, Ellidiss Technologies, Aerospace Corporation, Honeywell, Rockwell-Collins, Airbus industries, Boeing, Dassault Aviation, Toyota và Telecom ParisTech, cơ sở công tác của các tác giả chương này. Ủy ban còn cộng tác tích cực với những sáng kiến nghiên cứu và tổ chức tiêu chuẩn hóa khác, như Sáng kiến SAVI nói trên, nhóm công tác ARINC653 và The Open Group Real-time. Dù AADL đã bắt đầu phát triển từ lâu, công việc vẫn tiếp tục: đã có hai phiên bản lớn, trong khi phiên bản thứ ba (AADL 3) đang được chuẩn bị tại thời điểm viết.
+
+Hình 8.5 so sánh khả năng AADL với các ADL quen thuộc như SysML, MARTE, UML, theo mục đích sử dụng và miền mà các ngôn ngữ bao quát. Cả SysML, bao quát miền thế giới vật lý, và UML, bao quát miền phần mềm, chủ yếu được phát triển để mô hình hóa, với khả năng phân tích hạn chế do ngữ nghĩa yếu kế thừa từ mức tổng quát cao. Ngược lại, AADL và MARTE có ngữ nghĩa mạnh hơn do miền hệ thống nhúng mà chúng bao quát chuyên biệt hơn; AADL làm tốt hơn về phân tích nhờ lịch sử dài hơn và mức trưởng thành cao hơn\footnote{Lưu ý rằng so sánh lấy từ [3] này chỉ có tính minh họa, chưa thật chính xác, vì có thể lập luận rằng UML nên phần nào chồng lấn với MARTE và AADL về miền bao quát, do cả ba ngôn ngữ đều bao quát những phần của miền phần mềm.}.
+
+Một số cách tiếp cận sử dụng UML và SysML để mô hình hóa hệ thống nhúng, lần lượt như Papyrus UML-RT [227] và TTool [274]. Tuy nhiên, cách duy nhất để những ngôn ngữ này hữu ích cho hệ thống nhúng là chuyên biệt hóa chúng bằng cơ chế mở rộng UML profile. Lưu ý rằng dù dùng UML profile có lợi thế là công cụ hiện có có thể được tái sử dụng với ngôn ngữ mở rộng, nó có bất lợi là kém linh hoạt hơn khi điều chỉnh ngôn ngữ theo miền, bao gồm đưa vào độ phức tạp phụ phát do những đặc tính không cần thiết kế thừa từ ngôn ngữ tổng quát vẫn hiện diện trong ngôn ngữ mở rộng. MARTE cũng như vậy: dù có đặc điểm tương tự AADL về mục đích sử dụng và miền, nó chịu bất lợi vì được hiện thực như UML profile. AADL được hiện thực trực tiếp như một ngôn ngữ mô hình hóa chuyên biệt miền (DSML), tránh độ phức tạp phụ phát này và cung cấp cấu trúc phù hợp hơn với miền và mục đích sử dụng.
+
+Mặc dù miền dự kiến của AADL ban đầu là điện tử hàng không (tên ban đầu là Avionics Architecture Description Language) rồi sớm mở rộng sang hệ thống nhúng, phiên bản 2 cũng phù hợp để mô hình hóa CPS. Phiên bản 2 thêm các thành phần trừu tượng, có thể dùng để mô hình hóa ở mức trừu tượng hệ thống, tương tự SysML. Nó còn đưa vào các phụ lục mở rộng để mô hình hóa hành vi và khả năng chịu lỗi. Ngoài ra, khả năng mô hình hóa phần cứng ban đầu phát triển cho hệ thống nhúng, kết hợp với thành phần hệ thống và thành phần trừu tượng, có thể tái sử dụng để mô hình hóa phần vật lý của CPS (mô hình phần vật lý, plant model), bao quát miền phù hợp hơn khái niệm khối SysML quá tổng quát. Cuối cùng, khả năng mô hình hóa và triển khai phần mềm của AADL khiến nó trở thành ngôn ngữ lý tưởng để giải quyết thách thức do phần ảo của CPS tăng trưởng nhanh [101].
+
+Có ba công cụ chính để chỉnh sửa và phân tích mô hình AADL. Open Source AADL Tool Environment (OSATE) [224], dựa trên Eclipse và do SEI tại Đại học Carnegie Mellon phát triển, là một hiện thực tham chiếu vì được nhóm kiến trúc ngôn ngữ chủ đạo phát triển. Còn có một công cụ khác dựa trên Eclipse
+% Source: printed 215 / PDF 229
+tên MASIW [200], do Viện Hàn lâm Khoa học Nga phát triển; cuối cùng, các công cụ thương mại như STOOD và AADL Inspector do Ellidiss Technologies phát triển cũng có sẵn [7].
+\sourcefigure{8.5}{229}{So sánh các ADL quen thuộc theo mục đích sử dụng và miền (tái hiện từ [3]).}
+
+\section{Ví dụ CPS xuyên suốt}
+Ví dụ dùng xuyên suốt phần còn lại của chương gồm một hệ thống robot có mục đích vận chuyển vật trong nhà kho từ điểm này sang điểm khác. Robot phải đi theo một tuyến được chỉ bằng đường vẽ trên sàn nhà kho. Có thể dùng nhiều robot trong nhà kho và các tuyến có thể giao nhau. Vì vậy, robot cần có thể dừng tạm thời khi phát hiện vật cản trên đường và tiếp tục quỹ đạo khi vật cản không còn. Hệ thống robot cần vận chuyển vật trong thời gian tối thiểu; chi phí chế tạo robot phải thấp nhất có thể để sản phẩm có lợi thế so với đối thủ trên thị trường. Để minh họa, chúng tôi còn thêm một số yêu cầu hiệu năng, làm rõ nhu cầu phân tích hiệu năng như định thời và độ trễ.
+
+Do chi phí thấp nên dễ tiếp cận, robot Lego Mindstorm [182] phiên bản NXT được sử dụng với cấu hình như Hình 8.6: có hai cụm bánh xe (1), cảm biến ánh sáng để dò đường (2) và sonar để phát hiện vật cản (3).
+
+Robot sẽ chạy một ứng dụng dò đường đơn giản được mô tả trong [220], đi theo mép một đường đen dày như Hình 8.7. Vì cảm biến ánh sáng có một trường nhìn nhất định, cường độ ánh sáng quan sát được tỷ lệ nghịch với phần trường nhìn của cảm biến bị đường đen chiếm. Cường độ này sẽ được dùng để tính góc rẽ của robot.
+
+Góc rẽ được tính bằng thuật toán điều khiển PID (Proportional Integral Derivative, tỷ lệ--tích phân--vi phân). Thuật toán có lợi thế đem lại hành vi dò đường trơn hơn nhiều so với hai thuật toán đơn giản trong Hình 8.8, vì biến góc rẽ được tính có tập trạng thái chi tiết hơn nhiều (về lý thuyết là liên tục), so với cách tiếp cận bên trái (bang-bang) và ở giữa, nơi biến góc rẽ lần lượt có hai trạng thái (trái hoặc phải) và ba trạng thái (trái, thẳng hoặc phải).
+
+% Source: printed 216 / PDF 230
+\sourcefigure{8.6}{230}{Robot Lego NXT Mindstorm được cấu hình để thực thi một ứng dụng dò đường đơn giản có tránh vật cản.}
+\sourcefigure{8.7}{230}{Robot và cảm biến ánh sáng đi theo mép một đường (tái hiện từ [208]).}
+\sourcefigure{8.8}{230}{Ba cách điều khiển robot, với phương pháp PID được chọn ở phía phải hình (tái hiện từ [208]).}
+
+% Source: printed 217 / PDF 231
+\section{Quy trình phát triển}
+Dù AADL không áp đặt quy trình phát triển cụ thể, các hệ thống có yêu cầu an toàn trọng yếu thường theo mô hình quy trình phát triển chu trình V được bổ sung tích hợp ảo kiến trúc hệ thống lấy kiến trúc làm trung tâm, như đã thảo luận và minh họa trong Hình 8.8. Mô hình hóa CPS robot dò đường sẽ theo quy trình như vậy. Giới thiệu AADL theo quy trình phát triển giúp minh họa rõ hơn cách sử dụng và những gì có thể đạt được với AADL.
+
+Quy trình tích hợp ảo hướng kiến trúc được hỗ trợ một phần bằng tập ký pháp và môi trường làm việc ALISA (Architecture-Led Incremental System Assurance). ALISA là phần bổ sung cho AADL, được công cụ OSATE hỗ trợ và sẽ dùng trong hướng dẫn này. Nó bắt nguồn từ Ngôn ngữ định nghĩa và phân tích yêu cầu [37, 236], ban đầu dự kiến trở thành một phụ lục mở rộng về yêu cầu cho AADL.
+
+ALISA bổ sung cho AADL một tập ngôn ngữ để mô hình hóa bên liên quan, mục tiêu của bên liên quan, yêu cầu hệ thống và phần mềm, kế hoạch và phương pháp kiểm chứng, cùng hồ sơ bảo đảm cho việc phát triển tăng dần các hệ thống có mức bảo đảm cao. Tương tự SysML, yêu cầu có thể được mô hình hóa và phân bổ cho các phần tử kiến trúc chịu trách nhiệm kiểm chứng chúng. Yêu cầu có thể được phân rã và tinh chỉnh tăng dần khi thiết kế kiến trúc được tinh chỉnh và các quyết định được đưa ra. Việc mô hình hóa đầy đủ hồ sơ bảo đảm, với lập luận và các khẳng định liên kết đến yêu cầu, được hỗ trợ, khiến ALISA lý tưởng để chứng nhận hệ thống có yêu cầu an toàn trọng yếu. Dù mô tả đầy đủ ALISA nằm ngoài phạm vi chương, khả năng mô hình hóa yêu cầu cơ bản của nó sẽ được minh họa bằng ví dụ xuyên suốt. Chẳng hạn, một số yêu cầu hiệu năng sẽ được nắm bắt và liên kết đến các phân tích lập lịch, độ trễ thực hiện trên ví dụ.
+
+RDAL, và do đó ALISA, chịu ảnh hưởng mạnh từ một công trình khác đáng nhắc đến trong chương. Công trình gồm 11 thực hành tốt được mô tả trong Requirement Engineering Management Handbook (REMH) [184]. Cục Hàng không Liên bang Hoa Kỳ (FAA) đặt Rockwell Collins thực hiện REMH để khảo sát các thực hành kỹ nghệ yêu cầu trong công nghiệp [183]. Sau khảo sát, các tác giả khuyến nghị 11 thực hành quản lý yêu cầu của hệ thống có yêu cầu an toàn trọng yếu, dựa trên bài học từ nghiên cứu Kỹ nghệ yêu cầu (Requirements Engineering, RE) và kết quả khảo sát công nghiệp. Những thực hành đề xuất có thể được áp dụng từng phần, ít làm gián đoạn quy trình phát triển của tổ chức, để giải quyết tình trạng công nghiệp áp dụng RE chậm hoặc không áp dụng.
+
+Trong chương này, phần trái của mô hình chu trình V, được phân rã thành các bước lấy cảm hứng từ thực hành tốt của REMH, sẽ được dùng để minh họa AADL. Phân rã này được mô tả trong Hình 8.9: các ô ở cột giữa biểu diễn bước của quy trình, còn mô hình đầu vào và đầu ra lần lượt nằm trong các ô bên trái và phải. Ngôn ngữ dùng cho mô hình được chỉ định sau dấu ``:''. Viền nét đứt chỉ những bước không được bao quát trong chương.
+
+Quy trình bắt đầu bằng nắm bắt tổng quan hệ thống cần phát triển, tạo các mô hình bên liên quan, mục tiêu và bối cảnh vận hành. Những mô hình này được dùng để suy ra kịch bản ca sử dụng cho hệ thống; cùng bối cảnh và mục tiêu, chúng cho phép tạo kiến trúc chức năng. Sau đó, một mô hình phần cứng để thực hiện các chức năng hệ thống được đặc tả. Tiếp theo, mô hình phần mềm được suy ra từ mô hình chức năng và triển khai trên phần cứng. Từ mô hình hệ thống đã triển khai, có thể thực hiện phân tích như lập lịch và độ trễ. Sau đó có thể sửa các mô hình để đáp ứng yêu cầu hiệu năng và tối ưu tính chất phi chức năng. Tiếp theo, một nền tảng hệ điều hành được chọn để thực thi phần mềm. Các mô hình được tinh chỉnh cho hệ điều hành đó bằng RAMSES [235]. Mô hình AADL đã tinh chỉnh có thể được phân tích lại, cho kết quả chính xác hơn vì đã tính đến đặc thù nền tảng thực thi. Tùy kết quả phân tích, các mô hình đầu vào tại bất kỳ bước nào có thể được sửa theo cách lặp cho đến khi thiết kế đáp ứng yêu cầu. Khi đó, có thể sinh mã tự động bằng RAMSES.
+
+\section{Mô hình hóa robot dò đường bằng AADL}
+Mục này trình bày mô hình hóa ví dụ xuyên suốt đã giới thiệu ở Mục 8.4 theo quy trình phát triển trong Mục 8.5. Lưu ý rằng để phục vụ giảng dạy, chúng tôi không trình bày toàn bộ tập mô hình, mà chỉ các phần liên quan đến khái niệm ngôn ngữ đang được dạy. Để biết thêm, bạn đọc có thể xem tập mô hình đầy đủ có tại [63].
+
+% Source: printed 218 / PDF 232
+\sourcefigure{8.9}{232}{Quy trình thiết kế hệ thống CPS (phía trái chu trình V trong Hình 8.3) và các ký pháp được sử dụng.}
+
+\subsection{Tổng quan hệ thống}
+Bước đầu của quy trình là đặc tả tổng quan hệ thống cần phát triển. Nó bao gồm đặc tả lý do cần hệ thống bằng việc nêu mục đích và mục tiêu, cũng như cách hệ thống tương tác với môi trường. Đặc tả hệ thống và môi trường đem lại hiểu biết vững chắc về ranh giới hệ thống. Ranh giới được định nghĩa bằng tập biến được giám sát và điều khiển, biểu diễn chính xác tương tác của hệ thống với môi trường. Xác định đúng ranh giới hệ thống là khó, vì cần bảo đảm đã xét mọi tương tác với môi trường mà hoạt động đúng phụ thuộc vào, cho tất cả các chế độ vận hành.
+
+\paragraph*{Các bên liên quan và tổ chức của họ}
+Với ví dụ xuyên suốt, giả sử công ty \emph{Tartempion Warehouse Equipment} đang phát triển hệ thống robot đã giới thiệu ở Mục 8.4. Nhiều bên liên quan tham gia phát triển, mỗi bên có những mối quan tâm riêng về hệ thống. Ví dụ gồm khách hàng sử dụng hệ thống, người thiết kế, bộ phận tiếp thị phụ trách bán hệ thống, v.v.
+
+Có thể nắm bắt các bên liên quan và tổ chức phát triển của họ bằng ký pháp \emph{organisation} của ALISA. Một tổ chức có tên và có thể khai báo các bên liên quan. Một bên liên quan cũng có tên (phải duy nhất trong tổ chức chứa nó) cùng các thuộc tính tùy chọn về mô tả, vai trò, thư điện tử, điện thoại và bên liên quan giám sát. Một tổ chức được khai báo trong tệp riêng có phần mở rộng \texttt{org}.
+
+% Source: printed 219 / PDF 233
+\paragraph*{Đặc tả ví dụ xuyên suốt}
+Đặc tả Tartempion Warehouse Equipment Ltd, nơi phát triển robot vận chuyển vật dò đường, được trình bày trong Đoạn mã 14.
+\begin{verbatim}
+organization Tartempion_Warehouse_Equipments_Ltd
+
+stakeholder Customer [
+    description "The customer of the line follower robot system"
+]
+
+stakeholder Marketing [
+    description "The people in charge of marketing the line follower
+      robot system"
+]
+\end{verbatim}
+\begin{center}\small Đoạn mã 14: Các bên liên quan và tổ chức của họ.\end{center}
+
+\paragraph*{Mục tiêu của các bên liên quan}
+Như ở Mục 8.4, mục đích robot là vận chuyển vật trong nhà kho bằng cách đi theo một quỹ đạo định trước. Ngoài ra, nó phải có thể dừng tạm thời khi phát hiện vật cản, vì những robot khác trong cùng nhà kho có thể cắt qua đường đang đi. Hơn nữa, thời gian vận chuyển vật và chi phí sản xuất robot cần thấp nhất có thể.
+
+\paragraph*{Cấu trúc}
+Mô hình hóa mục tiêu và yêu cầu được hỗ trợ bằng ký pháp \emph{ReqSpec} của ALISA. Mục tiêu của bên liên quan phải có tên và có thể có nhiều thuộc tính tùy chọn như tiêu đề, mô tả, loại, cơ sở lý giải, v.v. Cung cấp cơ sở lý giải đặc biệt quan trọng, nhất là với mục tiêu không đơn giản, vì giúp hiểu nhanh tại sao mục tiêu tồn tại. Hơn nữa, có lý giải giúp tránh phải hỏi đi hỏi lại về mục tiêu khi người mới tham gia dự án.
+
+Một đặc điểm quan trọng khác là khả năng truy vết mục tiêu đến hệ thống phải đạt chúng. ReqSpec có thể biểu diễn điều này bằng cấu trúc \texttt{for}, phải tham chiếu một phần tử phân loại AADL biểu diễn hệ thống cần xây dựng. Các phần tử phân loại AADL sẽ được giới thiệu ở Mục 8.6.1.
+
+\paragraph*{Đặc tả ví dụ xuyên suốt}
+Đặc tả mục tiêu của ví dụ được trình bày trong Đoạn mã 15. Trước tiên, mục tiêu \texttt{G\_Behav\_1} được định nghĩa: vận chuyển vật từ điểm này đến điểm khác bằng cách đi theo quỹ đạo đánh dấu trên sàn. \texttt{G\_Behav\_1} có \texttt{Customer} là bên liên quan và có loại \texttt{Behaviour}, vì liên quan đến chức năng của hệ thống muốn xây dựng. Lưu ý cơ sở lý giải của \texttt{G\_Behav\_2} giúp hiểu tại sao nó tồn tại. Như sẽ thấy ở Mục 8.6.4, những mục tiêu này sẽ được biến đổi thành yêu cầu có thể được hệ thống kiểm chứng.
+\begin{verbatim}
+stakeholder goals Line_Follower_Robot_Behavior for
+   Line_Follower_Functions::Cary_Object [
+
+    goal G_Behav_1 : "Objects_Transportation" [
+        description
+          "The robot should be able to carry an object between two
+             specified points by following a predefined trajectory
+             in the warehouse."
+        stakeholder Tartempion_Warehouse_Equipments_Ltd.Customer
+        rationale "This fulfills the main need of customers."
+        category Quality.Behavior
+    ]
+\end{verbatim}
+
+% Source: printed 220 / PDF 234
+\begin{verbatim}
+    goal G_Behav_2 : "Obstacle_Avoidance" [
+        description "The robot should be able to avoid obstacles along
+           the path."
+        stakeholder Tartempion_Warehouse_Equipments_Ltd.Customer
+        rationale
+            "There may be several robots working on the warehouses
+               and therefore, it is important to avoid damaging the
+               robots and the carried object"
+        category Quality.Behavior
+    ]
+]
+\end{verbatim}
+\begin{center}\small Đoạn mã 15: Mục tiêu hành vi của các bên liên quan.\end{center}
+
+Đoạn mã 16 trình bày một số mục tiêu hiệu năng. Khác với mục tiêu hành vi, mục tiêu hiệu năng có thể được đặt với một mức đạt được, hữu ích khi tối ưu hóa thiết kế. Những mục tiêu này cũng có thể được biến đổi thành yêu cầu kiểm chứng được, đặt giới hạn cho mức đạt được mục tiêu.
+\begin{verbatim}
+stakeholder goals Line_Follower_Robot_Perf for Line_Follower_Robot_Cps::
+ Line_Follower_Robot_Cps [
+
+    goal G_Perf_1 : "Minimal Cost" [
+        description "The cost of producing the robot should be minimal."
+        stakeholder Tartempion_Warehouse_Equipments_Ltd.Customer
+           Tartempion_Warehouse_Equipments_Ltd.Marketing
+        rationale "The robot should be cheap so that it is easy to market
+            ."
+        category Quality.Cost
+    ]
+
+    goal G_Perf_2 : "Minimal_Transportation_Time" [
+        description "The time taken to carry objects should be minimal."
+        stakeholder Tartempion_Warehouse_Equipments_Ltd.Customer
+           Tartempion_Warehouse_Equipments_Ltd.Customer
+        rationale "The robot."
+        category Quality.Performance
+    ]
+]
+\end{verbatim}
+\begin{center}\small Đoạn mã 16: Mục tiêu chất lượng của các bên liên quan.\end{center}
+
+Các phần tử \texttt{for} của những mục tiêu này tham chiếu phần tử phân loại AADL của hệ thống đang phát triển để đáp ứng mục tiêu. Nó được giới thiệu trong phần tiếp theo về mô hình hóa hệ thống, môi trường và bối cảnh sử dụng bằng AADL.
+
+\paragraph*{Hệ thống, môi trường và bối cảnh sử dụng}
+Mô hình hóa không chỉ hệ thống mà cả môi trường và tương tác giữa chúng có tầm quan trọng hàng đầu. Từ tương tác, có thể nhận diện một tập biến được giám sát và điều khiển. Mục đích của yêu cầu hành vi là đặc tả quan hệ chính xác giữa các biến được giám sát và điều khiển cho mọi bối cảnh sử dụng hệ thống và mọi giá trị có thể của biến được giám sát.
+
+Hiếm khi hệ thống chỉ có một bối cảnh sử dụng. Chẳng hạn, trong ví dụ xuyên suốt, robot vận chuyển vật theo đường có thể được xem là bối cảnh sử dụng bình thường. Nhưng có thể có bối cảnh khác, như khi robot đang được bảo trì. Lý tưởng là nhận diện và mô hình hóa mọi bối cảnh vận hành; tuy nhiên, với ví dụ robot, chúng tôi chỉ trình bày bối cảnh bình thường.
+
+% Source: printed 221 / PDF 235
+\paragraph*{Cấu trúc}
+Có thể mô hình hóa hệ thống và môi trường bằng AADL, sử dụng \emph{kiểu} thành phần và các \emph{đặc trưng} (feature), \emph{hiện thực} thành phần và các \emph{thành phần con}, các \emph{gói} thành phần và \emph{thuộc tính} thành phần. Cùng nhau, những cấu trúc này tạo thành phần cốt lõi của AADL.
+
+\paragraph*{Kiểu và đặc trưng thành phần (giao diện thành phần)}
+Trong AADL, khai báo kiểu thành phần cung cấp giao diện đặc tả cách thành phần tương tác với những thành phần khác, không cần nêu chi tiết cấu trúc hợp thành bên trong. Điều này được thực hiện bằng khai báo các \emph{đặc trưng}, những điểm kết nối thành phần với thành phần khác. Một đặc trưng có thể được định kiểu bằng một khai báo kiểu thành phần. Định kiểu như vậy được dùng để hạn chế kết nối với đặc trưng khác. Một đặc trưng phải có hướng vào, ra hoặc cả vào lẫn ra. Hướng đặc trưng cũng hạn chế cách các thành phần kết nối với nhau.
+
+Đặc trưng có thể thuộc nhiều loại, nhưng để mô hình hóa ở mức hệ thống, hiện chỉ giới thiệu đặc trưng trừu tượng và nhóm đặc trưng. Những loại riêng cho thành phần phần cứng và phần mềm sẽ được giới thiệu sau khi cần.
+
+Một \emph{đặc trưng trừu tượng} là phần giữ chỗ để tinh chỉnh thành đặc trưng cụ thể, dùng cho các khai báo kiểu thành phần chưa hoàn chỉnh.
+
+Một \emph{nhóm đặc trưng} là loại đặc trưng đặc biệt, dùng để nhóm đặc trưng thành phần hoặc những nhóm đặc trưng khác. Vì vậy, nó là phương tiện mô hình hóa giúp dễ kết nối những thành phần có nhiều đặc trưng: kết nối một nhóm biểu diễn kết nối mọi đặc trưng bên trong. Các đặc trưng của nhóm được khai báo trong một kiểu nhóm đặc trưng để kiểm chứng tương thích.
+
+\paragraph*{Hiện thực thành phần (cấu trúc hợp thành bên trong)}
+Cấu trúc hợp thành bên trong của thành phần, theo các thành phần con và kết nối giữa chúng, được đặc tả trong AADL bằng các khai báo \emph{hiện thực thành phần}. Một hiện thực phải có kiểu thành phần đi kèm, đặc tả các đặc trưng tương tác như giải thích trên. Lợi thế của việc tách khai báo kiểu và hiện thực là nhiều hiện thực có thể tái sử dụng cùng kiểu, tương tự giao diện trong Java.
+
+Kiểu và hiện thực thành phần được gọi chung là các \emph{phần tử phân loại} (classifier) thành phần. Những phần tử này được dùng để định kiểu thành phần con trong một hiện thực thành phần. Có thể khai báo kết nối bên trong hiện thực để nối các thành phần con với nhau (hoặc với thành phần chứa), theo các đặc trưng được khai báo trong kiểu của thành phần con.
+
+\paragraph*{Các loại thành phần}
+Phần tử phân loại thành phần được chia thành 13 loại, cung cấp ngữ nghĩa cho miền hệ thống nhúng. Chúng được chia thành ba loại gốc: \emph{hợp thành}, \emph{phần mềm} và \emph{nền tảng thực thi} (phần cứng). Loại hợp thành được chia thành hai loại con:
+\begin{itemize}
+\item \emph{Trừu tượng}: thành phần trừu tượng biểu diễn thành phần chưa hoàn chỉnh để mô hình hóa ở mức trừu tượng cao, tương tự khối SysML, khi chưa biết thông tin cụ thể về loại thành phần đang mô hình hóa. Hiện thực thành phần trừu tượng có thể chứa thành phần con thuộc mọi loại và được chứa bởi thành phần thuộc mọi loại. Có thể tinh chỉnh thành phần trừu tượng thành bất kỳ loại thành phần AADL cụ thể nào khác, hữu ích khi biết thêm thông tin về hệ thống đang thiết kế.
+\item \emph{Hệ thống}: một hệ thống biểu diễn tập hợp các thành phần tương tác. Hệ thống có thể có nhiều chế độ, mỗi chế độ biểu diễn một cấu hình có thể khác nhau của các thành phần và kết nối bên trong hệ thống.
+\end{itemize}
+Mỗi loại thành phần có quy tắc riêng về các loại thành phần con được chứa trong hiện thực. Điều này sẽ được trình bày chi tiết cùng các loại thành phần phần mềm và nền tảng thực thi khi tinh chỉnh thiết kế hệ thống robot dò đường ví dụ.
+
+% Source: printed 222 / PDF 236
+\paragraph*{Mở rộng và tinh chỉnh thành phần}
+Tương tự ngôn ngữ lập trình hướng đối tượng, kiểu và hiện thực thành phần AADL (phần tử phân loại) có thể được mở rộng, qua đó kế thừa đặc trưng/thành phần con và kết nối của thành phần được mở rộng. Có thể thêm đặc trưng/thành phần con và kết nối mới vào phần tử phân loại mở rộng để cung cấp thêm chi tiết. Ngoài ra, có thể \emph{tinh chỉnh} kiểu của đặc trưng và thành phần con kế thừa, theo một quy tắc tương thích do người xây dựng mô hình chọn trong tập quy tắc định nghĩa sẵn.
+
+\paragraph*{Gói (tổ chức các khai báo thành phần)}
+Các khai báo thành phần nằm trong \emph{gói}, có thể có phần công khai và riêng tư. Gói có thể dùng khai báo từ gói khác nếu được nhập vào gói sử dụng.
+
+\paragraph*{Thuộc tính}
+Cuối cùng, AADL cung cấp một ngôn ngữ con phong phú để mô hình hóa \emph{thuộc tính}. Đặc thù của AADL là kiểu thuộc tính được định nghĩa ở mức mô hình, không phải trong siêu mô hình AADL. Điều này cho phép người dùng định nghĩa thuộc tính riêng. Tuy nhiên, tiêu chuẩn AADL định nghĩa một tập thuộc tính sẵn cho những phân tích phổ biến như định thời, lập lịch và tiêu thụ tài nguyên. Nhờ đó tránh mỗi người định nghĩa một tập riêng, góp phần vào khả năng tương tác giữa đặc tả.
+
+Thuộc tính phải có kiểu (số nguyên, số thực, khoảng giá trị nguyên hoặc thực, liệt kê, tham chiếu, v.v.) và có thể có kiểu đơn vị tùy chọn, cũng do người dùng định nghĩa. Thuộc tính còn có mệnh đề phạm vi áp dụng, hạn chế loại hoặc phần tử phân loại thành phần mà giá trị thuộc tính có thể được đặt.
+
+Có thể đặt thuộc tính ở nhiều nơi trong đặc tả AADL (chẳng hạn trên phần tử phân loại, đặc trưng, thành phần con, kết nối, v.v.). Vì phần tử phân loại có thể được mở rộng, cần xác định một thuật toán tìm kiếm phức tạp để xác định giá trị thuộc tính. Thuật toán được minh họa trong Hình 8.10. Chẳng hạn, để xác định giá trị thuộc tính của một thành phần con, trước hết tìm xem giá trị có được đặt trên chính thành phần con không (\#1). Nếu không, tìm trên hiện thực của nó (\#2). Nếu chưa có, tìm trên hiện thực được mở rộng nếu có (\#3). Nếu vẫn chưa có, tìm trên kiểu của thành phần con (\#4), rồi thành phần mà kiểu đó mở rộng nếu có (\#5). Nếu vẫn không tìm thấy, có thể tìm trên chính thành phần chứa (\#6), miễn là kiểu thuộc tính được khai báo ``inherit'', nghĩa là giá trị có thể được các thành phần con chứa bên trong kế thừa. Cuối cùng, kiểu thuộc tính có thể có giá trị mặc định, được dùng nếu không tìm được qua các bước trước.
+\sourcefigure{8.10}{236}{Xác định giá trị thuộc tính (tái hiện từ [247]).}
+
+Thuộc tính và đơn vị được khai báo trong \emph{tập thuộc tính}, tương tự gói thành phần, có thể được nhập để các khai báo khác sử dụng.
+
+\paragraph*{Đặc tả ví dụ xuyên suốt}
+Các khái niệm cốt lõi AADL vừa giới thiệu sẽ dễ hiểu hơn khi dùng để mô hình hóa tổng quan hệ thống, gồm hệ thống, môi trường và các bối cảnh vận hành. Điều này hoàn tất mô hình hóa bước tổng quan hệ thống trong mô hình quy trình Hình 8.9.
+
+% Source: printed 223 / PDF 237
+Chúng tôi đề xuất cách mô hình hóa tạo các gói AADL riêng, lưu trong tệp khác nhau, cho nhà kho, hệ thống vật lý robot, chức năng hệ thống, ứng dụng phần mềm, và cuối cùng CPS robot dò đường được tích hợp. Nhờ vậy, các thư viện thành phần AADL được tạo độc lập và có thể tái sử dụng qua nhiều dự án.
+
+\paragraph*{Nhà kho}
+Khai báo gói AADL cho nhà kho được trình bày trong Đoạn mã 17. Gói khai báo phần công khai, trong đó tạo hai kiểu thành phần trừu tượng cho sàn và nhà kho. Các thành phần môi trường được mô hình hóa bằng loại trừu tượng, vì ở bước này không cần biết gì ngoài điểm tương tác. Cũng có thể nghĩ đến dùng loại hệ thống thay cho trừu tượng. Tuy nhiên, ưu tiên loại trừu tượng vì loại hệ thống AADL có ngữ nghĩa hệ thống nhúng chính xác hơn.
+
+Một hiện thực thành phần trừu tượng được khai báo cho nhà kho (dòng 16), tên có tiền tố (trước dấu chấm) là kiểu thành phần liên quan (\texttt{Warehouse}). Nó khai báo thành phần con cho sàn, định kiểu bằng kiểu thành phần \texttt{Floor} đã định nghĩa. Lưu ý không cung cấp hiện thực cho sàn vì cấu trúc hợp thành bên trong không cần quan tâm trong mô hình hóa này. Chỉ các điểm tương tác, do kiểu thành phần cung cấp dưới dạng đặc trưng, là cần để mô hình hóa tương tác hệ thống--môi trường.
+\begin{verbatim}
+package Warehouse
+public
+    with Physics;
+
+    abstract Floor extends Physics::Reflecting_Object
+        features
+            applied_force: in feature Physics::Force;
+            reacted_force: out feature Physics::Force;
+    end Floor;
+
+    abstract Warehouse
+        features
+            light_source: feature Physics::Light;
+    end Warehouse;
+
+    abstract implementation Warehouse.basic
+    subcomponents
+            floor: abstract Floor;
+    end Warehouse.basic;
+
+end Warehouse;
+\end{verbatim}
+\begin{center}\small Đoạn mã 17: Gói AADL Warehouse.\end{center}
+
+Kiểu thành phần nhà kho khai báo đặc trưng trừu tượng \texttt{light\_source} (dòng 13 của Đoạn mã 17), biểu diễn ánh sáng từ hệ thống chiếu sáng nhà kho. Đặc trưng được định kiểu bằng kiểu thành phần trừu tượng \texttt{Light}, biểu diễn bức xạ điện từ ánh sáng. Kiểu này được khai báo trong gói \texttt{Physics} tái sử dụng được ở Đoạn mã 18. Gói \texttt{Physics} được cung cấp cho \texttt{Warehouse} bằng cách thêm mệnh đề \texttt{with} cho gói (dòng 3 của Đoạn mã 17) và đặt tiền tố cho kiểu được nhập bằng tên gói khai báo nó, theo sau là dấu phân cách \texttt{::} (dòng 7 của Đoạn mã 17).
+\begin{verbatim}
+package Physics
+public
+
+    abstract Reflecting_Object
+        features
+            light_in: in feature Light;
+            light_reflected: out feature Light;
+\end{verbatim}
+
+% Source: printed 224 / PDF 238
+\begin{verbatim}
+            sound_in: in feature Sound;
+            sound_reflected: out feature Sound;
+    end Reflecting_Object;
+
+    abstract Light
+    end Light;
+
+    abstract Sound
+    end Sound;
+
+    abstract Force
+    end Force;
+
+    abstract Power
+    end Power;
+
+    abstract Power_Consuming_Object
+        features
+            power_in: requires bus access Power_Bus;
+        properties
+            Classifier_Substitution_Rule => Type_Extension;
+    end Power_Consuming_Object;
+
+    bus Power_Bus
+    end Power_Bus;
+
+end Physics;
+\end{verbatim}
+\begin{center}\small Đoạn mã 18: Gói AADL Physics.\end{center}
+
+Cả kiểu thành phần đường lẫn sàn đều mở rộng kiểu \texttt{Reflecting\_Object} do gói \texttt{Physics} trong Đoạn mã 18 cung cấp. Vì robot dò đường sẽ quan sát ánh sáng phản xạ để đi theo đường, kiểu thành phần cung cấp đặc trưng trừu tượng mô hình hóa tương tác giữa robot với sàn và đường. Vì robot còn dùng sonar để phát hiện vật cản, đặc trưng âm thanh phản xạ cũng được thêm vào kiểu trừu tượng \texttt{Reflecting\_Object}. Kiểu thành phần trừu tượng \texttt{Sound} được khai báo để mô hình hóa dao động vật lý âm thanh và định kiểu những đặc trưng đó. Tương tự, kiểu thành phần sàn khai báo các đặc trưng kiểu vật lý \texttt{Force} để mô hình hóa tương tác với robot khi tạo lực đẩy.
+
+\paragraph*{CPS robot}
+Sau khi khai báo phần tử phân loại cho môi trường (nhà kho và sàn), cần kiểu thành phần cho đường phải đi theo và cho chính CPS robot. Một gói mới được tạo như trong Đoạn mã 19. Lưu ý rằng loại \texttt{system} được chủ ý dùng cho CPS (dòng 8), thay vì \texttt{abstract} như với thành phần môi trường đã mô hình hóa. Đó là vì chúng ta muốn dùng ngữ nghĩa loại hệ thống AADL, do robot gồm thành phần phần mềm và phần cứng.
+\begin{verbatim}
+package Line_Follower_Robot_Cps
+public
+    with Line_Follower_Software, Robots_Library, Warehouse, Physics,
+     Physics_Properties;
+
+    abstract Line extends Physics::Reflecting_Object
+    end Line;
+
+    system Line_Follower_Robot_Cps
+        features
+\end{verbatim}
+
+% Source: printed 225 / PDF 239
+\begin{verbatim}
+            light_sensor_in: in feature Physics::Light;
+            sonar_in: in feature Physics::Sound;
+            sonar_out: out feature Physics::Sound;
+            force_left_wheel: out feature Physics::Force;
+            force_right_wheel: out feature Physics::Force;
+            force_gripper: out feature Physics::Force;
+    end Line_Follower_Robot_Cps;
+\end{verbatim}
+\begin{center}\small Đoạn mã 19: Gói AADL của CPS dò đường.\end{center}
+
+Kiểu hệ thống \texttt{Line\_Follower\_Robot\_Cps} khai báo các đặc trưng tương tác môi trường như \texttt{light\_sensor\_in}, \texttt{sonar\_in}, \texttt{sonar\_out}, \texttt{force\_left\_wheel}, \texttt{force\_right\_wheel} và \texttt{force\_gripper}, biểu diễn lực tác dụng lên vật được bộ kẹp robot giữ. Có thể dùng một đặc trưng hai chiều duy nhất để biểu diễn cặp \texttt{sonar\_in}, \texttt{sonar\_out}; tuy nhiên, tách riêng giúp phân biệt rõ hơn các biến được giám sát và điều khiển.
+
+\paragraph*{Bối cảnh vận hành hệ thống}
+Sau khi cung cấp phần tử phân loại thành phần cho hệ thống và môi trường, có thể tạo thể hiện chúng như các thành phần con của một hiện thực thành phần bao quanh cho \texttt{Warehouse}. Điều này mô hình hóa hệ thống và môi trường. Đoạn mã 20 minh họa việc tạo kiểu thành phần cho nhà kho của robot, mở rộng nhà kho tổng quát (dòng 1).
+\begin{verbatim}
+abstract Warehouse_Robots extends Warehouse::Warehouse
+    properties
+        Physics_Properties::Illuminance => 150.0 lx applies to
+           light_source;
+end Warehouse_Robots;
+
+abstract implementation Warehouse_Robots.normal extends Warehouse::
+ Warehouse.basic
+    subcomponents
+        line: abstract Line;
+        line_follower_robot: system Line_Follower_Robot_Cps;
+        obstacle: abstract Physics::Reflecting_Object;
+    connections
+        floor_robot_light_sensor_in: feature floor.light_reflected ->
+           line_follower_robot.light_sensor_in;
+        line_robot_light_sensor_in: feature line.light_reflected ->
+           line_follower_robot.light_sensor_in;
+        obstacle_robot_sonar_in: feature obstacle.sound_reflected ->
+           line_follower_robot.sonar_in;
+        robot_sonar_out_obstacle: feature line_follower_robot.sonar_out
+           -> obstacle.sound_in;
+        force_left_wheel_floor: feature line_follower_robot.
+           force_left_wheel -> floor.applied_force;
+        force_right_wheel_floor: feature line_follower_robot.
+           force_right_wheel -> floor.applied_force;
+        light_source_line: feature light_source -> line.light_in;
+        light_source_floor: feature light_source -> floor.light_in;
+        Warehouse_Robots_normal_new_connection: feature light_source ->
+           obstacle.light_in;
+    properties
+        Physics_Properties::Curvature_Radius => 99.0 mm applies to line;
+end Warehouse_Robots.normal;
+\end{verbatim}
+\begin{center}\small Đoạn mã 20: Bối cảnh vận hành bình thường của CPS robot.\end{center}
+
+% Source: printed 226 / PDF 240
+Một giá trị thuộc tính được đặt để đặc trưng hóa \emph{độ rọi} của nguồn sáng theo đơn vị \emph{lx} (dòng 3). Thuộc tính áp dụng cho đặc trưng \texttt{light\_source} được kế thừa từ phần tử phân loại \texttt{Warehouse} được mở rộng. Một hiện thực thành phần trừu tượng (dòng 6) được tạo để mô hình hóa bối cảnh sử dụng bình thường của CPS robot, tức khi đang vận chuyển vật. Nó mở rộng thành phần nhà kho tổng quát chứa thành phần con sàn bằng cách thêm thành phần con cho đường cần đi theo, CPS robot và vật cản.
+
+Một vấn đề với biểu diễn văn bản của Đoạn mã 20 là khó nhận ra cách các thành phần con tương tác. Một ưu điểm của AADL là có hai ký pháp: văn bản và đồ họa. Vì vậy, người dùng có thể chọn ký pháp phù hợp nhất với thứ đang xem. Đến đây chỉ dùng ký pháp văn bản, phù hợp để hiển thị kiểu thành phần. Tuy nhiên, với hiện thực chứa các thành phần con kết nối với nhau, ký pháp đồ họa thích hợp hơn. Do đó, sơ đồ ký pháp đồ họa AADL cho vận hành bình thường của CPS robot được trình bày trong Hình 8.11. Rõ ràng sơ đồ dễ đọc hơn mã trong Đoạn mã 20. Tuy nhiên, sơ đồ không thể hiện mọi thông tin. Chẳng hạn, không thấy thuộc tính độ rọi nhà kho. Sơ đồ chỉ là một khung nhìn, trong khi biểu diễn văn bản luôn chứa toàn bộ thông tin mô hình.
+\sourcefigure{8.11}{240}{Bối cảnh vận hành bình thường của CPS robot, hiển thị bằng ký pháp đồ họa AADL.}
+
+Để diễn giải sơ đồ tốt hơn, Hình 8.12 tóm lược ký pháp đồ họa AADL cho các loại thành phần. Hệ thống được biểu diễn bằng ô bo tròn, thành phần trừu tượng bằng hình chữ nhật nét đứt. Đặc trưng trừu tượng dùng ký hiệu ``$>$'' có chấm bên trong, và kết nối là các đường có mũi tên chỉ hướng dòng được biểu diễn.
+
+Sơ đồ Hình 8.11 có thể gọi là sơ đồ bối cảnh, vì mô tả bối cảnh vận hành hệ thống và phân biệt rõ hệ thống với môi trường. Sự phân biệt được thực hiện bằng biểu diễn đồ họa khác nhau của thành phần hệ thống và trừu tượng, củng cố thêm lựa chọn dùng loại hệ thống cho hệ thống cần xây dựng, khác với loại trừu tượng cho các thực thể môi trường.
+
+Sơ đồ cũng cho thấy hệ thống robot trong nhà kho tương tác với môi trường như thế nào, biểu diễn bằng đặc trưng trừu tượng và kết nối để cảm nhận vật cản qua sonar, cảm nhận sàn và đường qua cảm biến ánh sáng. Tương tác giữa bánh xe với sàn để tạo lực đẩy cũng được biểu diễn. Từ sơ đồ này, ranh giới hệ thống được xác định chính xác cho bối cảnh đã cho: tập đặc trưng được giám sát (vào) và điều khiển (ra) của hệ thống robot nối với các thực thể
+% Source: printed 227 / PDF 241
+môi trường. Lưu ý trong bối cảnh này, \texttt{force\_gripper} không được nối, vì giả định vật vận chuyển nằm trong hệ thống robot, nên không thuộc môi trường. Với bối cảnh khác, khi robot đang lấy vật, vật sẽ thuộc môi trường vì chưa được robot lấy nhưng đang tương tác với cơ cấu chấp hành bộ kẹp. Khi đó, đặc trưng \texttt{force\_gripper} sẽ nối với vật cần vận chuyển.
+\sourcefigure{8.12}{241}{Ký pháp đồ họa AADL cho các loại thành phần.}
+
+Khi phát triển hệ thống, thường khó nhận biết mọi tương tác có thể có với môi trường. Không được quên các tương tác cần tính đến để vận hành an toàn trong bối cảnh đã cho, đồng thời phải quyết định tương tác nào có thể bỏ qua. Sơ đồ bối cảnh giúp nhận diện những tương tác bị bỏ qua bằng cách tìm các đặc trưng cùng kiểu của hệ thống và thành phần môi trường chưa được kết nối, cho thấy một tương tác bị bỏ qua. Chẳng hạn, đó là trường hợp \texttt{light\_reflected} của vật cản và \texttt{light\_sensor\_in} của CPS robot vẫn chưa nối. Dù vật cản thực sự phản xạ ánh sáng nhà kho, tương tác với cảm biến ánh sáng robot được bỏ qua vì cảm biến sẽ đủ gần đường và không chịu ảnh hưởng của ánh sáng đó. Việc bỏ qua cũng có thể được mô hình hóa như một giả định môi trường kiểm chứng được, ràng buộc môi trường hệ thống. Mô hình hóa giả định môi trường sẽ được trình bày ở Mục 8.6.3.
+
+Lưu ý ở đây chỉ trình bày bối cảnh vận hành bình thường khi dò đường. Có thể mô hình hóa một bối cảnh khác khi robot đang bảo trì. Bối cảnh đó sẽ là một hiện thực thành phần trừu tượng khác cho cùng kiểu thành phần nhà kho, chỉ tạo thể hiện các thành phần con tương tác và kết nối cần cho bối cảnh.
+
+\subsection{Các khái niệm vận hành}
+Bước tiếp theo trong quy trình mô hình hóa Hình 8.9 là phát triển kịch bản mô tả cách dùng hệ thống trong những bối cảnh từ tổng quan hệ thống. Ca sử dụng là cách tốt để làm điều này. Có nhiều ngôn ngữ mô hình hóa ca sử dụng. Ngôn ngữ con Use Case Maps của User Requirements Notation [155] và công cụ dựa trên Eclipse jUCMNav [1] rất phù hợp, vì ca sử dụng và kịch bản được mô hình hóa có thể được mô phỏng để thẩm định. Điều này cực kỳ hữu ích khi mô hình hóa ví dụ bộ điều nhiệt của lồng ấp trẻ sơ sinh trong REMH [184], vì phát hiện nhiều lỗi trong ca sử dụng viết bằng ngôn ngữ tự nhiên. Tuy nhiên, trình bày mô hình hóa ca sử dụng nằm ngoài phạm vi chương; bạn đọc có thể tham khảo [38, 37] để biết thêm.
+
+\subsection{Giả định môi trường}
+Phần giới thiệu AADL đã chỉ ra rằng những sai sót thiết kế nổi tiếng dẫn đến lỗi thảm khốc như lỗi Ariane 5 xuất phát từ các giả định không khớp giữa hệ thống và môi trường.
+
+% Source: printed 228 / PDF 242
+Vì vậy, xác định các giả định môi trường mà hệ thống phụ thuộc vào để vận hành đúng là việc thiết yếu để tái sử dụng hệ thống trong những bối cảnh khác nhau và tránh sử dụng sai hệ thống.
+
+Giả định có thể quy định những điều kiện mà một hoặc nhiều thực thể trong môi trường hệ thống phải đáp ứng để hệ thống vận hành đúng. Chúng cũng có thể ràng buộc kiểu, miền giá trị và đơn vị của các biến được giám sát và điều khiển của hệ thống.
+
+Giả sử CPS robot dùng một cảm biến ánh sáng thụ động đơn giản, đo ánh sáng do đường và sàn phản xạ trong trường nhìn của nó. Một giả định môi trường hiển nhiên là nguồn sáng nhà kho phát ra một lượng ánh sáng tối thiểu. Điều này thiết yếu để robot dò đường vận hành đúng; nếu không, nó không thấy đường cần đi theo.
+
+Một ví dụ giả định khác là giới hạn bán kính cong của đường cần đi theo, vì khả năng chuyển hướng của robot có giới hạn tùy theo tốc độ và khối lượng nó vận chuyển. Giới hạn khối lượng vật vận chuyển cũng là một giả định hợp lý.
+
+\paragraph{Các cấu trúc}
+Giả định môi trường được mô hình hóa bằng ký pháp \emph{ReqSpec} dưới dạng \emph{yêu cầu hệ thống}, nhưng được gán cho các phần tử môi trường thay vì chính hệ thống. Tương tự mục tiêu, yêu cầu hệ thống có thể có \emph{mô tả}, \emph{lý do}, \emph{loại}, v.v. Ngoài ra, có thể dùng từ khóa \texttt{see} để truy vết yêu cầu tới mục tiêu mà nó chuyển thành một yêu cầu có thể kiểm chứng.
+
+Các thực thể mà yêu cầu ràng buộc phải cho phép kiểm chứng yêu cầu đó. Để thực hiện điều này, có thể đặt cho yêu cầu một biểu thức vị từ hoặc một hoạt động kiểm chứng được đăng ký trong môi trường công cụ và được yêu cầu tham chiếu tới. Chẳng hạn, biểu thức vị từ có thể so sánh giá trị thuộc tính trên mô hình kiến trúc với các giới hạn cho những giá trị ấy được ghi nhận trong tập yêu cầu.
+
+\paragraph{Đặc tả ví dụ xuyên suốt}
+Đoạn mã 21 minh họa mô hình hóa giả định môi trường cho CPS robot vận chuyển bằng ký pháp ReqSpec. Một đặc tả yêu cầu hệ thống tên \texttt{Line\_Follower\_Robot\_Env\_Assumptions} được tạo và gán, qua từ khóa \texttt{for}, cho hiện thực hệ thống \texttt{Warehouse\_Robot.normal} biểu diễn bối cảnh vận hành bình thường của robot (xem Hình 8.11). Cả hai giả định được ghi nhận dưới dạng yêu cầu hệ thống, nhưng ràng buộc các thành phần con \texttt{light\_source} và \texttt{line} của nhà kho như từ khóa \texttt{for} xác định (dòng 3 và 11). Những giả định này được đặt loại \texttt{Kind.Assumption} để phân biệt thêm với yêu cầu của hệ thống.
+\begin{verbatim}
+system requirements Line_Follower_Robot_Env_Assumptions for
+    Line_Follower_Robot_Cps::Warehouse_Robots.normal [
+    requirement EA_1: "Minimum Warehouse Luminosity" for light_source [
+        description "The power of the light source shall not be less than
+            the Minimum Illuminance value"
+        rationale "Otherwise the light sensor of the robot will not be
+            able to give proper readings given its sensitivity and its
+            calibration that was performed under these conditions of
+            minimum lightening. Study my_study has shown that the value of
+            100 lux is a lower bound for warehouses illuminance"
+        category Kind.Assumption
+        val Minimum_Illuminance = 100.0 lx
+        value predicate #Physics_Properties::Illuminance >=
+            Minimum_Illuminance
+    ]
+    requirement EA_2: "Minimum Curvature Radius" for line [
+        description "The curvature radius of the line to be followed by
+            the robot shall not be lower than the specified
+            Minimum_Curvature_Radius value"
+        rationale "Otherwise the robot given its speed, mass and response
+            time will not be able to follow the line."
+        category Kind.Assumption
+        val Minimum_Curvature_Radius = 100.0 mm
+\end{verbatim}
+% Source: printed 229 / PDF 243
+\begin{verbatim}
+        value predicate #Physics_Properties::Curvature_Radius >=
+            Minimum_Curvature_Radius
+    ]
+]
+\end{verbatim}
+\begin{center}\small Đoạn mã 21: Giả định môi trường cho CPS robot.\end{center}
+
+Các giả định được đặt \emph{vị từ giá trị} để kiểm chứng tự động. Chẳng hạn, vị từ của \texttt{EA\_1} (dòng 8) so sánh giá trị thuộc tính \texttt{Illuminance} của đặc trưng \texttt{light\_source} của nhà kho với giá trị tối thiểu 100.0 lx được khai báo trong yêu cầu (dòng 7).
+
+Lưu ý nếu một thực thể bị giả định ràng buộc do tổ chức khác phát triển, tổ chức đó sẽ cung cấp phần mở rộng của thành phần trừu tượng biểu diễn thực thể, và giả định sẽ được chuyển thành yêu cầu tương đương cho thực thể.
+
+\subsection{Kiến trúc chức năng}
+Bước tiếp theo của quy trình phát triển đang áp dụng là phát triển kiến trúc chức năng. Bước này giả định các khái niệm vận hành đã được phát triển qua mô hình hóa ca sử dụng như đề cập ở Mục 8.6.2. Phát triển kiến trúc chức năng sau đó gồm việc cung cấp tập chức năng hệ thống đầu tiên được nhận diện từ các kịch bản ca sử dụng.
+
+Theo cách tiếp cận ALISA hướng kiến trúc, trước tiên mô hình hóa các yêu cầu mức cao cho chức năng hệ thống. Sau đó, đặc tả những phần tử mô hình kiến trúc tương ứng. Cuối cùng, gán yêu cầu cho các phần tử kiến trúc đó. Đây là quy trình lặp, trong đó đưa ra quyết định thiết kế về phân rã kiến trúc hệ thống thành các thành phần con và phân rã tương ứng các yêu cầu mức cao ban đầu.
+
+\paragraph{Yêu cầu hệ thống}
+\subparagraph{Các cấu trúc}
+Tương tự giả định, yêu cầu được mô hình hóa bằng ký pháp ReqSpec. Mô hình hóa yêu cầu đã được giới thiệu khi mô hình hóa giả định môi trường. Dưới đây là các thuộc tính bổ sung cần cho việc mô hình hóa này:
+\begin{itemize}
+\item \texttt{decomposes}: tham chiếu một hoặc nhiều yêu cầu mà yêu cầu này phân rã hoặc được suy ra từ đó. Yêu cầu thực hiện phân rã được gán cho thành phần kiến trúc nằm trong thành phần được gán yêu cầu bị phân rã.
+\item \texttt{see goal}: tham chiếu một hoặc nhiều mục tiêu của bên liên quan mà yêu cầu đại diện, thường khi mục tiêu được tham chiếu được chuyển thành yêu cầu có thể kiểm chứng này.
+\end{itemize}
+
+\subparagraph{Đặc tả ví dụ xuyên suốt}
+Các mục tiêu mức cao của bên liên quan trong Đoạn mã 15, sau khi chuyển thành yêu cầu có thể kiểm chứng, được trình bày dưới dạng \texttt{R\_Behav\_1} và \texttt{R\_Behav\_2} trong Đoạn mã 22. Mệnh đề \texttt{see goal} ở dòng 6 tham chiếu các mục tiêu của bên liên quan trong Đoạn mã 15.
+\begin{verbatim}
+system requirements Line_Follower_Robot_Behavior for
+    Line_Follower_Functions::Cary_Object.basic [
+    requirement R_Behav_1: "Carry_Object_Function" [
+        description
+            "The robot shall carry an object between two specified
+                points by following a predefined trajectory in the
+                warehouse."
+\end{verbatim}
+% Source: printed 230 / PDF 244
+\begin{verbatim}
+        see goal Line_Follower_Robot_Behavior.G_Behav_1
+        category Quality.Behavior
+    ]
+    requirement R_Behav_1_1: "Pick_Up_Object_Function" for
+        pick_up_object [
+        description "At the beginning of the path, the robot shall
+            pick up an object on the floor."
+        category Quality.Behavior
+        decomposes R_Behav_1
+    ]
+    requirement R_Behav_1_2: "Follow_Line_Function" for follow_line
+        [
+        description "The robot shall follow a line on the floor of
+            the warehouse."
+        category Quality.Behavior
+        decomposes R_Behav_1
+    ]
+    requirement R_Behav_1_3: "Drop_Off_Object_Function" for
+        drop_off_object [
+        description "At the end of the path, the robot shall drop off
+            the carried object on the floor."
+        category Quality.Behavior
+        decomposes R_Behav_1
+    ]
+    requirement R_Behav_2: "Avoid_Obstacles_Function" for
+        detect_obstacle [
+        description
+            "The robot shall avoid colliding with obstacles along the
+                path."
+        see goal Line_Follower_Robot_Behavior.G_Behav_2
+        category Quality.Behavior
+    ]
+]
+\end{verbatim}
+\begin{center}\small Đoạn mã 22: Yêu cầu hệ thống mức cao.\end{center}
+
+Hai yêu cầu mức cao ấy được phân rã tiếp thành các yêu cầu con, mỗi yêu cầu con phải được kiểm chứng thì yêu cầu mức cao mới được kiểm chứng. Chẳng hạn, \texttt{R\_Behav\_1} được phân rã thành \texttt{R\_Behav\_1\_1}, \texttt{R\_Behav\_1\_2} và \texttt{R\_Behav\_1\_3} (Đoạn mã 22), phát biểu rằng vận chuyển một vật giữa hai điểm được thực hiện bằng lấy vật, đưa nó dọc theo đường đi và đặt xuống tại đích. Điều này được đặc tả bằng từ khóa \texttt{decomposes} tham chiếu yêu cầu bị phân rã.
+
+\paragraph{Kiến trúc}
+Theo cách tiếp cận mô hình hóa hướng kiến trúc, chức năng hệ thống phải được biểu diễn trong kiến trúc hệ thống. Việc này tiếp tục dùng loại thành phần trừu tượng, vốn cũng được dùng để mô hình hóa thành phần môi trường. Vì loại trừu tượng đã được giới thiệu để mô hình hóa hệ thống trong môi trường, có thể chuyển thẳng đến đặc tả ví dụ xuyên suốt dưới đây.
+
+\subparagraph{Đặc tả ví dụ xuyên suốt}
+Chức năng hệ thống được trình bày trong Đoạn mã 23. Trước tiên khai báo kiểu thành phần trừu tượng cho chức năng \texttt{Carry\_Object}, rồi một hiện thực tiếp theo định nghĩa thành phần con cho các chức năng con \texttt{pick\_up\_object}, \texttt{follow\_line}, \texttt{drop\_off\_object}
+% Source: printed 231 / PDF 245
+và \texttt{detect\_obstacles}. Kiểu thành phần trừu tượng được khai báo cho mỗi chức năng con, với các đặc trưng biểu diễn biến chức năng. Một thành phần trừu tượng được khai báo cho kiểu của biến trạng thái robot xác định đã phát hiện vật cản hay chưa. Chức năng \texttt{detect\_obstacles} xuất biến ấy và truyền tới chức năng \texttt{follow\_line}, chức năng này sẽ dừng robot khi phát hiện vật cản. Điều đó được khai báo bằng kết nối ở dòng 15 trong Đoạn mã 23.
+\begin{verbatim}
+package Line_Follower_Functions
+public
+    with Physics;
+    abstract Cary_Object
+    end Cary_Object;
+    abstract implementation Cary_Object.basic
+        subcomponents
+            pick_up_object: abstract Pick_Up_Object.basic;
+            follow_line: abstract Follow_Line.basic;
+            drop_off_object: abstract Drop_Off_Object.basic;
+            detect_obstacle: abstract Detect_Obstacle;
+        connections
+            obstacle_detection_state: feature detect_obstacle.state ->
+                follow_line.state;
+    end Cary_Object.basic;
+\end{verbatim}
+\begin{center}\small Đoạn mã 23: Các chức năng hệ thống của kiến trúc mức cao.\end{center}
+
+Giờ đã có kiểu thành phần cho chức năng hệ thống vận chuyển vật tổng thể, có thể gán các mục tiêu của bên liên quan trong Đoạn mã 15 cho thành phần này bằng mệnh đề \texttt{for} của gói mục tiêu. Lưu ý dùng kiểu thành phần thay cho hiện thực thành phần khi gán, do quy tắc về khả năng nhìn thấy yêu cầu và mục tiêu trong ALISA. Tương tự khả năng nhìn thấy thuộc tính (xem Mục 8.6.1), mục tiêu gán cho kiểu thành phần tự động được gán cho mọi hiện thực và thành phần con thuộc kiểu đó, cũng như các phần tử phân loại mở rộng kiểu và thành phần con của chúng, v.v.
+
+Tương tự, yêu cầu mức cao nhất tạo từ mục tiêu được gán cho hiện thực thành phần \texttt{Carry\_Object.basic} (Đoạn mã 22), và mỗi yêu cầu thực hiện phân rã được gán cho thành phần con tương ứng phân rã thành phần chính.
+
+\subparagraph{Phân rã chức năng dò đường}
+Để minh họa việc phân rã tiếp yêu cầu và kiến trúc, thành phần trừu tượng của chức năng \texttt{follow\_line} trong Đoạn mã 23 được trình bày chi tiết trong Đoạn mã 24. Kiểu thành phần \texttt{Follow\_Line} khai báo đặc trưng đầu vào cho cường độ ánh sáng và các đặc trưng đầu ra cho công suất bánh trái, bánh phải. Các đặc trưng ấy có kiểu là các kiểu thành phần trừu tượng của gói Physics (Đoạn mã 18). Một truy cập dữ liệu tới biến nội bộ trạng thái robot được bổ sung. Chương trình con phát hiện vật cản sẽ đặt biến này để dừng robot khi phát hiện vật cản.
+\begin{verbatim}
+abstract Follow_Line
+    features
+        light_intensity: in feature Physics::Light;
+        left_motor_power: out feature Physics::Power;
+        right_motor_power: out feature Physics::Power;
+        state: feature Robot_State;
+end Follow_Line;
+\end{verbatim}
+\begin{center}\small Đoạn mã 24: Các chức năng hệ thống của kiến trúc dò đường.\end{center}
+
+Chức năng con dò đường được phân rã tiếp thành hai chức năng con, như hiện thực thành phần \texttt{Follow\_Line.basic} trong Đoạn mã 25 và sơ đồ tương ứng ở Hình 8.13 minh họa. Hiện thực đặc tả các thành phần con cho hai chức năng: tính góc quay robot theo cường độ ánh sáng đo được, và tính công suất động cơ bánh xe từ góc mong muốn.
+
+% Source: printed 232 / PDF 246
+\begin{verbatim}
+abstract implementation Follow_Line.basic
+    subcomponents
+        compute_turn_angle: abstract Compute_Turn_Angle.pid;
+        compute_wheels_motors_power: abstract Compute_Wheels_Motors_Power
+            .basic;
+    connections
+        light_intensity_compute_turn_angle: feature light_intensity ->
+            compute_turn_angle.light_intensity;
+        turn_angle_compute_wheels_power: feature compute_turn_angle.
+            turn_angle -> compute_wheels_motors_power.turn_angle;
+        compute_wheels_motors_power_left_motor_power: feature
+            compute_wheels_motors_power.left_motor_power ->
+            left_motor_power;
+        compute_wheels_motors_power_right_motor_power: feature
+            compute_wheels_motors_power.right_motor_power ->
+            right_motor_power;
+        state_compute_wheels_motors_power: feature state ->
+            compute_wheels_motors_power.state;
+end Follow_Line.basic;
+\end{verbatim}
+\begin{center}\small Đoạn mã 25: Hiện thực chức năng hệ thống của kiến trúc dò đường.\end{center}
+\sourcefigure{8.13}{246}{Phân rã chức năng dò đường thành các chức năng con.}
+
+Kết nối đặc trưng nối các chức năng thành phần con tới đặc trưng của thành phần bao chứa, và nối các đặc trưng giữa các thành phần con được chứa. Biểu diễn đồ họa ở Hình 8.13 minh họa rõ sự phụ thuộc giữa hai chức năng con, một thực hành được REMH khuyến nghị.
+
+Về phía yêu cầu, tập yêu cầu mới được tạo cho hiện thực thành phần \texttt{Follow\_Line.basic}, như Đoạn mã 26. Nó chứa các yêu cầu phân rã \texttt{R\_Behav\_1\_2} thành \texttt{R\_Behav\_1\_2\_1}, \texttt{R\_Behav\_1\_2\_2} và \texttt{R\_Behav\_1\_2\_3}. Các yêu cầu này đòi hỏi đặt giá trị biến nội bộ góc quay và các biến được điều khiển công suất bánh trái, bánh phải. Qua mệnh đề \texttt{for}, chúng được phân bổ cho các thành phần con \texttt{compute\_turn\_angle} và \texttt{compute\_wheels\_motors\_power}, có các biến nói trên làm đặc trưng đầu ra.
+\begin{verbatim}
+system requirements Follower_Line_Behavior for Line_Follower_Functions::
+    Follow_Line.basic [
+    requirement R_Behav_1_2_1: "Set_Turn_Angle_Function" for
+        compute_turn_angle [
+        description "The controller shall set the value of the turn angle
+            variable."
+        category Quality.Behavior
+        decomposes Line_Follower_Robot_Behavior.R_Behav_1_2
+    ]
+\end{verbatim}
+% Source: printed 233 / PDF 247
+\begin{verbatim}
+    requirement R_Behav_1_2_2: "Set_Left_Wheel_Power_Function" for
+        compute_wheels_motors_power [
+        description "The left wheel controller shall set the value of the
+            left wheel power variable."
+        category Quality.Behavior
+        decomposes Line_Follower_Robot_Behavior.R_Behav_1_2
+    ]
+    requirement R_Behav_1_2_3: "Set_Right_Wheel_Power_Function" for
+        compute_wheels_motors_power [
+        description "The right wheel controller shall set value of the
+            right wheel power variable."
+        category Quality.Behavior
+        decomposes Line_Follower_Robot_Behavior.R_Behav_1_2
+    ]
+]
+\end{verbatim}
+\begin{center}\small Đoạn mã 26: Các yêu cầu con cho chức năng con của chức năng hệ thống dò đường.\end{center}
+
+\subsection{Mô hình phần vật lý}
+Đã có mô hình kiến trúc chức năng cùng yêu cầu liên kết, tạo từ các mục tiêu ban đầu của bên liên quan trong tổng quan hệ thống. Mô hình ấy còn khá trừu tượng và cần được tinh chỉnh bằng mô hình phần mềm cùng mô hình nền tảng thực thi để thực thi phần mềm. Các mô hình này cho phép phân tích và kiểm chứng chính xác hơn, vì nhiều phân tích phụ thuộc mạnh vào mô hình phần vật lý (phần cứng) cung cấp tài nguyên thực thi cho chức năng hệ thống. Vì vậy, bước tiếp theo là cung cấp mô hình chi tiết phần cứng của robot sẽ được xét để thực thi chức năng hệ thống nhằm đáp ứng yêu cầu hệ thống.
+
+Sau đây, trước tiên giới thiệu mô hình hóa một robot Lego NXT Mindstorm đơn giản. Robot Lego là hệ thống có khả năng cấu hình cao, và bước đầu là mô hình hóa một cấu hình cụ thể phù hợp để đạt mục tiêu hệ thống. Mô hình hóa cấu hình này cho phép giới thiệu ngắn gọn cách mô hình hóa các họ thành phần trong AADL; có thể tìm thêm thông tin ở [99].
+
+\paragraph{Các cấu trúc}
+Các loại thành phần hợp thành, gồm các loại con \emph{system} và \emph{abstract}, đã được giới thiệu ở Mục 8.6.1 và dùng để mô hình hóa tổng quan hệ thống. Thành phần trừu tượng cũng được dùng để mô hình hóa tập chức năng hệ thống đầu tiên. Nay trình bày các loại con thành phần nền tảng thực thi (phần cứng) để dùng mô hình hóa phần vật lý. Chúng được phân thành sáu loại con:
+\begin{itemize}
+\item \emph{Processor (bộ xử lý)}: bộ xử lý là sự trừu tượng hóa phần cứng và phần mềm chịu trách nhiệm lập lịch và thực thi luồng, cũng như các bộ xử lý ảo biểu diễn phân vùng bộ xử lý như ARINC653. Bộ xử lý có thể chứa bộ nhớ để mô hình hóa cấu trúc nội bộ như bộ nhớ đệm. Bộ xử lý có thể truy cập bộ nhớ và thiết bị qua đặc trưng truy cập bus.
+\item \emph{Virtual Processor (bộ xử lý ảo)}: bộ xử lý ảo biểu diễn tài nguyên logic có khả năng lập lịch và thực thi các luồng và bộ xử lý ảo khác được ràng buộc vào nó. Thành phần này hữu ích để mô hình hóa bộ xử lý phân vùng như ARINC653 cho hệ thống điện tử hàng không mô-đun tích hợp. Bộ xử lý ảo có thể được khai báo là thành phần con của bộ xử lý hoặc bộ xử lý ảo khác. Chúng được ràng buộc ngầm vào bộ xử lý hoặc bộ xử lý ảo chứa chúng. Chúng cũng có thể biểu diễn bộ lập lịch phân cấp.
+\item \emph{Memory (bộ nhớ)}: bộ nhớ là thành phần lưu mã và dữ liệu. Bộ nhớ có thể biểu diễn nơi lưu trữ vật lý truy cập ngẫu nhiên như RAM, ROM, hoặc nơi lưu trữ lâu dài hơn như đĩa hay nơi lưu trữ logic. Chương trình con, dữ liệu và tiến trình được ràng buộc vào thành phần bộ nhớ để các bộ xử lý thực thi luồng truy cập.
+\item \emph{Bus}: bus là thành phần có thể trao đổi điều khiển và dữ liệu giữa bộ nhớ, bộ xử lý và thiết bị. Nó trừu tượng hóa kênh truyền thông và các giao thức truyền thông liên quan. Giao thức truyền thông cũng có thể được mô hình hóa tường minh bằng bus ảo.
+% Source: printed 234 / PDF 248
+\item \emph{Virtual Bus (bus ảo)}: bus ảo là sự trừu tượng hóa bus logic, chẳng hạn kênh ảo hoặc giao thức truyền thông.
+\item \emph{Device (thiết bị)}: thiết bị là phần cứng chuyên dụng thực hiện một hoặc nhiều chức năng tích hợp sẵn và làm giao diện với thế giới vật lý của CPS. Có thể dùng thiết bị cho cả phần cứng và phần mềm của hệ thống. Cảm biến và cơ cấu chấp hành phần cứng được mô hình hóa thành thiết bị, có thể nối vật lý tới bộ xử lý qua bus. Đối với phần mềm, thiết bị có thể nối logic với thành phần phần mềm ứng dụng, qua đó biểu diễn phần mềm của thiết bị phần cứng tương ứng, như trình điều khiển nằm trong bộ nhớ và thực thi trên bộ xử lý bên ngoài.
+\end{itemize}
+
+\paragraph{Đặc tả ví dụ xuyên suốt}
+Robot Lego NXT gồm các khối nhựa có thể lắp ráp để tạo cấu trúc vật lý robot. Nó cũng gồm hai cụm động cơ và bánh xe, cảm biến ánh sáng, cảm biến sonar và một khối thường gọi là \emph{brick}. Bản thân khối brick chứa nhiều thành phần như pin, bộ xử lý ARM7 chứa bộ nhớ RAM, mô-đun Bluetooth, mạch vào và ra, v.v. Hình 8.14 trình bày sơ đồ không hình thức của khối brick NXT lấy từ bộ công cụ phát triển phần cứng NXT [2].
+\sourcefigure{8.14}{248}{Sơ đồ không hình thức của khối brick NXT (tái bản từ [2]).}
+
+Để mô hình hóa những phần tử này trong AADL, trước tiên tạo gói \texttt{Robots\_Library} (Đoạn mã 27) chứa các phần tử phân loại sẽ được tạo thể hiện để đặc tả cấu hình robot Lego NXT. Khai báo một kiểu hệ thống (dòng 5) và một hiện thực hệ thống (dòng 10) cho robot. Ở mức trừu tượng này, hiện thực hệ thống robot chỉ chứa một thành phần con cho khối brick (dòng 12). Lý do là có thể giả định mọi robot luôn chứa khối brick, trong khi sự hiện diện của thành phần khác tùy vào cấu hình phần cứng cụ thể được chọn theo nhiệm vụ robot.
+
+Sau đó khai báo các phần tử phân loại hệ thống cho thành phần con brick (dòng 15 và 20). Trong phạm vi chương này, chỉ mô hình hóa phiên bản đơn giản hóa của khối brick, đủ cho các phân tích sẽ trình bày. Phiên bản này giới hạn ở mô hình hóa bộ xử lý, nguồn điện, mạch vào và ra, cùng các bus nối những thành phần con này.
+
+Hiện thực cơ bản của khối brick tổng quát được minh họa ở dòng 20 của Đoạn mã 27 và sơ đồ Hình 8.15. Tiêu thụ điện năng là vấn đề cần quan tâm với robot vì quyết định thời gian hoạt động tự chủ. Vì vậy, nguồn điện được mô hình hóa và biểu diễn bằng thành phần thiết bị nối với bus điện, bus này cũng nối với bộ xử lý. Lưu ý mô hình phần cứng dùng truy cập bus và kết nối truy cập bus thay cho các đặc trưng trừu tượng như trong tổng quan hệ thống. Có thành phần bus tường minh cho phép biểu diễn tính đồng thời trên tài nguyên truyền thông. Ngoài ra, kết nối logic được mô hình hóa trong ứng dụng phần mềm có thể được ánh xạ tới thành phần bus phần cứng để ước tính mức tiêu thụ tài nguyên.
+
+% Source: printed 235 / PDF 249
+\begin{verbatim}
+package Robots_Library
+public
+    with OSEK, Physics, Physics_Properties, SEI;
+    system Robot
+        properties
+            Classifier_Substitution_Rule => Type_Extension;
+    end Robot;
+    system implementation Robot.basic
+        subcomponents
+            brick: system Brick.basic;
+    end Robot.basic;
+    system Brick
+        properties
+            Classifier_Substitution_Rule => Type_Extension;
+    end Brick;
+    system implementation Brick.basic
+        subcomponents
+            main_processor: processor Generic_Processor;
+            power_supply: device Generic_Battery;
+            power_bus: bus Physics::Power_Bus;
+        connections
+            power_supply_power_bus: bus access power_supply.power ->
+                power_bus;
+            power_bus_main_processor: bus access power_bus ->
+                main_processor.power_in;
+    end Brick.basic;
+    processor Generic_Processor extends Physics::Power_Consuming_Object
+        features
+            data_bus: requires bus access Data_Bus;
+    end Generic_Processor;
+    bus Data_Bus
+        properties
+            Transmission_Time => [Fixed => 10 ns .. 100 ns; PerByte => 10
+                ns .. 40 ns;];
+    end Data_Bus;
+    device Generic_Battery
+        features
+            power: requires bus access Physics::Power_Bus;
+    end Generic_Battery;
+\end{verbatim}
+\begin{center}\small Đoạn mã 27: Gói AADL cho thư viện thành phần robot.\end{center}
+
+Thành phần brick này mang tính tổng quát vì không có gì riêng cho phiên bản NXT. Để ghi nhận những điểm riêng đó, cung cấp phần mở rộng của hiện thực hệ thống brick như Đoạn mã 28 và sơ đồ tương ứng Hình 8.16 minh họa. Kiểu hệ thống \texttt{Nxt\_Brick} mở rộng kiểu hệ thống \texttt{Brick} đã định nghĩa và thêm các đặc trưng truy cập bus (dòng 3 đến 9) để khối brick nối với cảm biến và cơ cấu chấp hành robot. Hiện thực tương ứng \texttt{Nxt\_Brick.basic} (dòng 12) mở rộng hiện thực \texttt{Brick.basic}, thêm các thành phần con riêng của khối brick NXT cho mạch vào, mạch ra và bus dữ liệu nối chúng với bộ xử lý. Mạch vào và ra lấy dữ liệu từ bộ xử lý làm đầu vào và
+% Source: printed 236 / PDF 250
+đọc/gửi dữ liệu tương ứng tới cảm biến và cơ cấu chấp hành được kết nối. Các kiểu thành phần thiết bị được cung cấp cho mạch vào và ra (dòng 40 và 49), kế thừa đặc trưng truy cập bus \texttt{power\_in} từ \texttt{Power\_Consuming\_Object} được mở rộng, do gói Physics cung cấp.
+\sourcefigure{8.15}{250}{Hiện thực hệ thống cơ bản cho khối brick của robot Lego Mindstorm.}
+\begin{verbatim}
+system Nxt_Brick extends Brick
+    features
+        in_1: requires bus access Sensor_Bus;
+        in_2: requires bus access Sensor_Bus;
+        in_3: requires bus access Sensor_Bus;
+        in_4: requires bus access Sensor_Bus;
+        out_1: requires bus access Actuator_Bus;
+        out_2: requires bus access Actuator_Bus;
+        out_3: requires bus access Actuator_Bus;
+end Nxt_Brick;
+system implementation Nxt_Brick.basic extends Brick.basic
+    subcomponents
+        main_processor: refined to processor Arm_Processor.nxt;
+        input_circuit: device Input_Circuit;
+        output_circuit: device Output_Circuit;
+        data_bus: bus Data_Bus;
+    connections
+        brick_input_circuit_1: bus access in_1 -> input_circuit.in_1;
+        brick_input_circuit_2: bus access in_2 -> input_circuit.in_2;
+        brick_input_circuit_3: bus access in_3 -> input_circuit.in_3;
+        brick_input_circuit_4: bus access in_4 -> input_circuit.in_4;
+        brick_output_circuit_1: bus access output_circuit.out_1 -> out_1;
+        brick_output_circuit_2: bus access output_circuit.out_2 -> out_2;
+        brick_output_circuit_3: bus access output_circuit.out_3 -> out_3;
+        power_bus_input_circuit: bus access power_bus -> input_circuit.
+            power_in;
+        power_bus_output_circuit: bus access power_bus -> output_circuit.
+            power_in;
+        main_processor_data_bus: bus access main_processor.data_bus ->
+            data_bus;
+        data_bus_input_circuit: bus access data_bus -> input_circuit.
+            control;
+        data_bus_output_circuit: bus access data_bus -> output_circuit.
+            control;
+    properties
+\end{verbatim}
+% Source: printed 237 / PDF 251
+\begin{verbatim}
+        SEI::PowerCapacity => 9.0 W applies to power_supply; -- 6 AA
+            batteries in series at 1 A
+        Physics_Properties::Mass => 200.0 g;
+        Scheduling_Protocol => (RMS) applies to main_processor;
+        OSEK::SystemCounter_MaxAllowedValue => 2000 applies to
+            main_processor;
+        OSEK::SystemCounter_TicksPerBase => 1 applies to main_processor;
+        OSEK::SystemCounter_MinCycle => 1 applies to main_processor;
+end Nxt_Brick.basic;
+device Input_Circuit extends Physics::Power_Consuming_Object
+    features
+        in_1: requires bus access Sensor_Bus;
+        in_2: requires bus access Sensor_Bus;
+        in_3: requires bus access Sensor_Bus;
+        in_4: requires bus access Sensor_Bus;
+        control: requires bus access Data_Bus;
+end Input_Circuit;
+device Output_Circuit extends Physics::Power_Consuming_Object
+    features
+        out_1: requires bus access Actuator_Bus;
+        out_2: requires bus access Actuator_Bus;
+        out_3: requires bus access Actuator_Bus;
+        control: requires bus access Data_Bus;
+end Output_Circuit;
+\end{verbatim}
+\begin{center}\small Đoạn mã 28: Phần mở rộng khối brick NXT.\end{center}
+
+Thành phần con tổng quát \texttt{main\_processor} của hiện thực hệ thống brick tổng quát được mở rộng được \emph{tinh chỉnh thành} kiểu \texttt{ARM\_Processor.nxt}, như Đoạn mã 28 (dòng 14). Kiểu của thành phần con đã tinh chỉnh là phần mở rộng kiểu thành phần bộ xử lý tổng quát, như Đoạn mã 29 dưới đây (dòng 1). Nó chứa phép gán thuộc tính đặt năng lực MIPS của bộ xử lý (dòng 3). Hiện thực bộ xử lý cung cấp thành phần con bộ nhớ RAM (dòng 8), với giá trị thuộc tính dung lượng bộ nhớ 64 KByte (dòng 10) theo đặc tả phần cứng Lego của khối brick NXT.
+\begin{verbatim}
+processor Arm_Processor extends Generic_Processor
+    properties
+        SEI::MIPSCapacity => 43.2 MIPS;
+end Arm_Processor;
+processor implementation Arm_Processor.nxt
+    subcomponents
+        ram: memory RAM_Memory;
+    properties
+        SEI::RAMCapacity => 64.0 KByte applies to ram;
+end Arm_Processor.nxt;
+memory RAM_Memory
+    features
+        data_bus: requires bus access Data_Bus;
+end RAM_Memory;
+\end{verbatim}
+\begin{center}\small Đoạn mã 29: Bộ xử lý ARM cho phần mở rộng khối brick NXT.\end{center}
+
+Sự kết hợp giữa mở rộng phần tử phân loại và tinh chỉnh thành phần con, đặc trưng như vậy cực kỳ hữu ích để mô hình hóa họ thành phần, được giải thích thêm ở [99]. Trong mô hình hóa này, hai cách khác nhau được dùng để cung cấp thông tin riêng của NXT. Một cách là thêm phép gán thuộc tính vào hiện thực thành phần
+% Source: printed 238 / PDF 252
+mở rộng của khối brick, với giá trị thuộc mô hình cụ thể này, như giá trị năng lực cung cấp điện đặt cho thành phần con nguồn điện (dòng 32 của Đoạn mã 28).
+\sourcefigure{8.16}{252}{Cấu tạo nội bộ của khối brick Lego NXT Mindstrom.}
+
+Cách thứ hai là tinh chỉnh phần tử phân loại của thành phần con, như với bộ xử lý ARM mở rộng bộ xử lý tổng quát. Có phần tử phân loại mới cho phép cung cấp thêm chi tiết, chẳng hạn cấu tạo nội bộ bộ xử lý chứa thành phần con bộ nhớ RAM. Giá trị thuộc tính năng lực MIPS và dung lượng RAM có thể được khai báo trong các phần mở rộng bộ xử lý này (dòng 3 và 10 của Đoạn mã 29). Quyết định dùng cơ chế nào phụ thuộc bối cảnh mô hình hóa. Chẳng hạn, ưu điểm của việc tạo các phần tử phân loại mở rộng cho bộ xử lý là đóng gói thông tin riêng của NXT và giúp dễ tái sử dụng trong đặc tả khác.
+
+Giờ đã có các phần tử phân loại thành phần cho khối brick, phải khai báo thêm các phần tử phân loại cho cảm biến và cơ cấu chấp hành robot. Đoạn mã 30 trình bày chúng, với các phần tử phân loại thuộc loại \emph{device} được khai báo cho cảm biến ánh sáng, sonar, các cụm bánh xe và bộ kẹp dùng nâng vật vận chuyển. Lưu ý bộ kẹp này thực tế không có trong bộ Mindstorm và chỉ được thêm để minh họa. Kiểu thành phần cảm biến và cơ cấu chấp hành khai báo các đặc trưng tương tác, có kiểu cho tài nguyên vật lý tương ứng do gói Physics ở Đoạn mã 18 cung cấp. Chúng cũng khai báo các đặc trưng truy cập bus có kiểu là các phần tử phân loại bus cảm biến và cơ cấu chấp hành. Chúng sẽ biểu diễn đầu nối RJ12 chuẩn đi kèm bộ NXT. Lưu ý không cung cấp hiện thực thành phần cho cảm biến và cơ cấu chấp hành, vì cấu tạo nội bộ của chúng không liên quan đến việc mô hình hóa này.
+\begin{verbatim}
+device Light_Sensor extends Physics::Power_Consuming_Object
+    features
+        light_in: in feature Physics::Light;
+        light_data: requires bus access Sensor_Bus;
+    properties
+        Physics_Properties::Mass => 20.0 g;
+end Light_Sensor;
+device Sonar extends Physics::Power_Consuming_Object
+    features
+        sound_in: in feature Physics::Sound;
+        sound_out: out feature Physics::Sound;
+        sound_data: requires bus access Sensor_Bus;
+    properties
+        Physics_Properties::Mass => 20.0 g;
+\end{verbatim}
+% Source: printed 239 / PDF 253
+\begin{verbatim}
+end Sonar;
+device Wheel_Assembly extends Physics::Power_Consuming_Object
+    features
+        power_in: refined to requires bus access Actuator_Bus;
+        force: out feature Physics::Force;
+    properties
+        Physics_Properties::Mass => 100.0 g;
+end Wheel_Assembly;
+device Gripper extends Physics::Power_Consuming_Object
+    features
+        power_in: refined to requires bus access Actuator_Bus;
+        force: out feature Physics::Force;
+    properties
+        Physics_Properties::Mass => 20.0 g;
+end Gripper;
+\end{verbatim}
+\begin{center}\small Đoạn mã 30: Các phần tử phân loại cảm biến và cơ cấu chấp hành robot.\end{center}
+
+Giờ đã khai báo phần tử phân loại cho mọi thành phần của bộ robot NXT Mindstorm, có thể tạo thể hiện và lắp ráp chúng thành hệ thống phần cứng của robot được cấu hình để vận chuyển vật trong nhà kho. Đoạn mã 31 và sơ đồ tương ứng ở Hình 8.17 minh họa điều này. Các phần tử phân loại \texttt{Line\_Follower\_Robot} mới mở rộng các phần tử phân loại robot cơ bản được cấu hình một phần đã định nghĩa, vốn chỉ chứa thành phần con brick (Đoạn mã 27, dòng 10). Kiểu hệ thống mở rộng \texttt{Line\_Follower\_Robot} thêm các đặc trưng riêng của cấu hình dò đường để dùng các cụm bánh xe, bộ kẹp và cảm biến ánh sáng, sonar (dòng 2).
+\begin{verbatim}
+system Line_Follower_Robot extends Robots_Library::Robot
+    features
+        light_sensor_in: in feature Physics::Light;
+        sonar_in: in feature Physics::Sound;
+        sonar_out: out feature Physics::Sound;
+        force_left_wheel: out feature Physics::Force;
+        force_right_wheel: out feature Physics::Force;
+        force_gripper: out feature Physics::Force;
+end Line_Follower_Robot;
+system implementation Line_Follower_Robot.nxt extends Robots_Library::
+    Robot.basic
+    subcomponents
+        left_wheel_assembly: device Robots_Library::Wheel_Assembly;
+        left_wheel_cable: bus Robots_Library::Actuator_Bus;
+        righ_wheel_assembly: device Robots_Library::Wheel_Assembly;
+        rght_wheel_cable: bus Robots_Library::Actuator_Bus;
+        light_sensor: device Robots_Library::Light_Sensor;
+        light_sensor_cable: bus Robots_Library::Sensor_Bus;
+        sonar: device Robots_Library::Sonar;
+        sonar_cable: bus Robots_Library::Sensor_Bus;
+        gripper: device Robots_Library::Gripper;
+        gripper_cable: bus Robots_Library::Actuator_Bus;
+        brick: refined to system Robots_Library::NXT_Brick.basic;
+    connections
+        brick_left_wheel_cable: bus access brick.out_1 ->
+            left_wheel_cable;
+        left_wheel_cable_left_wheel_assembly: bus access left_wheel_cable
+            -> left_wheel_assembly.power_in;
+\end{verbatim}
+% Source: printed 240 / PDF 254
+\begin{verbatim}
+        left_wheel_force_robot: feature left_wheel_assembly.force ->
+            force_left_wheel;
+        brick_right_wheel_cable: bus access brick.out_2 ->
+            rght_wheel_cable;
+        right_wheel_cable_right_wheel_assembly: bus access
+            rght_wheel_cable -> righ_wheel_assembly.power_in;
+        right_wheel_force_robot: feature righ_wheel_assembly.force ->
+            force_right_wheel;
+        brick_gripper_cable: bus access brick.out_3 -> gripper_cable;
+        gripper_cable_gripper: bus access gripper_cable -> gripper.
+            power_in;
+        gripper_force_robot: feature gripper.force -> force_gripper;
+        robot_light_sensor: feature light_sensor_in -> light_sensor.
+            light_in;
+        light_sensor_light_sensor_cable: bus access light_sensor.
+            light_data -> light_sensor_cable;
+        light_sensor_cable_brick: bus access light_sensor_cable -> brick.
+            in_1;
+        sonar_out_robot: feature sonar.sound_out -> sonar_out;
+        robot_sonar_in: feature sonar_in -> sonar.sound_in;
+        sonar_sonar_cable: bus access sonar.sound_data -> sonar_cable;
+        sonar_cable_brick: bus access sonar_cable -> brick.in_2;
+end Line_Follower_Robot.nxt;
+\end{verbatim}
+\begin{center}\small Đoạn mã 31: Các phần tử phân loại cho phần vật lý của robot dò đường.\end{center}
+
+Hiện thực hệ thống robot đã cấu hình (dòng 11) tạo thể hiện các thành phần con cảm biến và cơ cấu chấp hành, gồm cả bus cho đầu nối RJ12. Thành phần con brick tổng quát (dòng 23) của robot tổng quát được mở rộng được tinh chỉnh thành khối brick NXT trong Đoạn mã 28 (dòng 12) và Hình 8.16.
+\sourcefigure{8.17}{254}{Mô hình phần vật lý của robot dò đường Lego NXT.}
+
+% Source: printed 241 / PDF 255
+Đó là mô hình phần vật lý của hệ thống robot vận chuyển. Phần cứng này sẽ được dùng để triển khai ứng dụng phần mềm (phần ảo của CPS robot) điều khiển tốc độ bánh xe theo dữ liệu do cảm biến ánh sáng và sonar thu nhận.
+
+\subsection{Triển khai}
+Mục này xét các hiện thực cụ thể bằng phần mềm của chức năng hệ thống đã giới thiệu ở Mục 8.6.4, và triển khai phần mềm trên mô hình phần cứng giới thiệu ở Mục 8.6.5: robot Lego NXT Mindstorm được cấu hình để vận chuyển vật trong nhà kho. Để triển khai hệ thống, trước tiên phải tinh chỉnh chức năng hệ thống thành ứng dụng phần mềm mà khối brick NXT trong mô hình phần cứng có thể thực thi.
+
+\paragraph{Ứng dụng phần mềm}
+\subparagraph{Các cấu trúc}
+Ứng dụng phần mềm có thể được mô hình hóa trong AADL bằng sáu loại con thành phần phần mềm giới thiệu dưới đây:
+\begin{itemize}
+\item \emph{Data (dữ liệu)}: thành phần dữ liệu biểu diễn cấu trúc dữ liệu phân cấp như biến thể hiện của lớp trong ngôn ngữ lập trình hướng đối tượng hoặc các trường của bản ghi. Thao tác trên kiểu dữ liệu cũng có thể được mô hình hóa bằng khai báo đặc trưng \texttt{provides subprogram access} trên kiểu thành phần dữ liệu. Đặc trưng có kiểu là các phần tử phân loại chương trình con được truy cập.
+\item \emph{Subprogram (chương trình con)}: chương trình con biểu diễn thao tác nguyên tử có tham số. Nó không thể có trạng thái tồn tại sau lời gọi (dữ liệu tĩnh), nhưng có thể có biến cục bộ biểu diễn bằng thành phần con dữ liệu khai báo trong hiện thực chương trình con. Tham số chương trình con và truy cập dữ liệu cần thiết phải được khai báo tường minh trong kiểu chương trình con. Sự kiện phát sinh trong chương trình con cũng có thể được đặc tả thành cổng sự kiện hoặc cổng dữ liệu sự kiện trong kiểu chương trình con.
+\item \emph{Subprogram group (nhóm chương trình con)}: nhóm chương trình con biểu diễn thư viện chương trình con, có nội dung khai báo qua kiểu nhóm chương trình con. Thành phần khác có thể truy cập nhóm chương trình con bằng các đặc trưng truy cập nhóm chương trình con, được nối bằng kết nối truy cập nhóm chương trình con. Điều này giảm số kết nối bằng cung cấp một kết nối duy nhất cho toàn nhóm.
+\item \emph{Thread (luồng)}: luồng biểu diễn đơn vị có thể lập lịch và thực thi đồng thời với các luồng khác. Nó biểu diễn các dòng điều khiển tuần tự thực thi chỉ thị. Luồng có thể được phát động theo chu kỳ, khi dữ liệu hoặc sự kiện đến cổng, hoặc khi nhận lời gọi chương trình con từ luồng khác.
+\item \emph{Thread group (nhóm luồng)}: nhóm luồng biểu diễn các luồng được nhóm về mặt logic. Kiểu nhóm luồng đặc tả các đặc trưng và truy cập thành phần con cần thiết cho những thành phần con luồng khai báo trong hiện thực nhóm luồng, hiện thực này cũng khai báo kết nối giữa các luồng.
+\item \emph{Process (tiến trình)}: tiến trình biểu diễn không gian địa chỉ bộ nhớ ảo. Không gian này chứa chương trình hình thành từ các thành phần con của tiến trình, có thể là luồng, nhóm luồng, chương trình con, nhóm chương trình con hoặc dữ liệu.
+\end{itemize}
+
+Chuẩn AADL có một số phụ lục hỗ trợ mô hình hóa phần mềm:
+\begin{itemize}
+\item Phụ lục hành vi (Behaviour Annex, BA) gồm ngôn ngữ con dựa trên máy trạng thái để mô hình hóa hành vi thành phần AADL. Từ mô tả hành vi trung lập này, có thể sinh mã thực thi. Tuy nhiên, trình bày BA nằm ngoài phạm vi chương.
+\item Phụ lục mô hình hóa dữ liệu gồm thuộc tính và phần tử phân loại định nghĩa sẵn, hướng dẫn biểu diễn kiểu và cấu trúc dữ liệu trong AADL để sinh mã.
+\item Phụ lục ARINC653 gồm thuộc tính và phần tử phân loại định nghĩa sẵn, cung cấp cách chuẩn để biểu diễn kiến trúc hệ thống nhúng phân vùng tuân thủ ARINC653 trong AADL. Phụ lục này cũng nằm ngoài phạm vi chương.
+\item Phụ lục sinh mã định nghĩa các quy tắc riêng cho từng ngôn ngữ để sinh hệ thống thời gian chạy từ mô hình AADL.
+\end{itemize}
+
+% Source: printed 242 / PDF 256
+Mô hình phần mềm đã tinh chỉnh trong mục này cung cấp các phần tử phân loại chương trình con mở rộng các phần tử phân loại trừu tượng của chức năng hệ thống. Các phần tử phân loại luồng được cung cấp để đặc tả thuộc tính lập lịch cho những chương trình con phần mềm này. Các thuộc tính riêng của phần mềm hỗ trợ phân tích định thời, lập lịch và sinh mã sẽ được đặt cho những thành phần đó.
+
+Ngữ nghĩa thực thi của luồng được đặc tả bằng các thuộc tính định nghĩa sẵn trong tập thuộc tính chuẩn \texttt{Thread\_Properties}. Các thuộc tính ấy là:
+\begin{itemize}
+\item \texttt{Dispatch\_Protocol}, có thể nhận các giá trị:
+\begin{itemize}
+\item \texttt{Periodic}: luồng được kích hoạt theo chu kỳ.
+\item \texttt{Aperiodic}: luồng được kích hoạt khi nhận thông điệp.
+\item \texttt{Sporadic}: luồng được kích hoạt khi nhận thông điệp, với độ trễ tối thiểu giữa hai lần kích hoạt.
+\item \texttt{Timed}: luồng được kích hoạt \emph{hoặc} khi nhận thông điệp, \emph{hoặc} khi tới hạn đã cho (bộ định thời được đặt lại khi nhận thông điệp).
+\item \texttt{Hybrid}: luồng được kích hoạt \emph{cả} khi nhận thông điệp \emph{và} khi tới hạn đã cho.
+\end{itemize}
+\item \texttt{Scheduling\_Protocol}: đặc tả chính sách lập lịch.
+\item \texttt{Compute\_Execution\_Time}: biểu diễn thời gian thực thi luồng hoặc chương trình con.
+\item \texttt{Stack\_Size}: định nghĩa kích thước ngăn xếp cho luồng.
+\end{itemize}
+
+Các luồng có thể giao tiếp với nhau bằng ba cơ chế truyền thông định nghĩa sẵn, biểu diễn qua kiểu cổng và kết nối:
+\begin{itemize}
+\item Cổng dữ liệu biểu diễn dữ liệu trạng thái không được đưa vào hàng đợi.
+\item Cổng dữ liệu sự kiện biểu diễn dữ liệu thông điệp được đưa vào hàng đợi.
+\item Cổng sự kiện biểu diễn sự kiện bất đồng bộ.
+\end{itemize}
+
+Kết nối cổng có thể có những ngữ nghĩa định thời khác nhau:
+\begin{itemize}
+\item \emph{sampled (lấy mẫu)}: luồng nhận lấy mẫu khi được phát động hoặc trong khi thực thi.
+\item \emph{immediate (tức thời)}: dữ liệu được truyền khi luồng gửi hoàn tất thực thi.
+\item \emph{delayed (trễ)}: dữ liệu được truyền khi tới hạn của luồng gửi.
+\end{itemize}
+
+Tập thuộc tính chuẩn \texttt{Programming\_Prperties} định nghĩa các thuộc tính sinh mã:
+\begin{itemize}
+\item \texttt{Source\_Language} đặc tả ngôn ngữ lập trình. Các giá trị định nghĩa sẵn là Ada95, Ada2005, C, Java, Simulink\_6\_5 và SCADE.
+\item \texttt{Source\_Text} đặc tả tên tệp mã nguồn.
+\item \texttt{Source\_Name} đặc tả tên cấu trúc dữ liệu hoặc hàm trong tệp mã do \texttt{Source\_Text} đặc tả.
+\item \texttt{Compute\_Entrypoint\_Call\_Sequence} đặc tả tên chuỗi lời gọi trong luồng sẽ thực thi sau khi luồng được phát động.
+\end{itemize}
+
+\subparagraph{Đặc tả ví dụ xuyên suốt}
+Một gói được tạo để chứa khai báo các phần tử phân loại phần mềm, như Đoạn mã 32. Các kiểu dữ liệu cụ thể được khai báo cho biến phần mềm, được suy ra từ biến chức năng hệ thống bằng mở rộng chúng và thêm hậu tố \texttt{SW} vào tên. Các thuộc tính đặc tả biểu diễn cụ thể trong mã được đặt cho những phần tử phân loại này bằng thuộc tính \texttt{Data\_Representation} của phụ lục mô hình dữ liệu (dòng 7). Biến phần mềm \texttt{Robot\_State\_SW} cũng được tinh chỉnh bằng các thuộc tính cho cấu trúc dữ liệu tương đương \texttt{Robot\_state}, khai báo trong tệp mã C \texttt{data\_types.h} và dùng để sinh mã (dòng 24 và 25).
+\begin{verbatim}
+package Line_Follower_Software
+public
+    with Line_Follower_Functions, Code_Generation_Properties, Base_Types,
+        Data_Model;
+    data Light_Intensity_SW extends Physics::Light
+        properties
+\end{verbatim}
+% Source: printed 243 / PDF 257
+\begin{verbatim}
+            Data_Model::Data_Representation => integer;
+            Data_Size => 4 bytes;
+    end Light_Intensity_SW;
+    data Turn_Angle_SW extends Line_Follower_Functions::Turn_Angle
+        properties
+            Data_Model::Data_Representation => integer;
+    end Turn_Angle_SW;
+    data Power_SW extends Line_Follower_Functions::Power
+        properties
+            Data_Model::Data_Representation => integer;
+    end Power_SW;
+    data Robot_State_SW extends Line_Follower_Functions::Robot_State
+        properties
+            Data_Model::Data_Representation => Enum;
+            Data_Model::Enumerators => ("FORWARD", "STOP");
+            Source_Name => "Robot_state";
+            Source_Text => ("data_types.h");
+    end Robot_State_SW;
+\end{verbatim}
+\begin{center}\small Đoạn mã 32: Các phần tử phân loại dữ liệu cho ứng dụng phần mềm.\end{center}
+
+Các hiện thực chương trình con phần mềm cụ thể cho chức năng \emph{tính góc quay} và \emph{tính công suất động cơ bánh xe} được khai báo như Đoạn mã 33. Tương tự kiểu dữ liệu, các chương trình con mở rộng thành phần trừu tượng chức năng hệ thống và tinh chỉnh các đặc trưng trừu tượng thành tham số chương trình con, có kiểu là những kiểu dữ liệu \texttt{SW} thích hợp đã giới thiệu.
+\begin{verbatim}
+subprogram Compute_Turn_Angle_SW extends Line_Follower_Functions::
+    Compute_Turn_Angle
+    features
+        light_intensity: refined to in parameter Light_Intensity_SW;
+        turn_angle: refined to out parameter Turn_Angle_SW;
+    properties
+        Classifier_Substitution_Rule => Type_Extension;
+        Source_Language => (C);
+end Compute_Turn_Angle_SW;
+subprogram implementation Compute_Turn_Angle_SW.pid extends
+    Line_Follower_Functions::Compute_Turn_Angle.pid
+    properties
+        Source_Name => "computePID";
+        Source_Text => ("line_follower.h", "line_follower.c");
+end Compute_Turn_Angle_SW.pid;
+subprogram Compute_Wheels_Motors_Power_SW extends Line_Follower_Functions
+    ::Compute_Wheels_Motors_Power
+    features
+        turn_angle: refined to in parameter Turn_Angle_SW;
+        left_motor_power: refined to out parameter Power_SW;
+        right_motor_power: refined to out parameter Power_SW;
+        state: refined to requires data access Robot_State_SW;
+    properties
+        Classifier_Substitution_Rule => Type_Extension;
+        Source_Language => (C);
+end Compute_Wheels_Motors_Power_SW;
+\end{verbatim}
+
+% Source: printed 244 / PDF 258
+\begin{verbatim}
+subprogram implementation Compute_Wheels_Motors_Power_SW.basic extends
+    Line_Follower_Functions::Compute_Wheels_Motors_Power.basic
+    properties
+        Source_Name => "computeWheelsPower";
+        Source_Text => ("line_follower.h", "line_follower.c");
+end Compute_Wheels_Motors_Power_SW.basic;
+\end{verbatim}
+\begin{center}\small Đoạn mã 33: Các phần tử phân loại chương trình con cho chức năng phần mềm tính góc quay và tính công suất động cơ bánh xe.\end{center}
+
+Hiện thực chương trình con \texttt{compute\_turn\_angle} dùng cơ chế điều khiển PID, tính góc quay tỷ lệ với cường độ ánh sáng quan sát được như minh họa bên phải Hình 8.8. Mã C của chương trình con này thực tế có thể được suy ra từ mô phỏng điều khiển bằng công cụ như Matlab Simulink. Mã đó sau đó được liên kết với phần tử phân loại chương trình con AADL qua các thuộc tính \texttt{Source\_Language}, \texttt{Source\_Text} và \texttt{Source\_Name}, như Đoạn mã 33 (dòng 7, 12 và 13). Lưu ý thuộc tính \texttt{Source\_Language} được đặt trên kiểu chương trình con (dòng 7 và 24), còn các thuộc tính mã nguồn khác được đặt trên hiện thực chương trình con. Điều này giúp khám phá không gian thiết kế bằng cách ghi nhận sự biến thiên giữa các hiện thực mã chương trình con khác nhau trong cùng ngôn ngữ lập trình.
+
+Để đọc giá trị cảm biến ánh sáng và tác động động cơ bánh xe, dùng các chương trình con do thư viện C NXT OSEK ECRobot [219] cung cấp. Một hiện thực chương trình con mới được tạo để đóng gói lời gọi các chương trình con \texttt{get\_light\_intensity}, \texttt{follow\_line}, \texttt{set\_left\_motor\_power} và \texttt{set\_right\_motor\_power}, như Đoạn mã 34 và Hình 8.18. Các chi tiết hiện thực được bổ sung gồm thành phần con dữ liệu để đặt giá trị tham số đầu vào cần thiết của chương trình con ECRobot, như số cổng, hệ số phanh, và giá trị ban đầu trên các thành phần con dữ liệu (dòng 8 đến 19) cho cấu trúc dữ liệu tương ứng trong mã.
+\begin{verbatim}
+subprogram Follow_Line_SW_NXT
+    features
+        state: requires data access Robot_State_SW;
+end Follow_Line_SW_NXT;
+subprogram implementation Follow_Line_SW_NXT.basic
+    subcomponents
+        left_wheel_port: data Base_Types::Integer {
+            Data_Model::Initial_Value => ("NXT_PORT_B");
+        };
+        left_wheel_brake: data Base_Types::Integer {
+            Data_Model::Initial_Value => ("0");
+        };
+        right_wheel_port: data Base_Types::Integer {
+            Data_Model::Initial_Value => ("NXT_PORT_A");
+        };
+        right_wheel_brake: data Base_Types::Integer {
+            Data_Model::Initial_Value => ("0");
+        };
+    calls
+        main_call: {
+            get_light_intensity: subprogram ECRobot_Get_Light_Intensity;
+            follow_line: subprogram Follow_Line_SW.basic;
+            set_left_motor_power: subprogram NXT_Motor_Set_Power;
+            set_right_motor_power: subprogram NXT_Motor_Set_Power;
+        };
+    connections
+        light_intensity_follow_line: parameter get_light_intensity.
+            light_intensity -> follow_line.light_intensity;
+\end{verbatim}
+% Source: printed 245 / PDF 259
+\begin{verbatim}
+        left_motor_power: parameter follow_line.left_motor_power ->
+            set_left_motor_power.power;
+        right_motor_power: parameter follow_line.right_motor_power ->
+            set_right_motor_power.power;
+        state_follow_line: data access state -> follow_line.state;
+        left_wheel_port_set_left_motor_power: parameter left_wheel_port
+            -> set_left_motor_power.portNb;
+        left_wheel_brake_set_left_motor_power: parameter left_wheel_brake
+            -> set_left_motor_power.brake;
+        right_wheel_port_set_right_motor_power: parameter
+            right_wheel_port -> set_right_motor_power.portNb;
+        right_wheel_brake_set_right_motor_power: parameter
+            right_wheel_brake -> set_right_motor_power.brake;
+    properties
+        Compute_Execution_Time => 3 ms .. 5 ms;
+end Follow_Line_SW_NXT.basic;
+\end{verbatim}
+\begin{center}\small Đoạn mã 34: Các phần tử phân loại chương trình con cho chức năng phần mềm dò đường.\end{center}
+\sourcefigure{8.18}{259}{Chương trình con dò đường NXT.}
+
+Cũng phải khai báo các chương trình con phần mềm mở rộng thành phần chức năng hệ thống \texttt{Pick\_Up\_Object} và \texttt{Drop\_Off\_Object}. Chúng không được trình bày ở đây nhưng có trong tập mô hình đầy đủ tại [63].
+
+Bước tiếp theo là đặc tả cách thực thi chương trình con của ứng dụng phần mềm. Chương trình con \texttt{Pick\_Up\_Object\_SW.basic} cần thực thi khi robot tới đầu đường đi. Chương trình con \texttt{Follow\_Line\_SW\_NXT.basic} cần thực thi sau khi lấy vật và lặp theo chu kỳ với tần số đủ cao để dò đường, xét dung sai yêu cầu, bán kính cong tối thiểu của đường và tốc độ robot. Chương trình con \texttt{Drop\_Off\_Object\_SW.basic} cần thực thi khi tới cuối đường đi. Chương trình con \texttt{Detect\_Obstacles\_SW} cần thực thi theo chu kỳ trong khi dò đường, với tần số đủ cao để phát hiện vật cản kịp thời và tránh va chạm. Cuối cùng, chương trình con \texttt{Logging\_SW} cần luôn thực thi theo chu kỳ, với chu kỳ do yêu cầu ghi nhật ký quy định.
+
+Đoạn mã 35 trình bày mô hình hóa các luồng này. Luồng \texttt{Pick\_Up\_Object\_Thread} có cổng sự kiện đầu vào \texttt{at\_beginning\_path} để kích hoạt khi robot tới đầu đường đi, và cổng sự kiện đầu ra \texttt{object\_picked} để thông báo khi bộ kẹp đã lấy vật. Giao thức phát động không theo chu kỳ được đặt, nghĩa là luồng sẽ được phát động khi có sự kiện trên cổng sự kiện đầu vào.
+\begin{verbatim}
+thread Pick_Up_Object_Thread
+    features
+        at_beginning_path: in event port;
+        object_picked: out event port;
+    properties
+        Dispatch_Protocol => aperiodic;
+\end{verbatim}
+% Source: printed 246 / PDF 260
+\begin{verbatim}
+        Deadline => 5 ms;
+        Priority => 2;
+        Stack_Size => 512 Bytes;
+end Pick_Up_Object_Thread;
+thread Follow_Line_Thread
+    features
+        state: requires data access Robot_State_SW;
+        object_picked: in event port;
+        object_dropped: in event port;
+        at_beginning_path: out event port;
+        at_end_path: out event port;
+        right_wheel: out data port Power_SW;
+        left_wheel: out data port Power_SW;
+    flows
+        light_to_left: flow path light_intensity -> left_wheel;
+        light_to_right: flow path light_intensity -> right_wheel;
+    properties
+        Dispatch_Protocol => periodic;
+        Period => 15 ms;
+        Deadline => 15 ms;
+        Priority => 3;
+        Stack_Size => 512 Bytes;
+end Follow_Line_Thread;
+thread implementation Follow_Line_Thread.basic
+    calls
+        main_call: {
+            follow_line: subprogram Follow_Line_SW_NXT.basic;
+        };
+    connections
+        state_follow_line: data access state -> follow_line.state;
+    properties
+        Compute_Entrypoint_Call_Sequence => reference (main_call);
+        Latency => 3 ms .. 5 ms applies to light_to_left, light_to_right;
+end Follow_Line_Thread.basic;
+thread Detect_Obstacles_Thread
+    features
+        state: requires data access Robot_State_SW;
+    properties
+        Dispatch_Protocol => periodic;
+        Period => 10 ms;
+        Deadline => 5 ms;
+        Priority => 2;
+        Stack_Size => 512 Bytes;
+end Detect_Obstacles_Thread;
+thread Log_Thread
+    properties
+        Dispatch_Protocol => periodic;
+        Period => 20 ms;
+        Deadline => 5 ms;
+        Priority => 5;
+        Stack_Size => 512 Bytes;
+\end{verbatim}
+% Source: printed 247 / PDF 261
+\begin{verbatim}
+end Log_Thread;
+\end{verbatim}
+\begin{center}\small Đoạn mã 35: Các phần tử phân loại luồng cho tác vụ của ứng dụng phần mềm.\end{center}
+
+Luồng \texttt{Follow\_Line\_Thread} có cổng sự kiện đầu vào \texttt{object\_picked} để kích hoạt khi bộ kẹp đã lấy vật, cổng sự kiện đầu ra \texttt{object\_arrived} để vô hiệu hóa và giao thức phát động theo chu kỳ. Cách xác định chu kỳ luồng sẽ được trình bày chi tiết trong Mục 8.6.7 về phân tích. Một hiện thực luồng đặc tả lời gọi chương trình con dò đường (dòng 21) và kết nối truy cập dữ liệu cho biến trạng thái robot, sẽ được chương trình con phát hiện vật cản đặt giá trị. Cuối cùng, thuộc tính \texttt{Compute\_Entrypoint\_Call\_Sequence} (dòng 35) đặc tả chuỗi lời gọi nào cần thực thi khi luồng được phát động (có thể có nhiều chuỗi).
+
+Phần tử phân loại luồng \texttt{Drop\_Off\_Object\_Thread} (không hiển thị trong đoạn mã do giới hạn dung lượng) được cung cấp để thực thi chương trình con \texttt{Drop\_Off\_Object\_SW}, với đặc trưng và thuộc tính tương tự luồng \texttt{Pick\_Up\_Object\_Thread}. Một phần tử phân loại luồng khác được cung cấp cho chương trình con phát hiện vật cản, với đặc trưng truy cập dữ liệu trạng thái robot và giao thức phát động theo chu kỳ. Cuối cùng, chức năng ghi nhật ký được đóng gói trong luồng theo chu kỳ. Có thể tìm chi tiết các thuộc tính khác của những luồng này trong Mục 8.6.7 về phân tích.
+
+Giờ các phần tử phân loại luồng đã được khai báo, có thể tạo thể hiện chúng thành thành phần con của hiện thực \emph{tiến trình}, biểu diễn không gian địa chỉ bộ nhớ cho toàn ứng dụng phần mềm. Đoạn mã 36 và Hình 8.19 minh họa điều này, trong đó thành phần con dữ liệu được khai báo cho dữ liệu trạng thái robot với giá trị ban đầu \texttt{FORWARD}. Các kết nối cổng thích hợp được khai báo giữa các thành phần con.
+\begin{verbatim}
+process Carry_Object_Process
+    features
+        light_intensity: in data port Light_Intensity_SW;
+        left_wheel_power: out data port Power_SW;
+        right_wheel_power: out data port Power_SW;
+    flows
+        light_to_left: flow path light_intensity -> left_wheel_power;
+        light_to_right: flow path light_intensity -> right_wheel_power;
+end Carry_Object_Process;
+process implementation Carry_Object_Process.basic
+    subcomponents
+        state: data Robot_State_SW {
+            Data_Model::Initial_Value => ("FORWARD");
+        };
+        pick_up_object: thread Pick_Up_Object_Thread;
+        follow_line: thread Follow_Line_Thread.basic;
+        drop_off_object: thread Drop_Off_Object_Thread;
+        detect_obstacle: thread Detect_Obstacles_Thread;
+        logging: thread Log_Thread;
+    connections
+        pick_up_object_folow_line: port pick_up_object.object_picked ->
+            follow_line.object_picked;
+        follow_line_drop_object: port follow_line.at_end_path ->
+            drop_off_object.object_arrived;
+        drop_object_follow_line: port drop_off_object.object_dropped ->
+            follow_line.object_dropped;
+        obstacle_detection_state: data access detect_obstacle.state ->
+            state;
+        state_follow_line: data access state -> follow_line.state;
+        follow_line_begin_path_pick_up_object: port follow_line.
+            at_beginning_path -> pick_up_object.at_beginning_path;
+        light_intensity_follow_line: port light_intensity -> follow_line.
+            light_intensity;
+\end{verbatim}
+% Source: printed 248 / PDF 262
+\begin{verbatim}
+        follow_line_right_wheel: port follow_line.right_wheel ->
+            right_wheel_power;
+        follow_line_left_wheel: port follow_line.left_wheel ->
+            left_wheel_power;
+    properties
+        Timing => Immediate applies to follow_line_right_wheel,
+            follow_line_left_wheel;
+end Carry_Object_Process.basic;
+\end{verbatim}
+\begin{center}\small Đoạn mã 36: Các phần tử phân loại tiến trình cho ứng dụng phần mềm.\end{center}
+\sourcefigure{8.19}{262}{Hiện thực tiến trình phần mềm vận chuyển vật.}
+
+Đó là ứng dụng phần mềm hoàn chỉnh có thể triển khai trên khối brick trong mô hình phần cứng robot NXT. Tuy nhiên, như sẽ trình bày trong mục phân tích, chúng ta muốn xác định độ trễ khi chuyển hướng robot sau khi giá trị cường độ ánh sáng quan sát trên đường thay đổi. Vì vậy, mở rộng mô hình phần mềm bằng mô hình hóa trình điều khiển của mạch vào và ra của khối brick điều khiển cảm biến ánh sáng và hai cụm động cơ.
+
+Để làm điều này, trước tiên tạo thành phần hệ thống cho ứng dụng phần mềm như Hình 8.20. Thêm vào hệ thống một thành phần con của tiến trình ứng dụng phần mềm đã định nghĩa và các thành phần con thiết bị có cổng dữ liệu được định kiểu bằng các kiểu biến phần mềm công suất và cường độ ánh sáng. Những cổng dữ liệu này nối với tiến trình phần mềm chứa các luồng. Như giải thích ở Mục 8.6.5, thiết bị có thể dùng cho cả phần cứng và phần mềm hệ thống. Với phần mềm, chúng biểu diễn phần mềm của thiết bị phần cứng tương ứng, như trình điều khiển nằm trong bộ nhớ và thực thi trên bộ xử lý bên ngoài. Đây là trường hợp các thiết bị mạch vào và ra của khối brick robot (Hình 8.16), chứa trình điều khiển tích hợp sẵn để điều khiển cảm biến và cơ cấu chấp hành.
+
+\paragraph{Ràng buộc ứng dụng phần mềm với nền tảng thực thi}
+Bước cuối mô hình hóa CPS robot là triển khai ứng dụng phần mềm trên mô hình phần cứng. Phần sau trình bày việc này.
+
+\subparagraph{Các khái niệm}
+Để đặc tả ràng buộc ứng dụng phần mềm với mô hình phần cứng, trước tiên phải cung cấp hiện thực hệ thống cho \texttt{Line\_Follower\_Robot\_CPS}, ứng với kiểu hệ thống trong tổng quan hệ thống ở Đoạn mã 19. Hiện thực cần có ứng dụng phần mềm đã định nghĩa và mô hình phần cứng robot làm thành phần con.
+
+% Source: printed 249 / PDF 263
+\sourcefigure{8.20}{263}{Thành phần hệ thống cho ứng dụng phần mềm, gồm các thiết bị để mô hình hóa trình điều khiển cảm biến và cơ cấu chấp hành.}
+Có thể đặc tả tiếp ràng buộc các thành phần con luồng và dữ liệu của tiến trình với thành phần nền tảng thực thi. Dùng các thuộc tính của tập thuộc tính chuẩn \texttt{Deployment\_Properties}:
+\begin{itemize}
+\item \texttt{Actual\_Processor\_Binding} đặc tả bộ xử lý thực thi luồng hoặc thiết bị phần cứng thực thi thiết bị phần mềm (trình điều khiển).
+\item \texttt{Actual\_Memory\_Binding} đặc tả bộ nhớ lưu trữ tiến trình và dữ liệu.
+\item \texttt{Actual\_Connection\_Binding} đặc tả bus truyền dữ liệu của kết nối cổng.
+\end{itemize}
+
+\subparagraph{Đặc tả ví dụ xuyên suốt}
+Hiện thực hệ thống cho kiểu thành phần CPS dò đường được trình bày trong Đoạn mã 37 và Hình 8.21. Một thành phần con hệ thống cho ứng dụng phần mềm NXT và một thành phần con hệ thống cho mô hình phần cứng robot dò đường NXT đã cấu hình được tạo thể hiện. Các đặc trưng mô hình phần cứng robot nối với các đặc trưng kiểu hệ thống CPS của tổng quan hệ thống (Đoạn mã 19).
+\begin{verbatim}
+system implementation Line_Follower_Robot_Cps.nxt
+    subcomponents
+        app: system Line_Follower_Software::Carry_Object_App.basic;
+        robot: system Line_Follower_Robot.nxt;
+    connections
+        force_left_wheel_conn: feature robot.force_left_wheel ->
+            force_left_wheel;
+        force_right_wheel_conn: feature robot.force_right_wheel ->
+            force_right_wheel;
+        light_sensor_conn: feature light_sensor_in -> robot.
+            light_sensor_in;
+        force_gripper_conn: feature robot.force_gripper -> force_gripper;
+        sonar_in_conn: feature sonar_in -> robot.sonar_in;
+        sonar_out_conn: feature robot.sonar_out -> sonar_out;
+    properties
+        Actual_Processor_Binding => (reference (robot.brick.
+            main_processor)) applies to app.carry_object_process;
+        Actual_Memory_Binding => (reference (robot.brick.main_processor.
+            ram)) applies to app.carry_object_process;
+        Actual_Processor_Binding => (reference (robot.brick.input_circuit
+            )) applies to app.light_sensor_driver;
+        Actual_Connection_Binding => (reference (robot.brick.data_bus))
+            applies to app.light_sensor_process_conn;
+        Actual_Processor_Binding => (reference (robot.brick.
+            output_circuit)) applies to app.left_wheel_driver;
+\end{verbatim}
+% Source: printed 250 / PDF 264
+\begin{verbatim}
+        Actual_Connection_Binding => (reference (robot.brick.data_bus))
+            applies to app.process_left_wheel_conn;
+        Actual_Processor_Binding => (reference (robot.brick.
+            output_circuit)) applies to app.right_wheel_driver;
+        Actual_Connection_Binding => (reference (robot.brick.data_bus))
+            applies to app.process_right_wheel_conn;
+end Line_Follower_Robot_Cps.nxt;
+\end{verbatim}
+\begin{center}\small Đoạn mã 37: Hiện thực hệ thống cho CPS robot.\end{center}
+\sourcefigure{8.21}{264}{CPS robot dò đường đã triển khai.}
+
+Các thuộc tính ràng buộc \texttt{Actual\_Processor\_Binding} và \texttt{Actual\_Memory\_Binding} lần lượt được đặt tới bộ xử lý ARM7 và bộ nhớ bên trong nó, như phần \texttt{properties} của Đoạn mã 37 (dòng 13 và 14). Điều này cũng được minh họa ở Hình 8.21 bằng các mũi tên nét đứt từ thành phần con tiến trình tới bộ xử lý ARM của khối brick NXT và bộ nhớ RAM bên trong. Vì chỉ có một bộ xử lý và một bộ nhớ, chọn áp dụng thuộc tính ràng buộc cho tiến trình bao chứa, nghĩa là mọi thành phần con luồng và dữ liệu bên trong được ràng buộc vào cùng bộ xử lý và bộ nhớ. Nếu có nhiều bộ xử lý, có thể đặt thuộc tính ràng buộc riêng cho từng luồng để đặc tả thực thi trên các bộ xử lý khác nhau.
+
+Trình điều khiển thiết bị cảm biến ánh sáng và động cơ bánh xe cũng được ràng buộc vào mạch vào và ra trên khối brick NXT. Kết nối cổng giữa thiết bị và tiến trình được ràng buộc vào bus dữ liệu nối mạch vào, mạch ra với bộ xử lý ARM.
+
+\subsection{Phân tích}
+Đã hoàn tất mô hình hóa CPS robot vận chuyển vật. Bước tiếp theo là kiểm chứng một số thuộc tính để bảo đảm hệ thống vận hành đúng và đáp ứng yêu cầu. Ngoài ra, ước tính hiệu năng cũng là việc đáng quan tâm. Câu hỏi đầu tiên là bộ xử lý ARM 7 có lập lịch được mọi luồng với các thuộc tính định thời của chúng hay không. Điều này phụ thuộc mạnh vào thời gian tính toán của chính các chương trình con. Có nhiều phương pháp trả lời câu hỏi. Với khối brick NXT, giả sử thời gian được xác định bằng thực thi riêng từng chương trình trên khối brick và ghi thời gian lên màn hình robot để ghi nhận lại.
+
+% Source: printed 251 / PDF 265
+\paragraph{Lập lịch}
+Có thể phân tích lập lịch từ ứng dụng phần mềm ở Mục 8.6.6 bằng công cụ như Cheddar hoặc hiện thực thương mại của nó trong AADL Inspector. Phân tích dựa vào các thuộc tính gắn với thành phần phần mềm sau đây.
+
+Trong Đoạn mã 35, các giá trị thuộc tính được gán cho luồng AADL để định nghĩa giao thức phát động, chu kỳ, độ ưu tiên và chuỗi lời gọi chương trình con. Từ chuỗi lời gọi của luồng, có thể tính giới hạn trên thời gian thực thi luồng bằng cộng giới hạn trên thời gian thực thi các chương trình con được gọi. Giới hạn sau được cung cấp cho chương trình con \texttt{Follow\_Line\_SW\_NXT} trong Đoạn mã 34 bằng thuộc tính \texttt{Compute\_Execution\_Time}. Cuối cùng, giao thức lập lịch được gắn với thành phần bộ xử lý AADL mà luồng sẽ chạy trên đó. Việc này được thực hiện ở Đoạn mã 28 bằng thuộc tính \texttt{Scheduling\_Protocol} (dòng 34). Ở đây, giao thức lập lịch là giao thức nổi tiếng Rate Monotonic Scheduling (RMS, lập lịch đơn điệu theo tần suất). RMS là kỹ thuật lập lịch ưu tiên cố định (tác vụ được thực thi theo độ ưu tiên định trước), với thứ tự ưu tiên: tác vụ xuất hiện thường xuyên nhất được ưu tiên cao hơn.
+
+\subparagraph{Ngữ nghĩa}
+Các phần tử mô hình hóa AADL trên định nghĩa mô hình tập tác vụ theo chu kỳ (trong đó một luồng AADL là một tác vụ theo chu kỳ), có thể tóm lược bằng Hình 8.22.
+\sourcefigure{8.22}{265}{Tập tác vụ theo chu kỳ.}
+
+Trong hình, tác vụ $\tau_i$ được đặc trưng bởi chu kỳ $T_i$, hạn $D_i$ và thời lượng thực thi tối đa (\emph{capacity}) $C_i$. Thời lượng này tương ứng với giới hạn trên thời gian thực thi tác vụ; phần trên đã giải thích cách lấy nó từ thời gian thực thi các chương trình con AADL được luồng AADL gọi tuần tự. Trong thực tế, đo thời gian thực thi chương trình con chạy trên khối brick NXT để ước tính thời lượng thực thi tối đa của tác vụ.
+
+Từ mô hình tác vụ này, mức sử dụng CPU $U_i$ của tác vụ $\tau_i$ có thể tính bằng $U_i=\frac{C_i}{T_i}$, và mức sử dụng CPU của tập tác vụ đơn giản là tổng mức sử dụng của mọi tác vụ.
+
+Với mô hình tập tác vụ theo chu kỳ, có thể phân tích khả năng lập lịch để bảo đảm mọi tác vụ của robot vận chuyển vật hoàn tất thực thi trong hạn. Cách thứ nhất là so sánh mức sử dụng bộ xử lý trong trường hợp xấu nhất với giới hạn trên an toàn: Liu và Layland đã chứng minh năm 1973 rằng điều kiện cần để tập tác vụ lập lịch bằng RMS trên bộ xử lý một lõi có thể lập lịch được là mức sử dụng CPU của tập tác vụ dưới 69.3147\%.
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C8-1).} Bản gốc gọi cận này là ``điều kiện cần''. Với các tác vụ chu kỳ độc lập trên một bộ xử lý, có thể bị ngắt để ưu tiên tác vụ khác, bỏ qua chi phí ngắt và có hạn bằng chu kỳ, kết quả Liu--Layland cho RMS là điều kiện đủ $U\le n(2^{1/n}-1)$; cận này tiến tới $\ln 2\approx69.3147\%$ khi $n\to\infty$. Vượt cận không tự nó chứng minh tập tác vụ không lập lịch được. Nếu hạn khác chu kỳ, cần dùng phép phân tích phù hợp. Bản dịch giữ nguyên phát biểu của tác giả. Xem Sun và cộng sự (2024), Mục 5.1.1: \url{https://doi.org/10.1007/s11241-024-09423-7}.
+\end{quote}
+
+Cách khác, với tập tác vụ được lập lịch ưu tiên cố định, là tính thời gian đáp ứng trong trường hợp xấu nhất (Worst Case Response Time, WCRT) và kiểm tra nó nhỏ hơn hạn tác vụ. WCRT của tác vụ $\tau_i$ trên bộ xử lý một lõi có thể tính bằng công thức đệ quy:
+\[
+\mathrm{WCRT}_i=\sum_{\tau_j\in HP_i}\left\lceil\frac{\mathrm{WCRT}_i}{T_j}\right\rceil\cdot C_j
+\]
+
+% Source: printed 252 / PDF 266
+trong đó $HP_i$ là tập tác vụ có độ ưu tiên cao hơn $\tau_i$.
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C8-2).} Công thức trong bản gốc thiếu thời lượng thực thi của chính tác vụ $C_i$. Với các tác vụ độc lập trên một bộ xử lý, ưu tiên cố định, cho phép ngắt để ưu tiên tác vụ khác, bỏ qua chi phí ngắt và có $D_i\le T_i$, công thức thông thường là $R_i=C_i+\sum_{\tau_j\in HP_i}\lceil R_i/T_j\rceil C_j$, được giải bằng lặp điểm bất động bắt đầu từ $R_i^{(0)}=C_i$. Bản dịch giữ nguyên công thức của tác giả. Xem Altmeyer và cộng sự (2016), Mục 4.1: \url{https://doi.org/10.1007/s11241-015-9246-8}.
+\end{quote}
+
+
+\subparagraph{Kết quả phân tích}
+Hình 8.23 và 8.24 trình bày các kết quả khác nhau do AADL Inspector cung cấp sau khi phân tích lập lịch mô hình AADL.
+\sourcefigure{8.23}{266}{Biểu đồ Gantt thực thi tác vụ. \textit{Chú giải tiếng Việt thêm của bản dịch:} \emph{Static Analysis}: phân tích tĩnh; \emph{Schedulability}: khả năng lập lịch; \emph{Task}: tác vụ; \emph{Response Time}: thời gian đáp ứng. Các hàng là tác vụ và các thanh biểu thị khoảng thực thi theo thời gian.}
+\sourcefigure{8.24}{266}{Kết quả phân tích thời gian đáp ứng. \textit{Chú giải tiếng Việt thêm của bản dịch:} \emph{Test}: phép kiểm tra; \emph{Entity}: thực thể; \emph{Processor Utilization Factor}: hệ số sử dụng bộ xử lý; \emph{Worst Case Task Response Time}: thời gian đáp ứng tác vụ trong trường hợp xấu nhất. Dòng đỏ cho biết phép kiểm tra mức sử dụng chưa chứng minh được khả năng lập lịch; dòng xanh cho biết phép phân tích thời gian đáp ứng xác nhận đáp ứng hạn tác vụ. Kết luận trong ảnh bị cắt bởi cửa sổ phần mềm gốc. Như Ghi chú C8-1 giải thích, không đạt phép kiểm tra điều kiện đủ về mức sử dụng không tự nó chứng minh không lập lịch được.}
+
+Phân tích này giúp cấu hình tập tác vụ bằng sửa chu kỳ luồng AADL, giảm số tác vụ thực thi trên nền tảng hoặc thay đổi chính nền tảng thực thi. Với robot vận chuyển vật, xét số tác vụ, thời gian thực thi và đặc tính vật lý hệ thống, phân tích lập lịch đã giúp xác định chu kỳ tác vụ.
+
+\paragraph{Độ trễ}
+Một câu hỏi khác về robot vận chuyển vật là nó có thể dò đường với yêu cầu tốc độ tối thiểu hay không. Để trả lời, cần biết độ trễ hệ thống khi chuyển hướng robot. Đặc biệt, chúng ta quan tâm độ trễ các dòng dữ liệu tham gia vòng điều khiển, tức khoảng thời gian từ khi cảm biến ánh sáng tạo dữ liệu tới khi tạo lệnh cho động cơ. AADL rất phù hợp cho phân tích này bằng các cấu trúc \emph{dòng}.
+
+\subparagraph{Các cấu trúc}
+Dòng AADL chú thích các phần tử AADL để đặc tả đường đi của dòng thông tin qua các thành phần. Do đó, dòng không biểu diễn phần tử kiến trúc hệ thống cụ thể, mà giúp phân tích và cho phép đặc trưng hóa dòng thông tin bằng thuộc tính bổ sung. Khi định nghĩa kết nối giữa các cổng có hướng, cấu trúc mô hình AADL đã định nghĩa các dòng dữ liệu có thể có. Tuy nhiên, chúng chỉ là các dòng dữ liệu \textbf{có thể có},
+% Source: printed 253 / PDF 267
+và một số có thể không hiện diện trong ứng dụng phần mềm. Ngoài ra, chỉ một tập con các dòng dữ liệu cần phân tích độ trễ.
+
+Trong AADL, dòng gồm:
+\begin{itemize}
+\item \emph{Flow source (nguồn dòng)}: mô tả nơi phát sinh dòng thông tin.
+\item \emph{Flow path (đường dòng)}: mô tả đường đi của dòng thông tin giữa các thành phần.
+\item \emph{Flow sink (đích dòng)}: mô tả điểm kết thúc dòng thông tin.
+\item \emph{End to end flow (dòng đầu cuối)}: mô tả dòng hoàn chỉnh gồm nguồn, đường đi và đích.
+\end{itemize}
+
+Kiểu thành phần chỉ có thể chứa đặc tả dòng (nguồn, đích và đường đi) chú thích các đặc trưng đã khai báo.
+
+Hiện thực thành phần chỉ có thể chứa hiện thực dòng (nguồn, đích và đường đi) chú thích đặc trưng, kết nối và dòng của thành phần con. Chúng cũng có thể chứa dòng đầu cuối bắt đầu bằng nguồn dòng và kết thúc bằng đích dòng.
+
+Giới hạn trên độ trễ có thể gắn với dòng đầu cuối hoặc đặt trong yêu cầu ReqSpec được gán cho dòng đầu cuối. Các phần đóng góp độ trễ được gắn với phần tử mô hình hiện thực những dòng này. Trong thực tế, độ trễ dòng đầu cuối là tổng độ trễ do các thành phần và kết nối mà dòng đi qua đóng góp.
+
+Hình 8.25 biểu diễn kiến trúc ứng dụng robot vận chuyển cùng các thiết bị biểu diễn cảm biến ánh sáng, động cơ phải và trái. Chúng được biểu diễn bằng thiết bị AADL, biểu diễn thực thi logic của trình điều khiển thiết bị. Ngoài ra, dòng đầu cuối từ đầu ra cảm biến ánh sáng (nguồn dòng) tới đầu vào động cơ trái (đích dòng), đi qua ứng dụng phần mềm (đường dòng trong \texttt{carry\_object\_process}), được tô vàng.
+\sourcefigure{8.25}{267}{Dòng đầu cuối từ cảm biến ánh sáng tới động cơ trái.}
+
+Có ba loại đóng góp vào độ trễ dòng trong AADL:
+\begin{enumerate}
+\item Giá trị thuộc tính độ trễ có thể gắn với đường dòng để phân rã độ trễ đầu cuối thành độ trễ gắn với thành phần con.
+\item Truyền thông vật lý (tức kết nối ràng buộc vào thành phần bus) đóng góp vào độ trễ các dòng đi qua liên kết này.
+\item Truyền thông logic (tức truyền thông giữa các thành phần phần mềm) cũng đóng góp vào độ trễ các dòng đi qua liên kết này.
+\end{enumerate}
+
+Phần còn lại dưới đây giải thích thêm cách dùng những khả năng mô hình hóa này bằng minh họa các loại đóng góp.
+
+\subparagraph{Đặc tả ví dụ xuyên suốt}
+\textbf{Loại đóng góp 1:} Giá trị thuộc tính độ trễ gắn với đường dòng. Trong giai đoạn đầu quy trình phát triển, hoặc để phân rã yêu cầu độ trễ đầu cuối thành yêu cầu độ trễ gắn với thành phần con, người dùng AADL có thể gắn giá trị độ trễ dòng với đường dòng như Đoạn mã 35 (thuộc tính \texttt{Latency} định nghĩa trong \texttt{Follow\_Line\_Thread.basic}). Lưu ý khi không có thuộc tính này, hạn của luồng được dùng làm giới hạn trên (và 0 làm giới hạn dưới).
+
+\textbf{Loại đóng góp 2:} Đóng góp truyền thông vật lý. Khi dòng đi qua kết nối logic (tức kết nối giữa thành phần phần mềm) ràng buộc vào thành phần bus, bản thân truyền thông mất thời gian. AADL cho phép mô hình hóa phần đóng góp này thành hàm tuyến tính của số byte truyền.
+% Source: printed 254 / PDF 268
+Thuộc tính \texttt{Transmission\_Time} dành cho việc này, được minh họa trong Đoạn mã 38. Đoạn mã cho thấy thuộc tính \texttt{Transmission\_Time} gồm hai trường: \texttt{Fixed} và \texttt{PerByte}, lần lượt biểu diễn thời gian truyền thông cố định và thời gian truyền thông trên mỗi byte. Mỗi trường là một khoảng thời gian, biểu diễn giới hạn dưới và trên của thời gian cố định và thời gian trên mỗi byte. Lưu ý khi dùng thuộc tính này, phải định nghĩa kích thước dữ liệu truyền. Có thể làm bằng thuộc tính \texttt{Data\_Size}, như Đoạn mã 32 với kiểu dữ liệu \texttt{Light\_Intensity\_SW}.
+\begin{verbatim}
+bus Data_Bus
+    properties
+        Transmission_Time => [Fixed => 10 ns .. 100 ns; PerByte => 10 ns
+            .. 40 ns;];
+end Data_Bus;
+\end{verbatim}
+\begin{center}\small Đoạn mã 38: Thời gian truyền của thành phần bus dữ liệu.\end{center}
+
+Lưu ý ví dụ đang dùng khá đơn giản: kiến trúc AADL có thể phức tạp hơn nhiều, chẳng hạn ràng buộc kết nối logic vào bus ảo (biểu diễn tuyến truyền thông), rồi ràng buộc chính bus ảo vào bus và thiết bị biểu diễn mạng.
+
+\textbf{Loại đóng góp 3:} Đóng góp truyền thông cục bộ. Đây có lẽ là loại đóng góp kém trực quan nhất, nhưng lại đóng góp chủ yếu vào độ trễ dòng theo góc nhìn kiến trúc phần mềm. Để giải thích truyền thông cục bộ đóng góp ra sao, cần hiểu thêm mô hình tính toán và truyền thông mà thành phần phần mềm AADL bao hàm, đặc biệt truyền thông giữa các luồng và/hoặc thiết bị.
+
+Chia phần giải thích này thành hai phần, trả lời các câu hỏi:
+\begin{enumerate}
+\item Luồng tiêu thụ/tạo dữ liệu khi nào?
+\item Có thêm những ràng buộc nào với truyền thông giữa các luồng?
+\end{enumerate}
+
+Theo mặc định, câu trả lời là:
+\begin{enumerate}
+\item Luồng tiêu thụ dữ liệu trên cổng đầu vào khi được phát động, và tạo đầu ra khi hoàn tất (có thể tinh chỉnh bằng các thuộc tính AADL \texttt{Input\_Time} và \texttt{Output\_Time}). Một mục dữ liệu được tiêu thụ khi luồng được phát động (có thể tinh chỉnh bằng thuộc tính AADL \texttt{Dequeue\_Protocol}), và một mục dữ liệu được tạo cho mỗi lần kích hoạt luồng (có thể tinh chỉnh bằng thuộc tính AADL \texttt{Output\_Rate}). Phần còn lại giữ cấu hình mặc định này, vì đây là cấu hình dùng trong mô hình AADL robot vận chuyển vật, ngoại trừ \texttt{Dequeue\_Protocol}: chúng ta dùng giá trị thuộc tính \texttt{AllItem}, nghĩa là hàng đợi được làm rỗng khi luồng nhận được kích hoạt.
+\item Truyền thông không thực sự bị ràng buộc, nghĩa là luồng tiêu thụ dữ liệu (hoặc tập dữ liệu) mới nhất đã đến vào thời điểm phát động. Có thể tinh chỉnh bằng thuộc tính AADL \texttt{Timing} (giá trị mặc định là \texttt{Sampled}). Sau đây giải thích giá trị thuộc tính này tác động thế nào đến phân tích độ trễ dòng trong trường hợp robot vận chuyển vật.
+\end{enumerate}
+
+Đoạn mã 36 biểu diễn cấu hình kết nối giữa tiến trình \texttt{carry\_object\_process} và thiết bị \texttt{light\_sensor\_driver}, cũng như giữa tiến trình \texttt{carry\_object\_process} với \texttt{left\_wheel\_driver} và \texttt{right\_wheel\_driver}.
+
+Với các kết nối sau, giá trị \texttt{Immediate} được gán cho thuộc tính \texttt{Timing}, nghĩa là bên nhận chỉ bắt đầu thực thi khi tiến trình tạo đầu ra mới. Do đó, mỗi lần kích hoạt thiết bị luôn nhận dữ liệu mới nhất do tiến trình tạo.
+
+Nhìn chung, có thể tính thời gian trễ đầu cuối trong OSATE: với cấu hình mô tả trong sách, kết quả nhận được nằm trong khoảng 3 đến 30 mili giây.
+
+\paragraph{Các phân tích khác}
+Hai phân tích ở các phần trước rất phổ biến và thiết yếu cho thiết kế hệ thống nhúng. Tuy nhiên, có thể thực hiện nhiều phân tích khác từ mô hình AADL, như mức sử dụng bộ nhớ, tiêu thụ điện năng [17], khối lượng, chi phí, v.v. Về hành vi, cũng có thể kiểm chứng và thẩm định bằng công cụ như bộ kiểm tra chứng minh BLESS [179] và kiểm tra mô hình [42, 223]. Có thể tìm thêm thông tin về công cụ phân tích AADL tại [6].
+
+% Source: printed 255 / PDF 269
+\subsection{Sinh mã}
+Hoạt động cuối cùng thực hiện từ đặc tả AADL là sinh mã tự động. Khi phân tích cho thấy thiết kế đúng, phần lớn mã có thể được sinh tự động, giảm nguy cơ lỗi do con người đưa vào. Hiện có hai bộ sinh mã chính cho AADL: công cụ Ocarina [222] và RAMSES (Refinement of AADL Models for the Synthesis of Embedded Systems, tinh chỉnh mô hình AADL để tổng hợp hệ thống nhúng) [235]. Chương này trình bày RAMSES vì cách tiếp cận dựa trên tinh chỉnh của nó cho phép phân tích chính xác hơn và hỗ trợ tối ưu hóa thiết kế tự động.
+
+\paragraph{Các khái niệm}
+Hình 8.26 trình bày luồng quy trình của cách tiếp cận RAMSES. RAMSES nhận mô hình AADL làm đầu vào và biến đổi thành mô hình AADL khác có thêm chi tiết riêng cho đặc tả hệ điều hành do người dùng chọn. Hiện hỗ trợ POSIX, ARINC 653 và NXT OSEK. Bước này được gọi là tinh chỉnh mô hình, vì mô hình AADL sinh ra chứa chi tiết riêng của hệ điều hành, nên có mức trừu tượng thấp hơn mô hình gốc. Ưu điểm của cách này so với sinh mã trực tiếp từ mô hình ban đầu là giảm khoảng cách ngữ nghĩa giữa mô hình đã tinh chỉnh và mã. Ngoài ra, có thể phân tích tiếp mô hình đã tinh chỉnh để có kết quả chính xác hơn nhờ khoảng cách ngữ nghĩa nhỏ hơn.
+\sourcefigure{8.26}{269}{Luồng quy trình RAMSES.}
+
+Kết quả phân tích có thể được dùng để chọn các biến đổi mô hình thích hợp, áp dụng mẫu thiết kế vào mô hình AADL ban đầu nhằm tối ưu thuộc tính phi chức năng. Có thể tinh chỉnh mô hình lặp đến khi đạt các thuộc tính chất lượng mong muốn. Sau đó, bộ sinh mã cho hệ điều hành đã chọn sinh mã riêng cho nền tảng, gồm tệp cấu hình cần thiết cho hệ điều hành, như lập lịch luồng và phân vùng bộ nhớ.
+
+Có nhiều cách sinh mã từ mô hình AADL. Cách thứ nhất sinh mã khung từ thành phần AADL bằng lắp ghép mã nguồn được các thuộc tính lập trình gán cho chương trình con và/hoặc luồng, như Mục 8.6.6. Cách khác là dịch đặc tả hành vi thành phần, được đặc tả bằng phụ lục hành vi AADL, thành mã. Cách sau không được trình bày trong chương vì phụ lục hành vi chưa được giới thiệu. RAMSES hỗ trợ cả hai cách.
+
+\paragraph{Đặc tả ví dụ xuyên suốt}
+\subparagraph{Tinh chỉnh}
+RAMSES áp dụng nhiều quy tắc tinh chỉnh để tạo mô hình đã tinh chỉnh cho sinh mã. Tập quy tắc áp dụng tùy nền tảng hệ điều hành được chọn. Ở đây minh họa một trong những quy tắc tinh chỉnh RAMSES đơn giản nhất, biến đổi truyền thông qua cổng dữ liệu sự kiện giữa luồng thành truyền thông qua truy cập dữ liệu dùng chung. Sơ đồ Hình 8.27 minh họa điều này: kết nối cổng giữa hai luồng theo chu kỳ
+% Source: printed 256 / PDF 270
+được biến đổi thành dữ liệu dùng chung (hàng đợi) và hai kết nối truy cập dữ liệu dùng chung giữa các luồng với dữ liệu đó. Để làm vậy, cổng dữ liệu sự kiện của các luồng cũng được chuyển thành đặc trưng truy cập dữ liệu. Ngoài ra, mỗi luồng được thêm lời gọi chương trình con để quản lý truy cập dữ liệu trong hàng đợi.
+\sourcefigure{8.27}{270}{Quy tắc tinh chỉnh truyền thông cục bộ của RAMSES (tái bản từ [234]).}
+
+\subparagraph{Bước sinh mã}
+Trong khi mô hình hóa ứng dụng phần mềm robot dò đường, nhiều thuộc tính được đặt cho chương trình con và thành phần dữ liệu để ánh xạ chúng tới các hiện vật mã C có sẵn. Dưới đây mô tả ngắn gọn bản chất các thuộc tính bằng ví dụ ứng dụng phần mềm.
+
+Như Đoạn mã 32, đã tạo kiểu dữ liệu mới cho các biến phần mềm, ánh xạ tới kiểu trừu tượng biến hệ thống mà chúng mở rộng. Thêm thuộc tính \texttt{Data\_Representation} từ phụ lục mô hình hóa dữ liệu vào những kiểu này để đặc tả biến được biểu diễn bằng số nguyên trong mã. Với biến nội bộ trạng thái robot, đặt \texttt{Data\_Representation} là kiểu liệt kê có các giá trị \texttt{FORWARD} và \texttt{STOP}. Thuộc tính \texttt{Source\_Name} đặc tả tên cấu trúc dữ liệu tương ứng trong mã C, nằm trong tệp C do thuộc tính \texttt{Source\_Text} đặc tả. Giá trị ban đầu \texttt{FORWARD} được đặt trên thành phần con dữ liệu của tiến trình \texttt{Carry\_Object\_Process} ở Đoạn mã 36.
+
+Với chương trình con như \texttt{Compute\_Turn\_Angle\_SW} (Đoạn mã 33), thuộc tính \texttt{Source\_Language} được đặt là ``C''; tương tự kiểu thành phần dữ liệu \texttt{Robot\_State}, các thuộc tính \texttt{Source\_Name} và \texttt{Source\_Text} nhận diện chương trình con tương ứng trong mã C.
+
+Từ các luồng AADL của ứng dụng phần mềm và thuộc tính của chúng, như độ ưu tiên, cùng các thuộc tính khác đặt trên bộ xử lý ARM NXT trong khối brick NXT (Đoạn mã 28) đã cài firmware NXT OSEK, bộ sinh mã cũng sinh tệp cấu hình hệ điều hành NXT OSEK, đặc tả những luồng nào cần được lập lịch và cách lập lịch chúng.
+
+% Source: printed 257 / PDF 271
+\section{Tóm lược}
+Chương này giới thiệu ngôn ngữ AADL, tập trung vào việc dùng nó để phát triển CPS. Mô hình hóa và phân tích robot vận chuyển vật đơn giản được dùng để giới thiệu AADL theo quy trình phát triển chu trình V điển hình (Hình 8.3), bổ sung một số thực hành quản lý kỹ nghệ yêu cầu được REMH khuyến nghị (Hình 8.9), được bộ ký pháp và môi trường công cụ ALISA hỗ trợ. Các khái niệm AADL cần thiết được giới thiệu dần khi các bước mô hình hóa của quy trình phát triển cần đến chúng.
+
+Điều này cho phép trình bày cách thiết kế CPS bằng AADL theo cách tiếp cận từ trên xuống, bắt đầu bằng mô hình hóa tổng quan hệ thống cần xây dựng, rồi ghi nhận bên liên quan và mục tiêu, yêu cầu có thể kiểm chứng, chức năng hệ thống, mô hình phần vật lý, mô hình ứng dụng phần mềm và mô hình triển khai. Từ mô hình hoàn chỉnh có phần mềm (phần ảo) triển khai trên phần cứng, đã minh họa phân tích lập lịch, độ trễ, rồi tinh chỉnh mô hình, phân tích đã tinh chỉnh và cuối cùng sinh mã C tự động bằng cách tiếp cận và công cụ RAMSES.
+
+Chúng tôi hy vọng giới thiệu AADL theo cách này giúp hiểu rõ hơn cách dùng AADL và những gì nó có thể thực hiện về phân tích, khám phá không gian thiết kế và tổng hợp hệ thống qua sinh mã tự động.
+
+\section{Tài liệu và đọc thêm}
+Ngôn ngữ AADL cùng các phụ lục khá phong phú; giới hạn dung lượng không cho phép trình bày các khái niệm thật đầy đủ trong chương. Tuy nhiên, nhiều tài liệu sẵn có giúp học sâu hơn.
+\begin{itemize}
+\item Trang web AADL chính thức [6].
+\item ``Model-Based Engineering with AADL: An Introduction to the SAE Architecture Analysis \& Design Language'' [100] là sách tham khảo về ngôn ngữ AADL cốt lõi do Peter Feiler và Dave Gluch viết. Peter Feiler là kiến trúc sư chính của AADL.
+\item Giới thiệu mô hình hóa họ hệ thống/dòng sản phẩm bằng AADL tại [99].
+\item Thêm thông tin về ALISA tại [205, 82].
+\item Thêm thông tin về RAMSES tại [235].
+\end{itemize}
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Viết yêu cầu phi chức năng bằng ReqSpec cho độ trễ khi chuyển hướng robot, ràng buộc kết quả phân tích ở Mục 8.6.7.
+\item Thêm vị từ để kiểm chứng độ trễ dưới giới hạn 20 ms.
+\item Hoàn thiện họ dòng sản phẩm robot Lego Mindstorm bằng thêm phần tử phân loại hệ thống AADL vào gói thư viện robot ở Đoạn mã 27 cho phiên bản EV3 của khối brick và robot Lego Mindstorm.\footnote{Tài liệu EV3 Hardware Developer Kit có tại \url{https://www.mikrocontroller.net/attachment/338591/hardware_developer_kit.pdf}.}
+\item Mô hình hóa bằng ReqSpec các yêu cầu phần mềm suy ra từ yêu cầu chức năng ví dụ cho các chức năng hệ thống ở Mục 8.6.4.
+\item Phân tích độ trễ cho chức năng phát hiện vật cản, tương tự phân tích chuyển hướng robot ở Mục 8.6.7. Trước tiên thêm trình điều khiển thiết bị còn thiếu cho cảm biến sonar vào hệ thống ứng dụng phần mềm, rồi thêm chú thích dòng và thuộc tính cần thiết. Thực hiện phân tích bằng OSATE.
+\end{enumerate}
+
+% Source: printed 258 / PDF 272
+\section*{Lời cảm ơn}
+Các tác giả cảm ơn chương trình nghiên cứu ISC (Ingénierie des Systèmes Complexes) về hệ thống thực-ảo và hệ thống điều khiển phân tán đã hỗ trợ công trình này. ISC được các doanh nghiệp nổi tiếng như Thalès, Dassault Aviation, DCNS và DGA tài trợ, do các trường kỹ thuật École polytechnique, ENSTA ParisTech và Télécom ParisTech vận hành.
+
+\paragraph{Truy cập mở}
+Chương này được cấp phép theo Creative Commons Attribution 4.0 International (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, chuyển thể, phân phối và tái bản bằng mọi phương tiện hoặc định dạng, miễn là ghi công thích hợp cho tác giả gốc và nguồn, cung cấp liên kết tới giấy phép Creative Commons và cho biết có thay đổi hay không.
+
+Hình ảnh hoặc tài liệu của bên thứ ba trong chương thuộc giấy phép Creative Commons của chương, trừ khi dòng ghi công cho tài liệu nêu khác. Nếu tài liệu không thuộc giấy phép Creative Commons của chương và mục đích sử dụng của bạn không được quy định pháp luật cho phép hoặc vượt quá phạm vi được phép, bạn cần xin phép trực tiếp chủ sở hữu bản quyền.

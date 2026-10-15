@@ -1,0 +1,237 @@
+% Source: printed 259 / PDF 273
+\chapter{FTG+PM: Mô tả các quy trình kỹ nghệ trong mô hình hóa đa mô thức}
+\chapterauthors{Moharram Challenger, Ken Vanherpen, Joachim Denil và Hans Vangheluwe}
+
+\begin{quote}\small
+Moharram Challenger --- University of Antwerp, Bỉ; e-mail: \url{moharram.challenger@uantwerpen.be}.\\
+Ken Vanherpen --- University of Antwerp, Bỉ; e-mail: \url{ken.vanherpen@uantwerpen.be}.\\
+Joachim Denil --- Flanders Make, Bỉ; e-mail: \url{joachim.denil@uantwerp.be}.\\
+Hans Vangheluwe --- McGill University, Canada; e-mail: \url{hans.vangheluwe@uantwerp.be}.\\
+© Các tác giả 2020. P. Carreira và cộng sự (biên tập), \emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+\url{https://doi.org/10.1007/978-3-030-43946-0_9}
+\end{quote}
+
+\section*{Tóm tắt}
+Kỹ nghệ hệ thống dựa trên mô hình (Model-based System Engineering, MBSE) là một phương pháp luận sử dụng mô hình xuyên suốt quá trình kỹ nghệ để thay thế cách thức trao đổi dựa trên giấy tờ giữa các bên liên quan. Mô hình hóa đa mô thức (Multi-Paradigm Modelling, MPM) giữ vai trò cốt lõi trong cách tiếp cận kỹ nghệ này, bởi ở mỗi giai đoạn của quy trình kỹ nghệ, những mô hình phù hợp nhất được sử dụng ở những mức trừu tượng phù hợp nhất. Một quy trình thiết kế bao gồm một tập hợp các hoạt động, trong đó người ta đưa ra các quyết định thiết kế hoặc đánh giá các thuộc tính của hệ thống hay hệ thống con. Hơn nữa, các hiện vật thiết kế (design artifacts) được biến đổi thông qua các hoạt động thiết kế. Có thể định nghĩa biến đổi là việc thao tác trên một mô hình với một mục đích cụ thể. Các cách tiếp cận MPM chưa có một cách chuẩn để biểu diễn quy trình. Mô hình quy trình cho MPM cần tập trung vào các ngôn ngữ, các thể hiện mô hình và những phép biến đổi giữa các mô hình này ở các mức trừu tượng khác nhau. Trong chương này, chúng tôi đề xuất Đồ thị biến đổi hệ hình thức và Mô hình quy trình (Formalism Transformation Graph and Process Model, FTG+PM) làm cách biểu diễn chuẩn cho các quy trình MPM. Quy trình được mô tả có thể được mô phỏng để phân tích và điều phối, dưới dạng một tập hợp các phép biến đổi (tự động).
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi kỳ vọng bạn có thể:
+\begin{itemize}
+\item Hiểu vì sao việc mô hình hóa quy trình thiết kế có ý nghĩa quan trọng.
+\item Biểu diễn các quy trình MPM bằng Đồ thị biến đổi hệ hình thức và Mô hình quy trình (FTG+PM).
+\item Lập luận về việc điều phối một quy trình thiết kế đã được mô hình hóa để hỗ trợ người thiết kế.
+\end{itemize}
+
+\section{Giới thiệu}
+Để ứng phó với độ phức tạp ngày càng tăng của các hệ thống hiện nay, các kỹ sư đã và đang áp dụng phương pháp luận kỹ nghệ hệ thống dựa trên mô hình (MBSE) [95]. Trong MBSE, các mô hình được sử dụng để hỗ trợ kỹ nghệ yêu cầu,
+% Source: printed 260 / PDF 274
+thiết kế, kiểm chứng và thẩm định hệ thống, bắt đầu từ giai đoạn thiết kế khái niệm và tiếp tục trong suốt quá trình phát triển cùng các giai đoạn vòng đời sau đó [153]. Tuy các mô hình này thường hoạt động ở những mức trừu tượng khác nhau, các phép biến đổi mô hình được áp dụng để thao tác trên mô hình giữa những dạng biểu diễn phù hợp khác nhau. Chúng thường được sử dụng cho mục đích tổng hợp mã, tích hợp, phân tích, mô phỏng và tối ưu hóa. Với tư cách là một phương pháp, mô hình hóa đa mô thức (MPM) kết hợp các phương pháp và kỹ thuật mô hình hóa này, khuyến khích kỹ sư mô hình hóa tường minh từng khía cạnh của hệ thống ở mức hay các mức trừu tượng phù hợp nhất, bằng hệ hình thức hay các hệ hình thức phù hợp nhất [212].
+
+Trong quá trình kỹ nghệ một hệ thống, người ta tuân theo một quy trình thiết kế, trong đó một tập hợp các hoạt động thiết kế được thực hiện theo một thứ tự xác định rõ. Ở mỗi hoạt động thiết kế, một tập hợp các hiện vật thiết kế được tiêu thụ và/hoặc tạo ra. Các hiện vật thiết kế này mô hình hóa tường minh những quyết định thiết kế có cơ sở do kỹ sư đưa ra hoặc những đánh giá do kỹ sư thực hiện. Vì vậy, chúng cũng có thể được xem là các phép biến đổi mô hình, trong đó thông tin trong một tập hợp mô hình đầu vào được tiêu thụ để tạo ra một tập hợp mô hình đầu ra.
+
+Mặc dù chuỗi hoạt động thiết kế này phải tạo ra một hệ thống vận hành được và đáp ứng tập hợp yêu cầu đã xác định trước, các cách tiếp cận MPM chưa có một cách chuẩn để biểu diễn quy trình. Điều này vẫn xảy ra bất chấp nhiều lợi ích mà việc mô hình hóa tường minh quy trình phát triển có thể đem lại, chẳng hạn như tối ưu hóa, phân tích tính nhất quán, phân tích thời gian và rủi ro, v.v. Nhìn chung, các quy trình được xác định rõ giúp giảm nguy cơ thất bại của một dự án thiết kế, bởi ta có thể lập luận tường minh về những vấn đề cần vượt qua khi thiết kế một hệ thống [143].
+
+Trong chương này, chúng tôi đề xuất Đồ thị biến đổi hệ hình thức và Mô hình quy trình (FTG+PM) làm cách biểu diễn chuẩn cho các quy trình MPM. Như tên gọi cho thấy, nó bao gồm hai phần có liên hệ với nhau: (a) FTG, tập trung vào các ngôn ngữ và các phép biến đổi được sử dụng xuyên suốt quy trình; và (b) luồng các hoạt động thiết kế và các hiện vật thiết kế. Vì sự hỗ trợ của công cụ có vai trò thiết yếu trong vòng đời MBSE (và MPM), chúng tôi minh họa cách việc điều phối một quy trình thiết kế đã được mô hình hóa có thể hỗ trợ người thiết kế thông qua lập lịch các phép biến đổi.
+
+\section{Kỹ nghệ hệ thống dựa trên mô hình}
+Các cách tiếp cận lấy tài liệu làm trung tâm từng giữ vai trò cốt lõi trong việc trao đổi các lựa chọn thiết kế giữa những kỹ sư khác nhau. Tuy nhiên, khi các hệ thống không ngừng tăng về quy mô, số lượng thành phần và các tính năng cung cấp cho người dùng, cách thức đó không còn phù hợp. Độ phức tạp tăng thêm của hệ thống dẫn đến gia tăng thời gian phát triển, số lượng lỗi và chi phí phát triển. Vì vậy, các cách tiếp cận kỹ nghệ hệ thống dựa trên mô hình (MBSE) ngày càng được áp dụng để khắc phục những hạn chế này [95]. Trong MBSE, mô hình được sử dụng như một phần không thể tách rời của đường cơ sở kỹ thuật của hệ thống đang được thiết kế. Điều này bao gồm các mô hình ở những giai đoạn phát triển khác nhau của một năng lực, hệ thống và/hoặc sản phẩm [76].
+
+MBSE là một phương pháp luận kỹ nghệ, trong đó các mô hình miền và kỹ thuật mô hình hóa được sử dụng làm phương tiện chính để trao đổi thông tin giữa các kỹ sư, thay cho việc trao đổi thông tin dựa trên tài liệu. Cách tiếp cận MBSE được INCOSE phác thảo và phổ biến khi tổ chức này khởi động sáng kiến MBSE vào tháng 1 năm 2007 [154]. Nó tập trung vào việc quản lý mô hình theo cách phân tán nhưng tích hợp; mục tiêu chính là tăng năng suất và giảm rủi ro bằng cách giảm thiểu các thao tác chuyển ghi khái niệm bằng tay không cần thiết khi phối hợp công việc của những nhóm lớn. Phương pháp luận MBSE đem lại một số lợi ích:
+\begin{itemize}
+\item Kỹ sư hệ thống tập trung vào các vấn đề kỹ thuật của bài toán thay vì cấu trúc tài liệu.
+\item Những mô tả bằng sơ đồ thường ít mơ hồ hơn các mô tả bằng văn bản.
+\item Tính nhất quán giữa các tài liệu có liên quan cao hơn.
+\item Các phụ thuộc giữa những bộ phận hoạt động biệt lập được ghi nhận tường minh, nhờ đó giảm trùng lặp và thiếu nhất quán.
+\end{itemize}
+
+Phương pháp luận MBSE hỗ trợ các hoạt động kỹ nghệ yêu cầu hệ thống, phân tích, thiết kế, hiện thực hóa, kiểm chứng và thẩm định hệ thống, bắt đầu từ giai đoạn thiết kế khái niệm và tiếp tục trong suốt quá trình phát triển cùng các giai đoạn vòng đời sau đó [154]. Có rất nhiều kỹ thuật và cách tiếp cận mô hình hóa thuộc MBSE. Một số trong đó bao gồm:
+\begin{itemize}
+\item Phân tích và thiết kế có cấu trúc.
+\item Lập sơ đồ luồng dữ liệu.
+\item Lập sơ đồ chuyển trạng thái.
+\item Mô hình hóa hành vi.
+\item Mô hình hóa quan hệ thực thể.
+% Source: printed 261 / PDF 275
+\item Mô hình hóa quy trình.
+\end{itemize}
+
+Gần đây, MBSE cũng tập trung vào việc thực thi mô hình trong các thí nghiệm mô phỏng trên máy tính nhằm thu hẹp khoảng cách giữa mô hình hệ thống và phần mềm mô phỏng tương ứng. Do đó, thuật ngữ kỹ nghệ hệ thống dựa trên mô hình hóa và mô phỏng (Modeling and Simulation-based Systems Engineering, M\&SBSE) cũng được sử dụng cùng với MBSE [123].
+
+Các mô hình được sử dụng trong cách tiếp cận MBSE mở đường cho việc xử lý độ phức tạp của hệ thống bằng cách cung cấp những mức trừu tượng thích hợp, tại đó kỹ sư đưa ra các lựa chọn thiết kế hoặc phân tích năng lực hay hiệu năng của hệ thống. Mô hình hoạt động ở các mức trừu tượng tương tự hoặc khác nhau, lần lượt được gọi là trừu tượng hóa theo chiều ngang và theo chiều dọc [124][254]. Mức trừu tượng có thể được hiểu thông qua những thuộc tính nào của hệ thống đang thiết kế được xem xét trong mô hình. Một số cách tiếp cận thiết kế, chẳng hạn như kiến trúc hướng mô hình (Model Driven Architecture, MDA), đưa ra tường minh những mức trừu tượng như vậy: mức mô hình hóa đặc thù nền tảng (Platform-specific Modeling, PSM) hoặc mức mô hình hóa độc lập nền tảng (Platform Independent Modeling, PIM) [166]. Theo nghĩa này, trừu tượng hóa theo chiều ngang có thể diễn ra giữa các mô hình PIM hoặc giữa các mô hình PSM. Trong khi đó, trừu tượng hóa theo chiều dọc có thể được xem xét giữa các mô hình PIM và PSM.
+
+Các phép biến đổi mô hình có thể được áp dụng để thao tác trên mô hình từ một mức trừu tượng sang mức khác. Chúng thường được sử dụng cho mục đích tổng hợp mã, tích hợp, phân tích, mô phỏng và tối ưu hóa. Bằng việc sử dụng các phép biến đổi mô hình, những mô hình trong một hệ hình thức được tự động biến đổi sang một hệ hình thức khác. Điều này tạo khả năng tận dụng sức mạnh của hệ hình thức đích, chẳng hạn để mô phỏng hệ thống đang được thiết kế. Có hai loại biến đổi: biến đổi mô hình sang mô hình (Model-to-Model, M2M) và biến đổi mô hình sang văn bản (Model-to-Text, M2T).
+
+Mô hình hóa đa mô thức (MPM) kết hợp các phương pháp và kỹ thuật mô hình hóa, chẳng hạn như MBSE, cho phép kỹ sư mô hình hóa tường minh từng khía cạnh của hệ thống ở mức hay các mức trừu tượng phù hợp nhất bằng hệ hình thức hay các hệ hình thức phù hợp nhất, đồng thời mô hình hóa tường minh các quy trình phát triển [213].
+
+Hệ thống thực-ảo (Cyber-physical Systems, CPS) là một loại hệ thống liên ngành, đòi hỏi các hệ hình thức, mức trừu tượng, công cụ và góc nhìn khác nhau trong thiết kế và phát triển. Vì vậy, chúng cần các kỹ thuật MPM và MBSE để xử lý độ phức tạp cùng những rủi ro hiện hữu. Bên cạnh đó, sự phát triển của các yêu cầu từ những góc nhìn khác nhau trong quá trình thiết kế và phát triển CPS đòi hỏi việc quản lý quy trình MPM. Các mục tiếp theo trình bày vòng đời và quy trình thiết kế trong MPM cho những hệ thống phức tạp như CPS và hệ thống IoT [307].
+
+\section{Các mô hình vòng đời phát triển}
+Vì việc thiết kế những hệ thống phức tạp có sự tham gia của kỹ sư từ nhiều ngành khác nhau, các kỹ sư tuân theo một tập hợp hướng dẫn để bảo đảm sản phẩm hiện thực hóa các yêu cầu hệ thống đã cho. Thứ tự thực hiện các hướng dẫn được gọi là quy trình thiết kế. Cách làm này được lấy cảm hứng từ cộng đồng kỹ nghệ phần mềm, nơi các mô hình vòng đời phát triển phần mềm (Software Development Life Cycle, SDLC) đã được xác định trong những thập kỷ qua [246]. Ta có thể phân biệt bốn mô hình thường được sử dụng khi thiết kế hệ thống phức tạp: mô hình thác nước, mô hình V, mô hình xoắn ốc và mô hình linh hoạt. Chúng được minh họa về mặt khái niệm trong Hình~9.1.
+
+\subsection{Mô hình thác nước}
+Mô hình thác nước (waterfall model) được đặc trưng bởi một chuỗi các bước/hoạt động thiết kế, trong đó một bước/hoạt động chỉ có thể bắt đầu khi đã nhận được một sản phẩm bàn giao từ bước/hoạt động trước đó; vì thế đây là một quy trình có cổng kiểm soát. Cổng là một điểm ra quyết định để xác định liệu giai đoạn tiếp theo của dự án có thể bắt đầu hay không. Quy trình bắt đầu bằng việc xác định một tập hợp yêu cầu, sau đó tinh chỉnh chúng thành một tập hợp yêu cầu kỹ thuật gọi là đặc tả. Dựa trên các đặc tả này, kỹ sư lập luận về kiến trúc ở mức cao, trong đó cấu trúc của hệ thống được xác định. Trong giai đoạn thiết kế chi tiết và hiện thực hóa, hành vi của các phần tử kiến trúc được xác định; sau đó hệ thống đang được thiết kế được kiểm thử. Cuối cùng, hệ thống đã thiết kế được triển khai trong môi trường dự kiến. Giữa các bước/hoạt động thường có phản hồi.
+
+Lưu ý rằng mô hình thác nước phù hợp với những dự án không có thay đổi ở một trong các giai đoạn trước đó trong quá trình thực hiện; chẳng hạn, yêu cầu không nên thay đổi trong lúc thiết kế kiến trúc. Nếu không, quy trình thiết kế phải bắt đầu lại, điều có thể gây tốn kém trong các dự án kỹ nghệ lớn.
+
+% Source: printed 262 / PDF 276
+\sourcefigure{9.1}{276}{Tổng quan về mặt khái niệm của các quy trình thiết kế MBSE thường được sử dụng.}
+
+\subsection{Mô hình V}
+Tương tự mô hình thác nước, mô hình V được đặc trưng bởi một quy trình thiết kế tuần tự. Tuy nhiên, mô hình V phân biệt các bước \emph{thiết kế} và \emph{kiểm chứng \& thẩm định}, lần lượt ở nhánh trái và nhánh phải của mô hình V, đồng thời duy trì liên kết chặt chẽ giữa chúng như được minh họa bằng các đường nét đứt nằm ngang; xem Hình~9.1. Trong khi đi từ yêu cầu ở mức cao đến hiện thực ở mức thấp, các đặc tả của thiết kế được kiểm chứng bằng cách thực hiện kiểm thử chấp nhận, từ kiểm thử đơn vị ở mức thấp đến kiểm thử hệ thống ở mức cao. Cuối cùng, ở đỉnh mô hình V, người ta thẩm định xem hệ thống có đáp ứng các yêu cầu hay không. Các kỹ thuật dựa trên mô hình cho phép kỹ sư đưa một tập hợp lớn các hoạt động kiểm chứng và thẩm định (V\&V) về sớm hơn trong quy trình.
+
+Mặc dù các bước kiểm chứng được thực hiện trong khi thiết kế hệ thống nhằm tránh phát hiện muộn lỗi hiện thực hóa, một thay đổi trong yêu cầu sản phẩm vẫn đòi hỏi phải thiết kế lại toàn bộ hoặc các phần của hệ thống; điều này, một lần nữa, có thể gây tốn kém. Dẫu vậy, trong bối cảnh thiết kế các hệ thống phức tạp (quy mô lớn) bằng cách tiếp cận MBSE, mô hình V được chấp nhận rộng rãi như một chuẩn của ngành để thiết kế và kiểm thử các hệ thống phức tạp [95].
+
+% Source: printed 263 / PDF 277
+\subsection{Mô hình xoắn ốc}
+Bằng việc sử dụng quy trình thiết kế lặp, mô hình xoắn ốc (spiral model) tránh những lần thiết kế lại tốn kém này bằng cách liên tục trải qua bốn giai đoạn thiết kế: lựa chọn yêu cầu và đặc tả, phân tích rủi ro, thiết kế, và kiểm thử cùng triển khai. Trong lần lặp đầu tiên, những yêu cầu và đặc tả sơ bộ được lựa chọn để có thể thiết kế, kiểm thử và triển khai nguyên mẫu đầu tiên của hệ thống.
+
+Trong những lần lặp tiếp theo, các yêu cầu và đặc tả được bổ sung và/hoặc trở nên chi tiết hơn, để nguyên mẫu ban đầu tiếp tục phát triển hướng tới sản phẩm cuối cùng. Trong mỗi lần lặp, quy trình được giám sát để đánh giá tốt hơn những rủi ro có thể xảy ra của dự án, chẳng hạn như tính khả thi kỹ thuật và chi phí dự án. Tuy mô hình thiết kế này ứng phó tốt hơn với những thay đổi yêu cầu và lỗi thiết kế, cần lưu ý rằng số lần lặp tăng lên có thể dẫn đến chi phí dự án tích lũy tăng lên.
+
+\subsection{Mô hình linh hoạt}
+Các mô hình quy trình thiết kế linh hoạt (agile) được đặc trưng bởi những đợt làm việc gọi là sprint, tức các lần lặp thiết kế, trong đó một phần nhỏ của toàn bộ hệ thống được thiết kế, kiểm thử và triển khai. Cuối mỗi sprint, một hệ thống đã hoàn thiện và hoạt động được được bàn giao cho các bên liên quan. Điều này khác với cách tiếp cận thiết kế xoắn ốc, trong đó sản phẩm bàn giao có thể là một nguyên mẫu. Hơn nữa, các lần lặp thiết kế của cách tiếp cận linh hoạt thường ngắn hơn những lần lặp của cách tiếp cận xoắn ốc. Do đó, các quy trình thiết kế linh hoạt phù hợp khi yêu cầu có thể thay đổi trong các giai đoạn thiết kế và hiện thực hóa, và khi các nhóm đa ngành cần phối hợp. Mặt hạn chế là việc thiếu phân tích hệ thống kỹ lưỡng có thể dẫn đến một quy trình thiết kế phức tạp và tốn kém hơn.
+
+\section{Mô hình hóa quy trình thiết kế}
+Một quy trình dành cho hệ thống phức tạp (chẳng hạn CPS) cần bao quát các khía cạnh khác nhau của hệ thống và làm rõ những mức trừu tượng khác nhau. Những mức trừu tượng này có thể thuộc thiết kế chuyên biệt miền của các thành phần tính toán hoặc vật lý, việc kiểm chứng hệ thống ở một mức trừu tượng cụ thể, và/hoặc giai đoạn triển khai, nơi các phép xấp xỉ khác nhau có thể được sử dụng để hiểu rõ hơn những tham số liên quan. Ở mức trừu tượng đã xác định, cần làm rõ những ngôn ngữ và phép biến đổi nào tham gia, cùng cách chúng được sử dụng kết hợp trong quy trình thiết kế và phát triển. Tuy nhiên, từ góc độ xây dựng công cụ, định nghĩa này có thể quá hạn chế, vì một số hoạt động có thể cần sự can thiệp thủ công trước khi hoàn tất. Vì sự hỗ trợ của công cụ có vai trò thiết yếu trong vòng đời kỹ nghệ hướng mô hình (Model-Driven Engineering, MDE) và MPM, việc quy trình đã mô tả có thể được thực thi tự động là điều quan trọng. Một cách để thực hiện điều này là thông qua một tập hợp các phép biến đổi được lập lịch nối tiếp nhau.
+
+Mô hình quy trình phải đóng vai trò hướng dẫn cho việc thiết kế, kiểm chứng và triển khai hệ thống. Điều này có nghĩa là thiết kế của một tập hợp lớn các ứng dụng phải được mô tả bằng ngôn ngữ mô hình hóa. Ngôn ngữ cần tập trung vào các cấu trúc của MPM, chủ yếu là các hệ hình thức và các phép biến đổi, cùng cách chúng tương tác với nhau. Cũng cần có biểu diễn tường minh của luồng điều khiển và luồng dữ liệu, vì đầu ra của một giai đoạn trong quy trình không nhất thiết có nghĩa rằng các mô hình được tạo ra là đầu vào của giai đoạn tiếp theo. Điều này cũng bao gồm việc sử dụng những cấu trúc điều khiển cho phép thiết kế song song, lặp, v.v.
+
+\subsection{Cơ sở lý luận}
+Trong những năm qua, cộng đồng kỹ nghệ quy trình đã đề xuất nhiều phương tiện mô hình hóa quy trình cho phát triển phần mềm. Mô hình hóa quy trình có một cộng đồng nghiên cứu lớn, từ đó hình thành nhiều ngôn ngữ mô hình hóa. Rolland [241] đưa ra một định nghĩa về mô hình hóa quy trình: \emph{Các mô hình quy trình là những quy trình có cùng bản chất được phân loại cùng nhau thành một mô hình. Vì vậy, một mô hình quy trình là mô tả của một quy trình ở cấp độ kiểu. Vì mô hình quy trình nằm ở cấp độ kiểu, một quy trình là một thể hiện của nó. Cùng một mô hình quy trình được sử dụng lặp lại cho việc phát triển nhiều ứng dụng, do đó có nhiều thể hiện.} [241]
+
+% Source: printed 264 / PDF 278
+Nhìn chung, mô hình quy trình được sử dụng cho ba mục tiêu khác nhau:
+\begin{itemize}
+\item \textbf{Mô tả:} Các mô hình được một người quan sát bên ngoài sử dụng để xem điều gì diễn ra trong một quy trình. Chúng có thể được dùng để cải tiến quy trình.
+\item \textbf{Quy định:} Các mô hình xác định một tập hợp quy tắc để quy định một quy trình mong muốn. Nếu quy trình này được tuân theo, nó sẽ dẫn đến kết quả mong muốn.
+\item \textbf{Giải thích:} Mục tiêu của một mô hình giải thích là giải thích cơ sở lý luận đằng sau quy trình.
+\end{itemize}
+
+\subsection{Cần mô hình hóa điều gì?}
+Các mô hình quy trình có thể mô tả những khía cạnh khác nhau của việc phát triển hệ thống. Các khía cạnh này có thể được chia thành bốn nhóm (xem Hình~9.2), gồm: góc nhìn chức năng, góc nhìn động, góc nhìn thông tin và góc nhìn tổ chức [78].
+\begin{itemize}
+\item \textbf{Góc nhìn chức năng:} Góc nhìn này của một mô hình quy trình trình bày các phụ thuộc trong những chức năng (tức các phép biến đổi) của hệ thống đang phát triển. Một ví dụ nổi tiếng về ngôn ngữ mô hình hóa sử dụng góc nhìn này là sơ đồ luồng dữ liệu.
+\item \textbf{Góc nhìn động/hành vi:} Góc nhìn này tập trung vào các hoạt động, hành động và tác vụ của hệ thống, cùng thứ tự của chúng. Khía cạnh này xem xét luồng điều khiển và thời gian của các hoạt động trong hệ thống.
+\item \textbf{Góc nhìn thông tin:} Góc nhìn này xem xét các thực thể thông tin (tức dữ liệu cho quy trình, hoạt động, hiện vật và sản phẩm) được quy trình tạo ra hoặc thao tác. Nó bao gồm cả cấu trúc của các thực thể thông tin và những quan hệ giữa chúng.
+\item \textbf{Góc nhìn tổ chức:} Góc nhìn này trình bày các bên liên quan của hệ thống, cũng như ai thực hiện các phần tử của quy trình và thực hiện ở bộ phận nào trong tổ chức.
+\end{itemize}
+
+\sourcefigure{9.2}{278}{Mô tả các quy trình.}
+
+\subsection{Lập luận về mức độ trưởng thành}
+Khi các quy trình được lặp lại nhiều lần, việc mở rộng, phát triển và nâng cao mức độ trưởng thành của các mô hình quy trình cũng rất quan trọng. Việc bổ sung thông tin vào mô hình quy trình cuối cùng có thể dẫn đến những quy trình tốt hơn, chẳng hạn nhanh hơn, vững chắc hơn, v.v. Thuật ngữ \emph{mức độ trưởng thành} (maturity) liên quan đến mức độ hình thức hóa và tối ưu hóa của quy trình, từ các cách làm tự phát, đến các bước được xác định hình thức, đến các thước đo kết quả được quản lý, rồi đến việc chủ động tối ưu hóa quy trình.
+
+Mô hình trưởng thành năng lực (Capability Maturity Model, CMM\footnote{CMM là một nhãn hiệu dịch vụ đã đăng ký của Carnegie Mellon University (CMU).}) là một phương pháp luận được sử dụng để phát triển và tinh chỉnh một quy trình phát triển. Mục đích của mô hình là cải tiến các quy trình phát triển hiện có. CMM được phát triển và thúc đẩy bởi Software Engineering Institute (SEI), một trung tâm nghiên cứu và phát triển do Bộ Quốc phòng Hoa Kỳ (DoD) tài trợ. Ban đầu, CMM được phát triển như một công cụ để đánh giá khách quan khả năng thực hiện một dự án phần mềm theo hợp đồng của các quy trình do nhà thầu chính phủ áp dụng [303].
+
+% Source: printed 265 / PDF 279
+CMM tương tự ISO 9001, một trong bộ tiêu chuẩn ISO 9000 do Tổ chức Tiêu chuẩn hóa Quốc tế (ISO) quy định. Các tiêu chuẩn ISO 9000 quy định một hệ thống chất lượng hiệu quả cho ngành sản xuất và dịch vụ; ISO 9001 đề cập riêng đến phát triển và bảo trì phần mềm. Khác biệt chính giữa hai hệ thống nằm ở mục đích tương ứng: ISO 9001 quy định mức chất lượng tối thiểu có thể chấp nhận cho các quy trình phần mềm, còn CMM thiết lập một khuôn khổ cải tiến quy trình liên tục và xác định rõ ràng hơn tiêu chuẩn ISO về những phương tiện cần sử dụng để đạt mục đích đó [198].
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C9-1).} ISO 9001:2015 đặt ra các yêu cầu chung về hệ thống quản lý chất lượng cho mọi loại tổ chức, kể cả tổ chức phát triển phần mềm. Hướng dẫn áp dụng tiêu chuẩn này cho phần mềm được trình bày trong ISO/IEC/IEEE 90003:2018; xem \url{https://committee.iso.org/sites/tc176sc2/home/projects/published/iso-9001-2015.html} và \url{https://standards.ieee.org/ieee/90003/7197/}. Câu trong bản gốc được giữ nguyên.
+\end{quote}
+
+CMM mô tả một lộ trình phát triển gồm năm mức (xem Hình~9.3), trong đó các quy trình ngày càng có tổ chức hơn và trưởng thành hơn một cách có hệ thống. Các mức độ trưởng thành của quy trình này là:
+\begin{itemize}
+\item Ở mức \emph{tự phát/ban đầu} (ad-hoc/initial), các quy trình thiếu tổ chức, thậm chí hỗn loạn. Thành công có khả năng phụ thuộc vào nỗ lực cá nhân và không được xem là có thể lặp lại, bởi các quy trình chưa được xác định và lập tài liệu đủ đầy để cho phép tái lập.
+\item Ở mức \emph{có thể lặp lại} (repeatable), các kỹ thuật quản lý dự án cơ bản được thiết lập, và thành công có thể lặp lại bởi những quy trình cần thiết đã được thiết lập, xác định và lập tài liệu.
+\item Ở mức \emph{được xác định} (defined), một tổ chức đã phát triển mô hình quy trình chuẩn riêng của mình nhờ chú trọng hơn vào lập tài liệu, chuẩn hóa và tích hợp.
+\item Ở mức \emph{được quản lý/có năng lực} (managed/capable), một tổ chức giám sát và kiểm soát các quy trình của mình thông qua thu thập và phân tích dữ liệu.
+\item Ở mức \emph{được tối ưu hóa/hiệu quả} (optimized/efficient), các quy trình được cải tiến liên tục thông qua giám sát phản hồi từ các quy trình hiện tại và đưa vào những quy trình đổi mới nhằm phục vụ tốt hơn các nhu cầu cụ thể của tổ chức.
+\end{itemize}
+
+\sourcefigure{9.3}{279}{Mô hình trưởng thành năng lực (lấy từ: \url{http://performancexpress.org/}).}
+
+\section{Activities 2.0 để mô hình hóa quy trình}
+Khi thực hiện kỹ nghệ một hệ thống phức tạp bằng cách tiếp cận MBSE, các hiện vật thiết kế sẽ được tạo ra ở những mức trừu tượng khác nhau trong cùng một miền kỹ nghệ hoặc giữa các miền khác nhau. Một mô hình của quy trình thiết kế cần làm rõ quan hệ giữa các hiện vật thiết kế khác nhau và mức trừu tượng tương ứng của chúng. Mô hình quy trình này
+% Source: printed 266 / PDF 280
+phải đóng vai trò hướng dẫn cho việc thiết kế, kiểm chứng \& thẩm định, và hiện thực hóa hệ thống. Cũng cần có biểu diễn tường minh của luồng điều khiển và luồng dữ liệu, vì đầu ra của một giai đoạn trong quy trình không nhất thiết có nghĩa rằng các mô hình được tạo ra là đầu vào của giai đoạn tiếp theo. Điều này cũng bao gồm việc sử dụng những cấu trúc điều khiển cho phép thiết kế song song, lặp, v.v.
+
+Trong [194, 196, 216], một ngôn ngữ Mô hình quy trình (Process Model, PM) được đề xuất để mô tả luồng điều khiển và luồng dữ liệu giữa các hoạt động thiết kế. Để làm điều đó, một tập con của các biểu đồ hoạt động trong Ngôn ngữ mô hình hóa thống nhất (Unified Modelling Language, UML) 2.0 được sử dụng. Nó cho phép xác định quy trình dưới dạng một mô hình vừa mô tả vừa quy định.
+
+Hình~9.4 trình bày một ví dụ PM, mô tả một phần quy trình sinh mã từ một mô hình điều khiển.
+
+\sourcefigure{9.4}{280}{Ví dụ về Mô hình quy trình (PM) để sinh mã từ một mô hình điều khiển.}
+
+Các hình chữ nhật có góc vuông và có nhãn biểu diễn những đối tượng dữ liệu (hiện vật thiết kế) luân chuyển trong suốt quy trình thiết kế. Trong cách tiếp cận MBSE, những đối tượng này tương ứng với các mô hình được tiêu thụ hoặc tạo ra bởi các hoạt động thiết kế, vốn được biểu diễn bằng những hình chữ nhật có góc bo tròn và có nhãn. Chẳng hạn, để kiểm chứng hành vi vòng kín của một mô hình điều khiển, cần một mô hình của hệ thống vật lý (tức một mô hình đối tượng được điều khiển, hay plant) để có thể thực hiện mô phỏng mô hình trong vòng lặp (Model-in-the-Loop, MiL). Lưu ý rằng quy trình được đặc trưng bởi luồng điều khiển và luồng dữ liệu, lần lượt được biểu diễn bằng các cạnh nét liền và nét đứt. Ngoài ra, các hoạt động thủ công và (bán) tự động được phân biệt. Cuối cùng, các cấu trúc luồng hợp nhánh (join) và phân nhánh (fork) của biểu đồ hoạt động, được biểu diễn trong Hình~9.4 bằng những thanh nằm ngang, cho phép biểu diễn các hoạt động thiết kế đồng thời.
+
+% Source: printed 267 / PDF 281
+\section{Góc nhìn công cụ: Đồ thị biến đổi hệ hình thức}
+Trong mỗi giai đoạn của Mô hình quy trình, cần làm rõ những hệ hình thức và phép biến đổi nào tham gia. Phù hợp với các nguyên lý của mô hình về các mô hình (mega-model) [19, 31, 142], Đồ thị biến đổi hệ hình thức (Formalism Transformation Graph, FTG) [194, 196, 216] là một ngôn ngữ cho phép khai báo các hệ hình thức và phép biến đổi đó. Nó mô hình hóa các quan hệ giữa những ngôn ngữ khác nhau bằng các phép biến đổi.
+
+Như có thể thấy trong Hình~9.5, các hệ hình thức chuyên biệt miền được biểu diễn dưới dạng những hình chữ nhật có nhãn trong một mô hình FTG.
+
+\sourcefigure{9.5}{281}{Ví dụ về Đồ thị biến đổi hệ hình thức (FTG) để sinh mã từ một mô hình điều khiển.}
+
+Các phép biến đổi giữa những hệ hình thức đó được minh họa bằng những hình tròn có nhãn. Tương tự Mô hình quy trình, những phép biến đổi này có thể là thủ công hoặc (bán) tự động. Các mũi tên từ hệ hình thức đi vào phép biến đổi mô tả đầu vào của phép biến đổi, còn các mũi tên từ phép biến đổi đi vào hệ hình thức mô tả đầu ra của phép biến đổi. Vì vậy, mô hình FTG là một đồ thị mô tả các ngôn ngữ mô hình hóa và các phép biến đổi sẵn có về mặt tĩnh cho những kỹ sư trong một miền nhất định. Trong ví dụ sinh mã từ mô hình điều khiển, có thể thấy mô phỏng MiL là một phép biến đổi (bán) tự động từ các mô hình được biểu đạt trong hệ hình thức điều khiển, hệ hình thức đối tượng được điều khiển và hệ hình thức kiến trúc, sang một mô hình vết được biểu diễn trong hệ hình thức thích hợp của nó.
+
+\section{FTG+PM: Đồ thị biến đổi hệ hình thức và Mô hình quy trình}
+Trong các mục trước, chúng tôi đã giới thiệu những mô hình cho phép kỹ sư mô tả các hoạt động thiết kế của mình, các hệ hình thức được sử dụng và các phép biến đổi tồn tại giữa những hệ hình thức. Có thể bạn đã nhận thấy một quan hệ tồn tại giữa Đồ thị biến đổi hệ hình thức và Mô hình quy trình. Thật vậy, các đối tượng dữ liệu
+% Source: printed 268 / PDF 282
+(tức các mô hình) và các hoạt động thiết kế trong PM lần lượt là những thể hiện của các hệ hình thức và các phép biến đổi được xác định trong FTG. Các quan hệ định kiểu này được làm rõ bằng dấu hai chấm trong những hình chữ nhật của PM.
+
+Theo đó, chúng tôi xác định siêu mô hình thống nhất của Đồ thị biến đổi hệ hình thức và Mô hình quy trình như được minh họa trong Hình~9.6.
+
+\sourcefigure{9.6}{282}{Siêu mô hình Đồ thị biến đổi hệ hình thức và Mô hình quy trình (FTG+PM).}
+
+Ở bên trái có thể thấy siêu mô hình FTG, trong đó các khái niệm \emph{Language} và \emph{Transformation} được minh họa. Cả hai khái niệm đều có thuộc tính \emph{definition} tham chiếu đến định nghĩa của ngôn ngữ hoặc phép biến đổi. Ngoài ra, thuộc tính \emph{auto} xác định phép biến đổi có tự động hay không. Ở bên phải có thể thấy siêu mô hình của ngôn ngữ PM với các nút \emph{Activity}, \emph{Object} và \emph{Control}. Lưu ý quan hệ định kiểu giữa một \emph{Activity} và một \emph{Object} trong PM với một \emph{Transformation} và một \emph{Language} trong FTG, theo thứ tự tương ứng.
+
+\subsection{Lập luận về sự phù hợp của các hệ hình thức và mô hình hóa không đồng nhất}
+Đồ thị biến đổi hệ hình thức có thể được sử dụng cho nhiều việc hơn là chỉ định kiểu. Megamodel mô tả những quan hệ giữa các hệ hình thức khác nhau. Do đó, ta có thể gắn các thuộc tính vào các hệ hình thức và phép biến đổi. Ta có thể truy vấn FTG mở rộng để tìm những hệ hình thức phù hợp thỏa mãn một tập hợp các thuộc tính này.
+
+Điều tương tự cũng áp dụng khi gán ngữ nghĩa cho ngôn ngữ. Các quan hệ giữa những hệ hình thức khác nhau có thể được sử dụng để xác định một đường dẫn tới một mục tiêu phân tích nhất định. Chẳng hạn, nếu quan tâm đến việc thu được các vết hành vi, ta có thể sử dụng một bộ mô phỏng tạo ra vết hành vi từ mô hình. Tuy nhiên, cũng có thể tận dụng các thuộc tính (và khả năng) của những hệ hình thức khác và xác định một đường dẫn khác trong FTG để tạo ra các quỹ đạo trạng thái. Chẳng hạn, nếu một hệ hình thức nhất định có thể áp dụng các phép biến đổi ký hiệu để tạo ra mô hình có hiệu năng tốt hơn khi chạy, ta có thể tận dụng những phép biến đổi này và xác định một đường dẫn trong FTG đi qua hệ hình thức đó. Theo cách này, những ngữ nghĩa chuyển dịch khác nhau của các hệ hình thức có thể được tái sử dụng. Điều này cũng có hạn chế, vì cần giữ lại đủ thông tin truy vết để cho phép kỹ sư, chẳng hạn, gỡ lỗi các mô hình. Hình~9.7 trình bày FTG từ [292]. Ở đây, hai thuộc tính khác nhau được gắn vào các quan hệ: (a) ngữ nghĩa chuyển dịch (đường nét liền) so với mô phỏng (đường nét đứt), và (b) không xấp xỉ (màu xanh dương) so với cho phép xấp xỉ, chẳng hạn lấy mẫu (màu xanh lá). Đường nét đứt thẳng đứng ở giữa cho thấy sự phân chia giữa miền thời gian liên tục (bên trái) và miền thời gian rời rạc (bên phải).
+
+FTG cũng cho phép ta lập luận về việc kết hợp các hệ hình thức khác nhau. Mô hình hóa đa mô thức chủ trương sử dụng những mức trừu tượng phù hợp nhất bằng những hệ hình thức phù hợp nhất. Khi áp dụng nguyên lý này vào thiết kế những hệ thống thực-ảo phức tạp, ta phải kết hợp cả hệ hình thức thời gian rời rạc lẫn hệ hình thức thời gian liên tục. Phần ảo được mô tả tự nhiên hơn nhiều trong miền thời gian rời rạc, còn các mô hình vật lý được mô tả tự nhiên hơn nhiều trong miền thời gian liên tục. Tuy nhiên, để
+% Source: printed 269 / PDF 283
+đánh giá hành vi của toàn bộ hệ thống, ta phải kết hợp những mô hình này. Vì vậy, cần lập luận về ý nghĩa của việc kết hợp các hệ hình thức và cách ta có thể thực hiện điều đó.
+
+\sourcefigure{9.7}{283}{Đồ thị biến đổi hệ hình thức từ [292]. \textit{Chú giải nét và màu thêm của bản dịch:} nét liền chỉ ngữ nghĩa chuyển dịch, nét đứt chỉ mô phỏng; xanh dương chỉ không xấp xỉ, xanh lá chỉ cho phép xấp xỉ. Đường nét đứt thẳng đứng ngăn miền thời gian liên tục ở bên trái với miền thời gian rời rạc ở bên phải.}
+
+Có ba kỹ thuật để mô phỏng hành vi của các hệ thống lai.
+\begin{itemize}
+\item \textbf{Mô hình hóa lai:} Một ngôn ngữ mô hình hóa mới được tạo ra dựa trên các hệ hình thức và những kết nối giữa chúng. Ngôn ngữ mô hình hóa được đưa vào vận hành bằng một bộ mô phỏng.
+\item \textbf{Đồng mô phỏng:} Đồng mô phỏng lập luận về sự kết hợp các mô hình bằng cách kết hợp các quỹ đạo trạng thái. Để làm điều đó, các bộ mô phỏng của những hệ hình thức khác nhau được sử dụng và điều phối một cách tường minh.
+\item \textbf{Ánh xạ sang một hệ hình thức chung:} Cuối cùng, những hệ hình thức khác nhau và kết nối của chúng được ánh xạ sang một hệ hình thức chung. Chẳng hạn, trong Hình~9.7 có thể thấy DEVS có thể được sử dụng làm một hệ hình thức chung để ánh xạ cả mô hình thời gian rời rạc lẫn mô hình thời gian liên tục. Tuy nhiên, hình cũng cho thấy còn những khả năng khác; chẳng hạn, đồ thị liên kết năng lượng (bond graph) và sơ đồ khối nhân quả có thể được kết hợp bằng các phương trình đại số-vi phân (DAE) nhân quả.
+\end{itemize}
+
+\subsection{Điều phối quy trình}
+Điều phối một quy trình có nghĩa là hỗ trợ kỹ sư trong quy trình thiết kế của họ. Sự hỗ trợ này có thể có nhiều dạng, từ việc hiển thị cho kỹ sư một bảng theo dõi với những thước đo khác nhau về quy trình và các bước cần thực hiện (chẳng hạn trong [193]), đến việc tự động thiết lập các môi trường mô hình hóa, mở đúng mô hình, và tự động lưu cũng như biến đổi mô hình khi có thể. Chúng tôi giả định trường hợp sau và lập luận về việc điều phối một mô hình quy trình, cụ thể hơn là một FTG+PM, trong môi trường mô hình hóa đa mô thức.
+
+Việc điều phối ngôn ngữ FTG+PM đòi hỏi các nút hành động, biểu thị một phép biến đổi, phải được thực thi đúng cách. Thứ tự thực thi các nút này dựa trên việc ánh xạ biểu đồ hoạt động sang mạng Petri màu. Ánh xạ biểu đồ hoạt động sang mạng Petri được mô tả trong [168]. Khi gặp một
+% Source: printed 270 / PDF 284
+nút hành động, hành động đó phải được thực thi. Tùy theo trạng thái của thuộc tính \emph{auto} trong phép biến đổi, khuôn khổ phải:
+\begin{itemize}
+\item \texttt{false}: mở một môi trường mô hình hóa chứa các mô hình đầu vào trong các ngôn ngữ đã chỉ định và môi trường mô hình hóa của ngôn ngữ đầu ra.
+\item \texttt{true}: tự động thực thi phép biến đổi với các mô hình đầu vào mong muốn.
+\end{itemize}
+
+Để làm điều đó, công cụ phải có khả năng tiếp nhận lệnh từ kỹ sư, chẳng hạn để báo khi người thiết kế đã hoàn thành tác vụ và quy trình có thể tiếp tục. Hơn nữa, phần FTG rất quan trọng vì cung cấp cho môi trường MPM thông tin về môi trường mô hình hóa nào cần được mở để hỗ trợ người thiết kế. Tự động hóa những phép biến đổi mô hình đã được xác định dẫn đến việc thực thi liên tiếp các phép biến đổi khác nhau. Một môi trường mô hình hóa đa mô thức, chẳng hạn AToMPM [259], có các ngôn ngữ chuyên dụng để thực thi phép biến đổi mô hình. Ta có thể sử dụng những ngôn ngữ này để thực thi FTG+PM bằng cách biến đổi mô hình quy trình sang một ngôn ngữ như vậy. Các môi trường mô hình hóa khác có những công cụ tương tự có thể được sử dụng để thiết lập việc điều phối như thế, chẳng hạn [240, 145, 131].
+
+\section{Tổng kết}
+Mục này thảo luận việc sử dụng kỹ nghệ hệ thống dựa trên mô hình (MBSE) trong vòng đời phát triển của các hệ thống thực-ảo (CPS). Nó tập trung cụ thể vào các quy trình thiết kế và việc biến đổi mô thức trong mô hình hóa đa mô thức (MPM) của CPS.
+
+Nhìn chung, các cách tiếp cận MPM chưa có một cách chuẩn để biểu diễn quy trình. Mô hình quy trình cho MPM cần tập trung vào các ngôn ngữ, các thể hiện mô hình và những phép biến đổi giữa các mô hình này ở các mức trừu tượng khác nhau. Những mức trừu tượng này có thể thuộc thiết kế chuyên biệt miền của các thành phần tính toán hoặc vật lý, việc kiểm chứng hệ thống ở một mức trừu tượng cao, nhưng cũng có thể thuộc giai đoạn triển khai, nơi các phép xấp xỉ khác nhau được sử dụng để hiểu rõ hơn các tham số liên quan.
+
+Theo đó, một cách biểu diễn chuẩn cho các quy trình MPM của CPS được giới thiệu, mang tên Đồ thị biến đổi hệ hình thức và Mô hình quy trình (FTG+PM). Tự động hóa và công cụ có vai trò thiết yếu trong vòng đời MPM; điều then chốt là quy trình được mô tả có thể được mô phỏng để phân tích và được điều phối để hỗ trợ người thiết kế. Để hỗ trợ người thiết kế, chương đã trình bày chi tiết việc lập luận về điều phối một quy trình thiết kế đã được mô hình hóa.
+
+\section{Tài liệu và đọc thêm}
+Bạn đọc quan tâm có thể nghiên cứu các bài báo và sách sau để biết thêm chi tiết. Để tìm hiểu thêm về các quy trình phát triển/thiết kế, có thể đọc [246] về các mô hình vòng đời phát triển phần mềm, [95] về mô hình V được sử dụng rộng rãi trong MBSE, và cuốn sách ở [276] về quy trình phát triển linh hoạt.
+
+Để nghiên cứu thêm về FTG+PM, có thể đọc [194] và [196] về việc sử dụng FTG trong MDE, cũng như bài báo ở [216] về một nghiên cứu tình huống sử dụng FTM-PM trong lĩnh vực ô tô. Các nghiên cứu nền tảng cho FTG+PM cũng có thể được tìm thấy trong nhiều tài liệu [81][41][292][295][291][293][290][178][288][289].
+
+Cuối cùng, để đọc thêm về việc lập luận và điều phối bằng FTG+PM, có thể nghiên cứu công trình của István và cộng sự [79].
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Tạo một FTG-PM cho quy trình thiết kế hoặc quy trình phát triển của một hệ thống do bạn lựa chọn.
+\item Đối với việc phát triển hệ thống được nêu trong bài tập (1), hãy thảo luận quy trình thiết kế nào phù hợp nhất?
+\item Trình bày sự khác biệt giữa các quy trình phát triển thác nước và linh hoạt?
+\item Xét quy trình thiết kế của bạn trong bài tập (1), nó nằm ở đâu về mức độ trưởng thành theo các mức của CMM?
+\item Bạn có thể kết hợp các phương trình đạo hàm riêng với các mô hình đồ thị liên kết năng lượng ``a a casual'' như thế nào?\footnote{\textbf{Chú thích người dịch:} Bản gốc ghi ``a a casual bond graphs models''. Cụm từ không rõ nghĩa này được giữ lại để tránh tự ý quyết định tác giả muốn nói đến đồ thị nhân quả hay phi nhân quả.}
+\end{enumerate}
+
+% Source: printed 271 / PDF 285
+\section*{Lời cảm ơn}
+Các tác giả xin cảm ơn: (1) Các cơ chế kết nối của COST Action và sự hỗ trợ của IC1404 Multi-Paradigm Modeling for Cyber-Physical Systems (MPM4CPS). COST được hỗ trợ bởi Chương trình khung Horizon 2020 của EU. (2) Flanders Make, Bỉ. Flanders Make là trung tâm nghiên cứu chiến lược dành cho ngành sản xuất ở vùng Flanders, Bỉ.
+
+\paragraph{Truy cập mở}
+Chương này được cấp phép theo Giấy phép quốc tế Creative Commons Ghi công 4.0 (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, phóng tác, phân phối và tái tạo bằng bất kỳ phương tiện hoặc định dạng nào, với điều kiện ghi công thích hợp cho tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons, và cho biết nếu có thay đổi.
+
+Hình ảnh hoặc các tài liệu khác của bên thứ ba trong chương này thuộc giấy phép Creative Commons của chương, trừ khi có quy định khác trong dòng ghi công cho tài liệu đó. Nếu tài liệu không thuộc giấy phép Creative Commons của chương và mục đích sử dụng của bạn không được quy định pháp luật cho phép hoặc vượt quá phạm vi sử dụng được phép, bạn cần xin phép trực tiếp chủ sở hữu quyền tác giả.

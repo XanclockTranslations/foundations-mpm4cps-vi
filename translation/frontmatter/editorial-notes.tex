@@ -1,0 +1,36 @@
+% Added Vietnamese translation editorial notes; not part of the authors' chapters.
+% Insert after Chapter 9 and before the bibliography. Source anchors use original printed pages.
+\chapter*{Ghi chú biên tập của bản dịch}
+\addcontentsline{toc}{chapter}{Ghi chú biên tập của bản dịch}
+
+\textbf{Phần bổ sung của bản dịch.} Những ghi chú dưới đây do nhóm biên tập bản dịch thêm vào sau khi đối chiếu với sách gốc năm 2020. Chúng chỉ ra một số chỗ không nhất quán có thể ảnh hưởng đến việc đọc hoặc thực hành. Nội dung, công thức, mã và hình trong các chương của tác giả được giữ theo bản gốc; các ghi chú này không phải lời của tác giả. Số trang dưới đây là số trang in của sách gốc, không phải số trang của bản dịch.
+
+\paragraph{Dẫn chiếu trong Chương 3 và Chương 6.}
+Ở Chương 3, trang 47, câu giới thiệu đồ thị của \texttt{HelloWorld} dẫn đến Hình~3.31, nhưng hình ngay sau câu đó mang số~3.1. Ở Chương 6, trang 156, phần mở đầu Mục~6.2 dẫn đến Mục~8.4 khi nói về ví dụ đồng hồ; ví dụ này được trình bày ngay trong Mục~6.2.1. Cũng ở Chương 6, trang 169, dẫn chiếu Hình~6.3.6 không tương ứng với số hình trong chương; ảnh mô hình đồng hồ đầy đủ gần đó mang số~6.10. Bản dịch giữ các dẫn chiếu đã in, để người đọc có thể đối chiếu, đồng thời ghi rõ sự khác biệt ở đây.
+
+\paragraph{Nhãn biến trong Hình 3.26.}
+Ở Chương 3, trang 84, mã \texttt{BasicClockedSynchronous} định nghĩa \texttt{x = sample(time, clk)} và \texttt{y = hold(x)+1}. Theo các định nghĩa này, \(x\) là giá trị lấy mẫu tại nhịp đồng hồ, còn \(y\) là giá trị được giữ và tăng thêm~1. Tuy nhiên, Hình~3.26 ghi nhãn \(x\) trên đường bậc thang phía trên và \(y\) trên dãy điểm lấy mẫu phía dưới. Nhãn \(x/y\) trong hình không khớp với mã và lời giải thích; bản dịch giữ nguyên cả ba để tránh tự ý sửa hình của tác giả.
+
+\paragraph{Một số lỗi in trong mã Modelica.}
+Các ví dụ Chương 3 có những lỗi đã xuất hiện trong bản gốc: lớp \texttt{TwoPin8} ở trang 68 kết thúc bằng \texttt{end TwoPin}; trang 71 ghi \texttt{extensd} thay vì từ khóa \texttt{extends}; trang 76 viết \texttt{a[3]*x\^{}1}, khác với số mũ~2 trong (3.11); lệnh \texttt{simulate} ở trang 94 có dấu \texttt{]} thừa ở cuối. Người đọc cần phân biệt các lỗi in này với cú pháp Modelica hợp lệ khi thực hành. Nhiều đoạn mã trong sách chỉ minh họa một phần của mô hình, nên không thể mặc định rằng mọi đoạn đều chạy độc lập.
+
+\paragraph{Số liệu và biểu đồ ở Chương 5.}
+Mục~5.5.3, trang 150, mô tả trường hợp hai bộ xử lý bằng trung vị 200~giây và giá trị lớn nhất khoảng 470~giây. Biểu đồ hộp trong Hình~5.11, trang 151, thể hiện trung vị và đầu râu trên cao hơn các giá trị đó. Bản dịch giữ nguyên số liệu trong lời văn và dữ liệu của hình, không tái dựng đồ thị theo lời văn hay suy ra các số liệu thay thế. Khi dùng ví dụ để phân tích hiệu năng, cần phân biệt kết quả được nêu bằng lời với kết quả hiển thị trong hình.
+
+\paragraph{Phân số và số lượng phương án ở Chương 6.}
+Yêu cầu đồng hồ tại trang 157 quy định đồng hồ bấm giờ tăng theo bước \(1/100\)~giây. Mô tả \texttt{increaseChronoByOne()} tại trang 170 lại ghi mức tăng \(1/10\)~giây. Hai phân số này được giữ theo bản gốc. Ngoài ra, phần \emph{Event Lifeline} trong Mục~6.7.1, trang 172, nói có năm phương án nhưng chỉ liệt kê bốn mục. Bản dịch không thêm một phương án thứ năm không có trong sách.
+
+\newpage
+\paragraph{Các đoạn mã Lua ở Chương 7.}
+Trang 181, Hình~7.3 và Hình~7.4 chứa các đoạn mã 8--13. Trong các đoạn mã 9 và~11, dấu phẩy xuất hiện giữa những biểu thức nối bằng \texttt{and}; các đoạn mã chuyển tiếp còn dùng dạng \texttt{\{ marking.up = 1 \}} trong biểu thức tạo bảng. Những dạng này có vấn đề cú pháp Lua và không thể coi các đoạn mã đã in là chương trình hoàn chỉnh có thể chạy trực tiếp. Bản dịch giữ nguyên các ký hiệu đó; ghi chú này không cung cấp một bản mã thay thế.
+
+\begin{samepage}
+\paragraph{Hai chỗ trong lập luận mạng Petri.}
+Ở Chương 7, trang 185, cây suy diễn cho \texttt{press.release} dùng dấu cộng/trừ cho \texttt{up} và \texttt{down} ngược với quy tắc chuyển tiếp ở trang 183 và Phương trình~(7.2). Ở trang 193, bước cuối của chứng minh loại trừ lẫn nhau lại ghi rằng \(m(a)=0\) và \(m(a)+m(b)=1\) suy ra \(m(b)=0\). Kết luận này mâu thuẫn với chính đẳng thức tổng; từ hai giả thiết đã ghi, giá trị của \(m(b)\) phải là~1. Các biểu thức sai đã in được giữ trong chương, còn nhận xét về mâu thuẫn được tách riêng ở đây.
+\par\end{samepage}
+
+\paragraph{Định nghĩa và ví dụ PNFMU.}
+Ở Chương 7, trang 200--201, Phương trình~(7.15) cho kết quả dự phòng \((s,0)\), trong khi ví dụ và Hình~7.13 trả tập trạng thái rỗng khi đầu vào là một đánh dấu không đạt tới được. Trước đó, \(S\) được định nghĩa là tập mọi đánh dấu có thể có; lời văn về \texttt{doStep} vừa giới hạn ở các trạng thái đạt tới được, vừa viết điều kiện loại bỏ \(s\notin S\). Hai tập này không được phân biệt nhất quán. Cũng tại trang 200, câu giới thiệu nói ``bốn bước đầu'' nhưng chỉ có ba lời gọi \texttt{doStep}; tại trang 201, một mục nói về \texttt{doStep(s,4)}, độ dài~3, hai bước và giá trị trả về~1, rồi kết thúc bằng từ ``and''. Bản dịch giữ cả những khác biệt và câu chưa hoàn tất, không suy đoán phần thiếu hay chuẩn hóa ngữ nghĩa PNFMU.
+
+\paragraph{Bối cảnh công cụ năm 2020.}
+Các mô tả về phiên bản, tính năng, nền tảng, tình trạng phát triển và lịch hoạt động của công cụ phản ánh sách xuất bản năm 2020, gồm các ví dụ Modelica/OpenModelica, PythonPDEVS, Yakindu, công cụ mạng Petri và AADL. Bản dịch không cập nhật những mô tả lịch sử này thành khẳng định về tình trạng hiện tại. Khi thực hành, người đọc nên xác định phiên bản đang sử dụng và đối chiếu với tài liệu của phiên bản đó.

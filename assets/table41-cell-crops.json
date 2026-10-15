@@ -1,0 +1,70 @@
+[
+  {
+    "row": 1,
+    "source_pdf_page": 114,
+    "pixel_bounds": [
+      570,
+      458,
+      707,
+      508
+    ],
+    "pdf_bounds": [
+      321.9239943074004,
+      503.8876142857143,
+      399.2987087286528,
+      532.1324357142857
+    ],
+    "path": "assets/ch04-table41-r1-description.pdf"
+  },
+  {
+    "row": 2,
+    "source_pdf_page": 114,
+    "pixel_bounds": [
+      570,
+      510,
+      707,
+      565
+    ],
+    "pdf_bounds": [
+      321.9239943074004,
+      471.68851785714287,
+      399.2987087286528,
+      502.75782142857145
+    ],
+    "path": "assets/ch04-table41-r2-description.pdf"
+  },
+  {
+    "row": 3,
+    "source_pdf_page": 114,
+    "pixel_bounds": [
+      570,
+      567,
+      707,
+      623
+    ],
+    "pdf_bounds": [
+      321.9239943074004,
+      438.924525,
+      399.2987087286528,
+      470.558725
+    ],
+    "path": "assets/ch04-table41-r3-description.pdf"
+  },
+  {
+    "row": 9,
+    "source_pdf_page": 114,
+    "pixel_bounds": [
+      570,
+      864,
+      707,
+      925
+    ],
+    "pdf_bounds": [
+      321.9239943074004,
+      268.32580357142854,
+      399.2987087286528,
+      302.7844857142858
+    ],
+    "path": "assets/ch04-table41-r9-description.pdf"
+  }
+]

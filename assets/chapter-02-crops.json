@@ -1,0 +1,1699 @@
+{
+  "coordinate_system": "PDF points, top-left origin; artwork only, caption excluded",
+  "source_pixel_coordinates": "source/ch02-inspect-NNN.png, 1054 x 1400",
+  "figures": [
+    {
+      "number": "2.1",
+      "pdf_page": 32,
+      "bounds": [
+        206.14431214421253,
+        458.1310035714286,
+        389.1326878557875,
+        542.3005714285715
+      ],
+      "source_inspection_pixel_bounds": [
+        365,
+        811,
+        689,
+        960
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.2",
+      "pdf_page": 33,
+      "bounds": [
+        214.6159962049336,
+        206.18719642857144,
+        375.57799335863376,
+        320.8611714285715
+      ],
+      "source_inspection_pixel_bounds": [
+        380,
+        365,
+        665,
+        568
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.3",
+      "pdf_page": 34,
+      "bounds": [
+        89.79985104364326,
+        59.879021428571434,
+        495.31112808349144,
+        242.90546428571432
+      ],
+      "source_inspection_pixel_bounds": [
+        159,
+        106,
+        877,
+        430
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.4",
+      "pdf_page": 34,
+      "bounds": [
+        206.14431214421253,
+        305.04407142857144,
+        392.5213614800759,
+        396.5572928571429
+      ],
+      "source_inspection_pixel_bounds": [
+        365,
+        540,
+        695,
+        702
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Damper",
+          "Vietnamese": "Bộ giảm chấn",
+          "source_pixel_rect": [
+            433,
+            542,
+            505,
+            566
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Force",
+          "Vietnamese": "Lực",
+          "source_pixel_rect": [
+            604,
+            596,
+            655,
+            614
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "Mass",
+          "Vietnamese": "Khối lượng",
+          "source_pixel_rect": [
+            522,
+            618,
+            567,
+            637
+          ],
+          "font_size": 6.8
+        },
+        {
+          "original": "Spring",
+          "Vietnamese": "Lò xo",
+          "source_pixel_rect": [
+            449,
+            671,
+            509,
+            699
+          ],
+          "font_size": 8
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.5",
+      "pdf_page": 35,
+      "bounds": [
+        89.79985104364326,
+        56.48964285714286,
+        494.18157020872866,
+        246.2948428571429
+      ],
+      "source_inspection_pixel_bounds": [
+        159,
+        100,
+        875,
+        436
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.6",
+      "pdf_page": 36,
+      "bounds": [
+        220.26378557874762,
+        147.43796785714287,
+        375.57799335863376,
+        202.23292142857144
+      ],
+      "source_inspection_pixel_bounds": [
+        390,
+        261,
+        665,
+        358
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            408,
+            298,
+            469,
+            318
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            587,
+            298,
+            648,
+            318
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "bond",
+          "Vietnamese": "liên kết",
+          "source_pixel_rect": [
+            510,
+            282,
+            546,
+            301
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Ports",
+          "Vietnamese": "Cổng",
+          "source_pixel_rect": [
+            506,
+            338,
+            550,
+            357
+          ],
+          "font_size": 8
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.7",
+      "pdf_page": 37,
+      "bounds": [
+        135.546944971537,
+        53.10026428571429,
+        459.73005502846297,
+        168.33913571428573
+      ],
+      "source_inspection_pixel_bounds": [
+        240,
+        94,
+        814,
+        298
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            255,
+            119,
+            312,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            255,
+            238,
+            312,
+            257
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            422,
+            119,
+            479,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            422,
+            238,
+            479,
+            257
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            576,
+            119,
+            633,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            576,
+            238,
+            633,
+            257
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            744,
+            119,
+            801,
+            138
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "element",
+          "Vietnamese": "phần tử",
+          "source_pixel_rect": [
+            744,
+            238,
+            801,
+            257
+          ],
+          "font_size": 7.5
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.8",
+      "pdf_page": 38,
+      "bounds": [
+        124.81614516129032,
+        84.7344642857143,
+        459.73005502846297,
+        215.22553928571432
+      ],
+      "source_inspection_pixel_bounds": [
+        221,
+        150,
+        814,
+        381
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Capacitor",
+          "Vietnamese": "Tụ điện",
+          "source_pixel_rect": [
+            255,
+            233,
+            324,
+            248
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Translational spring",
+          "Vietnamese": "Lò xo tịnh tiến",
+          "source_pixel_rect": [
+            224,
+            300,
+            348,
+            318
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Rotational spring",
+          "Vietnamese": "Lò xo quay",
+          "source_pixel_rect": [
+            231,
+            364,
+            343,
+            380
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            230,
+            151,
+            340,
+            184
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            395,
+            151,
+            493,
+            184
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            545,
+            151,
+            613,
+            169
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            703,
+            151,
+            802,
+            184
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.9",
+      "pdf_page": 39,
+      "bounds": [
+        134.9821660341556,
+        73.43653571428572,
+        457.47093927893735,
+        226.5234678571429
+      ],
+      "source_inspection_pixel_bounds": [
+        239,
+        130,
+        810,
+        401
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Inductor",
+          "Vietnamese": "Cuộn cảm",
+          "source_pixel_rect": [
+            253,
+            191,
+            315,
+            208
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Mass",
+          "Vietnamese": "Khối lượng",
+          "source_pixel_rect": [
+            266,
+            285,
+            303,
+            301
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Inertance",
+          "Vietnamese": "Quán tính",
+          "source_pixel_rect": [
+            249,
+            382,
+            317,
+            398
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            240,
+            130,
+            347,
+            162
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            373,
+            130,
+            465,
+            162
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            546,
+            130,
+            616,
+            148
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            698,
+            130,
+            797,
+            162
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.10",
+      "pdf_page": 39,
+      "bounds": [
+        89.23507210626185,
+        399.94667142857145,
+        506.04192789373815,
+        568.2858071428572
+      ],
+      "source_inspection_pixel_bounds": [
+        158,
+        708,
+        896,
+        1006
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Resistor",
+          "Vietnamese": "Điện trở",
+          "source_pixel_rect": [
+            233,
+            789,
+            300,
+            806
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "Friction",
+          "Vietnamese": "Ma sát",
+          "source_pixel_rect": [
+            191,
+            886,
+            253,
+            905
+          ],
+          "font_size": 8
+        },
+        {
+          "original": "Damper",
+          "Vietnamese": "Bộ giảm chấn",
+          "source_pixel_rect": [
+            302,
+            886,
+            365,
+            905
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            201,
+            710,
+            326,
+            747
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            413,
+            710,
+            573,
+            729
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            628,
+            710,
+            708,
+            729
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            775,
+            710,
+            891,
+            747
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.11",
+      "pdf_page": 40,
+      "bounds": [
+        107.3079981024668,
+        348.54109642857145,
+        496.4406859582543,
+        539.4760892857144
+      ],
+      "source_inspection_pixel_bounds": [
+        190,
+        617,
+        879,
+        955
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Voltage source",
+          "Vietnamese": "Nguồn điện áp",
+          "source_pixel_rect": [
+            260,
+            704,
+            369,
+            722
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Force source",
+          "Vietnamese": "Nguồn lực",
+          "source_pixel_rect": [
+            209,
+            782,
+            303,
+            801
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Torque source",
+          "Vietnamese": "Nguồn mômen",
+          "source_pixel_rect": [
+            318,
+            782,
+            419,
+            801
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Current source",
+          "Vietnamese": "Nguồn dòng điện",
+          "source_pixel_rect": [
+            256,
+            850,
+            361,
+            868
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Velocity source",
+          "Vietnamese": "Nguồn vận tốc",
+          "source_pixel_rect": [
+            190,
+            916,
+            304,
+            934
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Angular velocity source",
+          "Vietnamese": "Nguồn vận\ntốc góc",
+          "source_pixel_rect": [
+            321,
+            916,
+            443,
+            951
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            257,
+            618,
+            373,
+            653
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            478,
+            618,
+            570,
+            653
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            636,
+            618,
+            711,
+            637
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            773,
+            618,
+            878,
+            653
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.12",
+      "pdf_page": 40,
+      "bounds": [
+        170.56323908918407,
+        607.2636607142858,
+        429.7967713472486,
+        643.9819285714286
+      ],
+      "source_inspection_pixel_bounds": [
+        302,
+        1075,
+        761,
+        1140
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Signal",
+          "Vietnamese": "Tín hiệu",
+          "source_pixel_rect": [
+            377,
+            1082,
+            426,
+            1100
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Pulse",
+          "Vietnamese": "Xung",
+          "source_pixel_rect": [
+            312,
+            1112,
+            357,
+            1130
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Power",
+          "Vietnamese": "Công suất",
+          "source_pixel_rect": [
+            570,
+            1082,
+            619,
+            1101
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Voltage pulse",
+          "Vietnamese": "Xung điện áp",
+          "source_pixel_rect": [
+            652,
+            1099,
+            755,
+            1118
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.13",
+      "pdf_page": 41,
+      "bounds": [
+        125.38092409867173,
+        280.753525,
+        456.90616034155596,
+        466.60445000000004
+      ],
+      "source_inspection_pixel_bounds": [
+        222,
+        497,
+        809,
+        826
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Transformer",
+          "Vietnamese": "Máy biến áp",
+          "source_pixel_rect": [
+            241,
+            604,
+            334,
+            623
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Cantilever",
+          "Vietnamese": "Dầm công xôn",
+          "source_pixel_rect": [
+            248,
+            708,
+            326,
+            728
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Mechanical gear",
+          "Vietnamese": "Bánh răng cơ",
+          "source_pixel_rect": [
+            228,
+            803,
+            348,
+            822
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            229,
+            500,
+            348,
+            535
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            394,
+            500,
+            490,
+            535
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            548,
+            500,
+            622,
+            519
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            692,
+            500,
+            809,
+            535
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.14",
+      "pdf_page": 42,
+      "bounds": [
+        138.37083965844403,
+        64.39819285714286,
+        482.88599146110056,
+        242.90546428571432
+      ],
+      "source_inspection_pixel_bounds": [
+        245,
+        114,
+        855,
+        430
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Motor",
+          "Vietnamese": "Động cơ",
+          "source_pixel_rect": [
+            271,
+            251,
+            314,
+            270
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Generator",
+          "Vietnamese": "Máy phát",
+          "source_pixel_rect": [
+            247,
+            271,
+            314,
+            289
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Pump",
+          "Vietnamese": "Bơm",
+          "source_pixel_rect": [
+            262,
+            385,
+            305,
+            403
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Turbine",
+          "Vietnamese": "Tuabin",
+          "source_pixel_rect": [
+            253,
+            405,
+            309,
+            423
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            274,
+            118,
+            377,
+            151
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            420,
+            118,
+            510,
+            151
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            583,
+            118,
+            652,
+            137
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            731,
+            118,
+            833,
+            151
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.15",
+      "pdf_page": 43,
+      "bounds": [
+        130.46393453510436,
+        93.77280714285715,
+        476.6734231499051,
+        199.97333571428572
+      ],
+      "source_inspection_pixel_bounds": [
+        231,
+        166,
+        844,
+        354
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            248,
+            168,
+            355,
+            203
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            432,
+            168,
+            511,
+            203
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            573,
+            168,
+            643,
+            187
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            721,
+            168,
+            828,
+            203
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.16",
+      "pdf_page": 43,
+      "bounds": [
+        105.61366129032258,
+        328.204825,
+        478.3677599620493,
+        438.9245250000001
+      ],
+      "source_inspection_pixel_bounds": [
+        187,
+        581,
+        847,
+        777
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Domain-specific symbols",
+          "Vietnamese": "Ký hiệu\nchuyên biệt miền",
+          "source_pixel_rect": [
+            265,
+            584,
+            384,
+            618
+          ],
+          "font_size": 7
+        },
+        {
+          "original": "Bond-graph element",
+          "Vietnamese": "Phần tử đồ thị\nliên kết năng lượng",
+          "source_pixel_rect": [
+            412,
+            584,
+            563,
+            603
+          ],
+          "font_size": 6.7
+        },
+        {
+          "original": "Equations",
+          "Vietnamese": "Phương trình",
+          "source_pixel_rect": [
+            577,
+            584,
+            651,
+            603
+          ],
+          "font_size": 7.5
+        },
+        {
+          "original": "Block diagram expansion",
+          "Vietnamese": "Triển khai\nsơ đồ khối",
+          "source_pixel_rect": [
+            725,
+            584,
+            837,
+            618
+          ],
+          "font_size": 7
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.17",
+      "pdf_page": 45,
+      "bounds": [
+        127.64003984819735,
+        96.03239285714287,
+        469.33129696394684,
+        189.8052
+      ],
+      "source_inspection_pixel_bounds": [
+        226,
+        170,
+        831,
+        336
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.18",
+      "pdf_page": 45,
+      "bounds": [
+        93.75330360531309,
+        334.9835821428572,
+        438.83323434535106,
+        477.90237857142864
+      ],
+      "source_inspection_pixel_bounds": [
+        166,
+        593,
+        777,
+        846
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.19",
+      "pdf_page": 46,
+      "bounds": [
+        227.04113282732447,
+        51.970471428571436,
+        359.7641831119545,
+        140.0943142857143
+      ],
+      "source_inspection_pixel_bounds": [
+        402,
+        92,
+        637,
+        248
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Mains",
+          "Vietnamese": "Nguồn điện",
+          "source_pixel_rect": [
+            411,
+            160,
+            455,
+            177
+          ],
+          "font_size": 6.5
+        },
+        {
+          "original": "Motor",
+          "Vietnamese": "Động cơ",
+          "source_pixel_rect": [
+            477,
+            160,
+            520,
+            177
+          ],
+          "font_size": 6.5
+        },
+        {
+          "original": "Cable drum",
+          "Vietnamese": "Tang cuốn cáp",
+          "source_pixel_rect": [
+            561,
+            94,
+            637,
+            110
+          ],
+          "font_size": 6.5
+        },
+        {
+          "original": "Load",
+          "Vietnamese": "Tải",
+          "source_pixel_rect": [
+            542,
+            212,
+            579,
+            231
+          ],
+          "font_size": 6.5
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.20",
+      "pdf_page": 46,
+      "bounds": [
+        176.2110284629981,
+        180.20196071428575,
+        421.3250872865275,
+        297.13552142857145
+      ],
+      "source_inspection_pixel_bounds": [
+        312,
+        319,
+        746,
+        526
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [
+        {
+          "original": "Electric domain",
+          "Vietnamese": "Miền điện",
+          "source_pixel_rect": [
+            422,
+            459,
+            508,
+            475
+          ],
+          "font_size": 6
+        },
+        {
+          "original": "Mechanic domain",
+          "Vietnamese": "Miền cơ",
+          "source_pixel_rect": [
+            522,
+            459,
+            620,
+            475
+          ],
+          "font_size": 6
+        },
+        {
+          "original": "Rotation",
+          "Vietnamese": "Quay",
+          "source_pixel_rect": [
+            600,
+            439,
+            650,
+            455
+          ],
+          "font_size": 6
+        },
+        {
+          "original": "Translation",
+          "Vietnamese": "Tịnh tiến",
+          "source_pixel_rect": [
+            674,
+            439,
+            741,
+            455
+          ],
+          "font_size": 6
+        }
+      ],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.21",
+      "pdf_page": 46,
+      "bounds": [
+        163.7858918406072,
+        555.2931892857143,
+        431.4911081593928,
+        668.8373714285715
+      ],
+      "source_inspection_pixel_bounds": [
+        290,
+        983,
+        764,
+        1184
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.22",
+      "pdf_page": 47,
+      "bounds": [
+        167.17456546489564,
+        116.93356071428573,
+        424.1489819734345,
+        231.60753571428575
+      ],
+      "source_inspection_pixel_bounds": [
+        296,
+        207,
+        751,
+        410
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.23",
+      "pdf_page": 47,
+      "bounds": [
+        187.50660721062619,
+        366.05288571428576,
+        407.2056138519924,
+        421.41273571428576
+      ],
+      "source_inspection_pixel_bounds": [
+        332,
+        648,
+        721,
+        746
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.24",
+      "pdf_page": 48,
+      "bounds": [
+        158.13810246679316,
+        55.35985000000001,
+        438.2684554079696,
+        165.5146535714286
+      ],
+      "source_inspection_pixel_bounds": [
+        280,
+        98,
+        776,
+        293
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.25",
+      "pdf_page": 48,
+      "bounds": [
+        107.8727770398482,
+        211.83616071428574,
+        491.92245445920304,
+        381.86998571428575
+      ],
+      "source_inspection_pixel_bounds": [
+        191,
+        375,
+        871,
+        676
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.26",
+      "pdf_page": 48,
+      "bounds": [
+        179.59970208728652,
+        423.6723214285715,
+        420.1955294117647,
+        563.2017392857143
+      ],
+      "source_inspection_pixel_bounds": [
+        318,
+        750,
+        744,
+        997
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.27",
+      "pdf_page": 51,
+      "bounds": [
+        151.92553415559772,
+        303.34938214285717,
+        440.52757115749523,
+        473.3832071428572
+      ],
+      "source_inspection_pixel_bounds": [
+        269,
+        537,
+        780,
+        838
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.28",
+      "pdf_page": 53,
+      "bounds": [
+        78.50427229601517,
+        53.66516071428572,
+        517.3375066413662,
+        119.75804285714287
+      ],
+      "source_inspection_pixel_bounds": [
+        139,
+        95,
+        916,
+        212
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.29",
+      "pdf_page": 53,
+      "bounds": [
+        155.31420777988615,
+        173.4232035714286,
+        441.0923500948767,
+        345.71661428571434
+      ],
+      "source_inspection_pixel_bounds": [
+        275,
+        307,
+        781,
+        612
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.30",
+      "pdf_page": 55,
+      "bounds": [
+        175.0814705882353,
+        54.79495357142858,
+        423.5842030360531,
+        323.6856535714286
+      ],
+      "source_inspection_pixel_bounds": [
+        310,
+        97,
+        750,
+        573
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.31",
+      "pdf_page": 55,
+      "bounds": [
+        193.71917552182163,
+        364.9230928571429,
+        407.77039278937383,
+        464.90976071428577
+      ],
+      "source_inspection_pixel_bounds": [
+        343,
+        646,
+        722,
+        823
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.32",
+      "pdf_page": 55,
+      "bounds": [
+        122.5570294117647,
+        503.3227178571429,
+        477.23820208728654,
+        600.4849035714286
+      ],
+      "source_inspection_pixel_bounds": [
+        217,
+        891,
+        845,
+        1063
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.33",
+      "pdf_page": 56,
+      "bounds": [
+        186.37704933586338,
+        54.79495357142858,
+        408.8999506641366,
+        225.39367500000003
+      ],
+      "source_inspection_pixel_bounds": [
+        330,
+        97,
+        724,
+        399
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.34",
+      "pdf_page": 56,
+      "bounds": [
+        145.71296584440228,
+        326.51013571428575,
+        452.95270777988617,
+        433.27556071428575
+      ],
+      "source_inspection_pixel_bounds": [
+        258,
+        578,
+        802,
+        767
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.35",
+      "pdf_page": 57,
+      "bounds": [
+        131.59349240986717,
+        151.9571392857143,
+        465.94262333965844,
+        352.49537142857145
+      ],
+      "source_inspection_pixel_bounds": [
+        233,
+        269,
+        825,
+        624
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.36",
+      "pdf_page": 57,
+      "bounds": [
+        106.74321916508539,
+        434.97025,
+        487.9690018975332,
+        562.6368428571429
+      ],
+      "source_inspection_pixel_bounds": [
+        189,
+        770,
+        864,
+        996
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    },
+    {
+      "number": "2.37",
+      "pdf_page": 58,
+      "bounds": [
+        85.84639848197344,
+        62.70350357142858,
+        520.7261802656546,
+        176.81258214285717
+      ],
+      "source_inspection_pixel_bounds": [
+        152,
+        111,
+        922,
+        313
+      ],
+      "status": "localized_and_visually_checked",
+      "labels_language": "Vietnamese descriptive labels; original mathematical/formal identifiers",
+      "treatment": "Native source vectors retained; complete artwork/formula panel; descriptive labels localized",
+      "localized_labels": [],
+      "visual_review": "Compared complete source artwork with localized native rendering; captions excluded; mathematical/formal notation retained exactly"
+    }
+  ]
+}

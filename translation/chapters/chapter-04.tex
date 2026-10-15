@@ -1,0 +1,920 @@
+% Source: printed 97 / PDF 113
+\chapter{Sơ đồ khối nhân quả: Một họ ngôn ngữ để mô hình hóa nhân quả các hệ thống thực-ảo}
+\chapterauthors{Cláudio Gomes, Joachim Denil và Hans Vangheluwe}
+\begin{quote}\small
+Cláudio Gomes: Đại học Antwerp, Bỉ; \texttt{claudio.gomes@uantwerp.be}.\\
+Joachim Denil: Flanders Make, Bỉ; \texttt{joachim.denil@uantwerp.be}.\\
+Hans Vangheluwe: Đại học McGill, Canada; \texttt{hans.vangheluwe@uantwerp.be}.\\
+\copyright\ (Các) tác giả 2020. P. Carreira và cộng sự (biên tập),
+\emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+DOI của chương: \url{https://doi.org/10.1007/978-3-030-43946-0_4}.
+\end{quote}
+
+\section*{Tóm tắt}
+Mô tả một hệ thống phức tạp theo các thành phần cấu thành và sự tương tác giữa chúng là một trong những cách phân rã tự nhiên và trực quan nhất. Các mô hình \emph{sơ đồ khối nhân quả} (Causal Block Diagram, CBD) kết hợp các khối hệ con trong một mạng quan hệ giữa tín hiệu đầu vào và tín hiệu đầu ra. Những công cụ mô hình hóa và mô phỏng phổ biến như Matlab/Simulink\textregistered\ hiện thực các biến thể khác nhau thuộc họ hệ hình thức sơ đồ khối nhân quả. Chương này trình bày tổng quan về mô hình hóa và mô phỏng các hệ thống có thành phần phần mềm và vật lý bằng sơ đồ khối nhân quả. Chương mô tả cú pháp và cả ngữ nghĩa khai báo lẫn ngữ nghĩa thao tác của CBD theo từng bước. Xuất phát từ những mô hình đại số đơn giản (không có khái niệm thời gian), trước hết chúng tôi đưa vào khái niệm thời gian rời rạc (dẫn đến CBD thời gian rời rạc), sau đó đưa vào khái niệm thời gian liên tục (dẫn đến CBD thời gian liên tục). Mỗi biến thể mới được xây dựng trên các biến thể trước. Vì CBD phụ thuộc nhiều vào các kỹ thuật tính toán số, chúng tôi giới thiệu lĩnh vực quan trọng này theo cách trực quan, chỉ ra các giải pháp chính cũng như những cạm bẫy.
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi mong bạn có thể:
+\begin{itemize}
+\item Đánh giá khi nào nên sử dụng từng biến thể của hệ hình thức CBD (đại số, thời gian rời rạc hoặc thời gian liên tục).
+\item Hiểu cú pháp và ngữ nghĩa tương ứng của từng hệ hình thức.
+\item Nhận diện những vấn đề chính, chẳng hạn độ chính xác số, gặp phải khi mô phỏng hệ thống vật lý và giảm thiểu chúng.
+\end{itemize}
+
+\section{Giới thiệu}
+Nhờ những tiến bộ công nghệ trong thế kỷ vừa qua, quá trình thiết kế các hệ thống phức tạp đang chuyển nhanh từ phát triển các hệ thống riêng lẻ ở quy mô nhỏ sang phát triển các hệ thống tích hợp ở quy mô lớn [15].
+
+Biểu diễn đồ họa các hệ thống như vậy bằng các khối và mũi tên là một trong những phương pháp đầu tiên dùng để biểu diễn hệ thống. Một lợi ích của ký pháp này là các hệ thống phức tạp có thể được phân rã phân cấp
+% Source: printed 98 / PDF 114
+thành các hệ con, nhờ đó cung cấp một cách xử lý độ phức tạp. Sơ đồ khối nhân quả (CBD) là một cách hình thức hóa ký pháp đồ họa trực quan này.
+
+Ban đầu, CBD được dùng để biểu diễn và mô phỏng các mạch tương tự [15, 280, 28, 128], với những khối được dùng phổ biến nhất được minh họa trong Bảng 4.1. Ngày nay, hệ hình thức này được sử dụng rộng rãi để mô hình hóa và mô phỏng những hệ thống gồm một thành phần vật lý và một thành phần điều khiển, như trình bày trong Hình 4.1.
+
+Trong loại hệ thống này, bộ điều khiển, thường được hiện thực bằng phần mềm, giám sát hoạt động của các quá trình vật lý thông qua cảm biến, đưa ra quyết định thích hợp và tác động lên các quá trình vật lý thông qua cơ cấu chấp hành. Có thể tổng quát hóa kiến trúc này cho phần mềm nối mạng và nhiều quá trình khác, không nhất thiết là quá trình vật lý. Ví dụ gồm bộ điều khiển hành trình, bộ điều nhiệt, cánh tay robot và bơm insulin.
+
+Để giới thiệu hệ hình thức CBD, chúng tôi giữ cách nhìn truyền thống về một quá trình vật lý được điều khiển bởi một thành phần phần mềm, cũng được gọi là hệ điều khiển phản hồi [16].
+
+% Native schematic symbols preserve every original port and connection.
+\newcommand{\chfourtablesymbol}[1]{\IfFileExists{../assets/clean/ch04-table41-r#1-symbol.pdf}{\includegraphics[width=0.92\linewidth]{../assets/clean/ch04-table41-r#1-symbol.pdf}}{\includegraphics[width=0.92\linewidth]{../assets/ch04-table41-r#1-symbol.pdf}}}
+\newcommand{\chfourplot}[1]{\setlength{\unitlength}{0.7pt}\begin{picture}(95,58)
+\put(10,28){\vector(1,0){72}}\put(43,4){\vector(0,1){48}}
+\put(83,25){\makebox(0,0)[l]{$e_i$}}\put(44,56){\makebox(0,0)[b]{$e_o$}}
+\ifnum#1=1
+\put(15,12){\line(1,0){28}}\put(43,44){\line(1,0){32}}
+\put(47,44){\makebox(0,0)[l]{$+1$}}\put(36,12){\makebox(0,0)[r]{$-1$}}
+\fi
+\ifnum#1=2
+\put(18,5){\line(1,1){23}}\put(41,28){\line(1,0){15}}\put(56,28){\line(1,1){21}}
+\put(36,20){\makebox(0,0)[t]{$P_2$}}\put(57,20){\makebox(0,0)[t]{$P_1$}}\put(45,20){\makebox(0,0)[t]{$0$}}
+\fi
+\ifnum#1=3
+\put(16,25){\line(3,1){27}}\put(43,34){\line(2,1){20}}\put(63,44){\line(4,-1){12}}
+\multiput(16,14)(6,0){11}{\line(0,1){12}}
+\put(16,10){\makebox(0,0)[t]{$P_2$}}\put(75,10){\makebox(0,0)[t]{$P_1$}}
+\fi
+\ifnum#1=4
+\put(15,8){\line(1,0){18}}\put(33,8){\line(1,1){34}}\put(67,42){\line(1,0){14}}
+\put(33,22){\makebox(0,0)[t]{$P_1$}}\put(47,42){\makebox(0,0)[l]{$+P_2$}}
+\fi
+\end{picture}}
+\newcommand{\chfourtableplot}[2]{\IfFileExists{../assets/clean/ch04-table41-r#1-description.pdf}{\includegraphics[width=0.92\linewidth]{../assets/clean/ch04-table41-r#1-description.pdf}}{\IfFileExists{../assets/ch04-table41-r#1-description.pdf}{\includegraphics[width=0.92\linewidth]{../assets/ch04-table41-r#1-description.pdf}}{\chfourplot{#2}}}}
+\begin{table}[htbp]
+\caption{Biểu diễn khối cho các mạch tương tự. Tái bản từ [45].}
+\centering\small
+\begin{tabular}{|p{0.16\linewidth}|p{0.06\linewidth}|p{0.27\linewidth}|p{0.35\linewidth}|}
+\hline
+Loại phần tử & Ký hiệu ngôn ngữ & Ký hiệu sơ đồ & Mô tả\\\hline
+Bang-bang & B & \chfourtablesymbol{1} & \chfourtableplot{1}{1}\\\hline
+Vùng chết & D & \chfourtablesymbol{2} & \chfourtableplot{2}{2}\\\hline
+Bộ tạo hàm & F & \chfourtablesymbol{3} & \chfourtableplot{3}{3}\\\hline
+Hệ số khuếch đại & G & \chfourtablesymbol{4} & $e_o=P_1e_i$\\\hline
+Lũy thừa một nửa & H & \chfourtablesymbol{5} & $e_o=\sqrt{e_i}$; căn bậc hai\\\hline
+Bộ tích phân & I & \chfourtablesymbol{6} & $e_o=P_1+\int(e_1+e_2P_2+e_3P_3)\,\mathrm{d}t$\\\hline
+Nhiễu (jitter) & J & \chfourtablesymbol{7} & Bộ tạo số ngẫu nhiên trong khoảng $\pm1$\\\hline
+Hằng số & K & \chfourtablesymbol{8} & $e_o=P_1$\\\hline
+Bộ giới hạn & L & \chfourtablesymbol{9} & \chfourtableplot{9}{4}\\\hline
+\end{tabular}
+\par\smallskip\noindent $n$ biểu diễn số của khối.
+\end{table}
+\sourcefigure{4.1}{114}{Cấu trúc tổng quát của hệ thống nhúng}
+% Source: printed 99 / PDF 115
+Trong mục tiếp theo, một ví dụ đơn giản dùng xuyên suốt sẽ được giới thiệu, cùng một số khái niệm nền tảng cần thiết. Trong các mục còn lại, CBD được giới thiệu dần qua ba dạng khác nhau: CBD đại số, thời gian rời rạc và thời gian liên tục. Chúng được phân biệt bởi lớp khối mà người lập mô hình có thể sử dụng. Cách trình bày từng bước cho phép hiểu sâu hơn mọi khái niệm liên quan đến mô hình hóa và mô phỏng CBD. Những mục cuối của chương bàn về các khái niệm nâng cao liên quan đến mô phỏng CBD.
+
+\section{Kiến thức nền}
+Một hệ động lực được đặc trưng bởi một trạng thái và khái niệm quy tắc tiến triển. Trạng thái là một tập các giá trị điểm trong một không gian trạng thái. Các quy tắc tiến triển mô tả cách trạng thái tiến triển theo một biến độc lập, thường là thời gian. Miền của biến thời gian quyết định loại hệ động lực: nếu thời gian nhận giá trị trong một tập liên tục, thường là $\mathbb{R}$, hệ động lực là hệ thời gian liên tục; nếu thời gian nhận giá trị trong một tập đếm được, thường là $\mathbb{N}$, hệ động lực là hệ thời gian rời rạc.
+\paragraph{Hệ thống điều khiển hành trình}
+\sourcefigure{4.2}{115}{Hệ thống điều khiển hành trình}
+
+Xét hệ thống điều khiển hành trình trong Hình 4.2. Ô tô là một hệ động lực có trạng thái (chẳng hạn vận tốc) tiến triển liên tục theo thời gian. Ngược lại, trạng thái của bộ điều khiển phần mềm tiến triển rời rạc theo thời gian, như mọi biến phần mềm, do các lệnh gán.
+
+Hệ thống trong Hình 4.2 là một ví dụ về hệ điều khiển phản hồi: hệ vật lý -- ô tô -- được tác động bởi các đầu vào điều khiển do phần mềm điều khiển -- bộ điều khiển hành trình -- sinh ra. Các cảm biến tốc độ quay (tachometer) chuyển số vòng quay của bánh xe mỗi phút thành vận tốc tức thời. Các cơ cấu chấp hành là bướm ga động cơ và phanh. Phần mềm điều khiển hành trình quyết định, dựa trên tốc độ hiện tại của ô tô, cần áp dụng lực đẩy (bướm ga hoặc phanh) ở mức nào để đưa ô tô trở về tốc độ mong muốn bất chấp lực cản, trọng lượng và các yếu tố khác.
+
+Hiển nhiên, không nên đợi đến khi chế tạo xong một nguyên mẫu ô tô mới thử nghiệm phần mềm điều khiển. Điều này thúc đẩy việc sử dụng hai hệ động lực: (a) một hệ động lực liên tục làm mô hình thay thế cho ô tô thực; và (b) một hệ động lực thời gian rời rạc làm mô hình thay thế cho đơn vị phần mềm.
+
+Với các mô hình này, có thể đánh giá sớm nhiều chiến lược điều khiển khác nhau với chi phí thấp hơn nhiều. Hơn nữa, mô hình bộ điều khiển được chọn sau đó có thể dùng để tự động sinh mã phần mềm.
+
+\subsection{Mô hình của các hệ thống vật lý}
+Các hệ thống vật lý vốn có tính liên tục: trạng thái của chúng tiến triển liên tục theo thời gian. Phương trình vi phân thường (ODE) mô tả cách các đại lượng vật lý thay đổi liên tục theo thời gian, nên là những mô hình lý tưởng để mô tả hành vi của hệ thống vật lý. Bài toán giá trị đầu là các ODE có một ràng buộc đối với trạng thái ban đầu. Cùng với các ODE, có thể thêm những phương trình khác để biểu diễn đầu ra của hệ thống. Về mặt hình thức, chúng tôi xét các mô hình có dạng:
+% Source: printed 100 / PDF 116
+\begin{equation}\begin{aligned}
+x'(t)&=F(x,u,t),\\y(t)&=G(x,u,t),\\x(0)&=x_0,
+\end{aligned}\tag{4.1}\end{equation}
+trong đó $x(t)$, $x'(t)$, $y(t)$, $u(t)$ là các vectơ; $x(t)=[x_1(t),\ldots,x_n(t)]^T$ biểu diễn vectơ trạng thái; $u(t)$ biểu diễn đầu vào; và $x_0$ là trạng thái ban đầu. Trạng thái ở đây biểu thị lượng thông tin tối thiểu cần để xác định, cùng với đầu vào $u(t)$ và hàm $F(x,u,t)$, toàn bộ các trạng thái tương lai của hệ thống. Hàm $G$ là hàm đầu ra.
+
+\paragraph{Mô hình hành vi động}
+Một mô hình có thể dùng cho hành vi động của ô tô, phục vụ thiết kế bộ điều khiển hành trình trong ví dụ Bộ điều khiển hành trình, là:
+\begin{equation}\begin{aligned}v'&=\frac{1}{m}(T-kv),\\y&=v\end{aligned}\tag{4.2}\end{equation}
+trong đó $v$ là vận tốc, $v'$, $T$ là lực đẩy và $k$ phụ thuộc vào mật độ không khí và hình dạng ô tô. Mô hình này giả định ô tô chuyển động theo đường thẳng và bỏ qua mọi hiệu ứng có thể do trọng lực gây ra. Đây là những giả định hợp lý cho thử nghiệm ban đầu.
+
+\subsection{Các mô hình thời gian rời rạc}
+Trong khi nghiệm của ODE liên tục, trạng thái của đơn vị phần mềm trong hệ thống điều khiển hành trình trình bày ở Ví dụ 4.2 chỉ có thể tiến triển rời rạc, do bản chất của máy tính số mà phần mềm chạy trên đó. Để xử lý bằng toán học (chẳng hạn chứng minh bộ điều khiển hành trình đúng), có thể dùng phương trình vi phân để đặc tả sớm phần mềm điều khiển. Tuy nhiên, khi mô phỏng những mô hình đó trên máy tính số, lựa chọn duy nhất có sẵn là dùng các mô hình thời gian rời rạc.
+
+Các phương trình sai phân bậc nhất, cùng một ràng buộc đối với trạng thái ban đầu, cho phép đặc tả những mô hình như vậy. Chúng có dạng:
+\begin{equation}\begin{aligned}
+x^{[s+1]}&=F(x^{[s]},u^{[s+1]}),\\y^{[s]}&=G(x^{[s]},u^{[s]}),\\x^{[0]}&=x_0,
+\end{aligned}\tag{4.3}\end{equation}
+trong đó $s$ biểu thị bước; $x^{[s]}$ là vectơ trạng thái ở bước $s$; $u^{[s+1]}$ là vectơ đầu vào; $y^{[s]}$ là vectơ đầu ra; và $x_0$ là giá trị ban đầu của vectơ trạng thái. Vectơ mới $x^{[s+1]}$ được tính từ vectơ cũ $x^{[s]}$ và đầu vào $u^{[s+1]}$, theo hàm đặc tả $F$. Hàm đầu ra $G$ cho phép đọc các giá trị từ hệ động lực. Áp dụng lặp lại các hàm $F$ và $G$ tạo ra sự tiến triển rời rạc của các vectơ trạng thái và đầu ra. Đôi khi phương trình sai phân được viết như sau:
+\[\begin{aligned}x^{[s]}&=F(x^{[s-1]},u^{[s]})\\y^{[s]}&=G(x^{[s]},u^{[s]})\\x^{(0)}&=x_0.\end{aligned}\]
+
+\subsubsection{Các hệ điều khiển rời rạc}
+\paragraph{Bộ điều khiển phần mềm}
+Phần mềm điều khiển hành trình có thể được mô tả bằng phương trình sai phân sau:
+% Source: printed 101 / PDF 117
+\begin{equation}\begin{aligned}
+e^{[s+1]}&=e^{[s]}+h\bigl(v_d^{[s+1]}-v^{[s+1]}\bigr)\\
+T^{[s]}&=K_p\bigl(v_d^{[s]}-v^{[s]}\bigr)+K_i e^{[s]}
+\end{aligned}\tag{4.4}\end{equation}
+trong đó $v_d$ là vận tốc cần duy trì cho ô tô (đầu vào); $v$ là vận tốc thực tế (đầu vào) của ô tô; $\bigl(v_d^{[s+1]}-v^{[s+1]}\bigr)$ là sai số tức thời; $e^{[s]}$ biểu thị sai số tích lũy (trạng thái); $T^{[s]}$ là lực đẩy cần truyền tới ô tô (đầu ra). Cuối cùng, $K_p$ và $K_i$ là các tham số hằng của bộ điều khiển.
+
+Bộ điều khiển ở Ví dụ 4.2.2.1 nhận đầu vào vận tốc ô tô $v^{[s]}$ từ các số đọc của cảm biến tốc độ quay (nhớ lại Hình 4.2). Nếu dùng phương trình vi phân (4.2) để mô hình hóa ô tô, $v(t)$ là một đại lượng liên tục; do đó có thể liên hệ nó với đầu vào của bộ điều khiển bằng $v^{[s]}=v(s\times\Delta t)$, trong đó $\Delta t$ biểu thị khoảng thời gian không đổi giữa hai lần đọc liên tiếp của cảm biến tốc độ quay. Từ đây, giả sử (4.2) được ghép với (4.4) theo cách này.
+
+Về trực giác, lực đẩy $T^{[s]}$ tỷ lệ với sai số tức thời $v_d^{[s]}-v^{[s]}$ và với lượng sai số tích lũy $e^{[s]}$ từ các bước trước.
+
+Hai đoạn tiếp theo giải thích trực quan cơ sở của từng thành phần trong (4.4).
+
+\paragraph{Thành phần $K_p\bigl(v_d^{[s]}-v^{[s]}\bigr)$}
+Khi sai số tức thời lớn, vận tốc hiện tại còn cách xa vận tốc mong muốn, nên lực đẩy cần lớn để bảo đảm ô tô nhanh chóng tăng tốc hoặc phanh về tốc độ mong muốn. Khi sai số tức thời nhỏ, ô tô gần đạt tốc độ mong muốn, nên lực đẩy cần nhỏ hơn để tránh gây khó chịu cho người lái. Lúc này, hãy bỏ qua thành phần $K_i e^{[s]}$ khi tính lực đẩy. Sau một thời gian, nếu lực đẩy $T^{[s]}=K_p\bigl(v_d^{[s]}-v^{[s]}\bigr)$ trở nên đối xứng (cùng độ lớn, ngược hướng) với lực cản trong (4.2), gia tốc của ô tô bằng không và tốc độ được giữ không đổi. Tuy nhiên, tốc độ đó không bằng chính xác tốc độ mong muốn, vì $-kv\ne0\Longrightarrow\bigl(v_d^{[s]}-v^{[s]}\bigr)\ne0$. Đây là nơi thành phần $K_i e^{[s]}$, bị bỏ qua cho đến lúc này, phát huy tác dụng.
+
+\paragraph{Thành phần $K_i e^{[s]}$}
+Thành phần này tích lũy sai số tức thời theo thời gian và đóng góp tương ứng vào lực đẩy. Giả sử lực đẩy bị lực cản cân bằng và ô tô duy trì tốc độ không đổi thấp hơn vận tốc mong muốn, như ở đoạn trước. Khi đó, sai số tích lũy tiếp tục tăng, bảo đảm thành phần thứ hai tiếp tục tăng lực đẩy đến khi thắng được lực cản. Lưu ý rằng điều này có thể khiến ô tô vượt quá tốc độ mong muốn, điều có thể nguy hiểm. Khi điều đó xảy ra, sai số tích lũy sẽ bắt đầu giảm, làm giảm lực đẩy. Việc chọn các tham số $K_p$ và $K_i$ là một phần quan trọng trong hiệu chỉnh bộ điều khiển.
+
+\subsubsection{Rời rạc hóa các phương trình vi phân}
+Ví dụ được giới thiệu trong mục này biểu diễn một hệ điều khiển phản hồi điển hình, mà phần lớn các hệ như vậy được phát triển bằng CBD. Trong những mục tiếp theo, cách thực hiện sẽ trở nên rõ ràng.
+
+\section{Sơ đồ khối nhân quả đại số}
+CBD đại số là các CBD mà những khối nguyên tử duy nhất được phép sử dụng là các khối đại số: phép cộng, đổi dấu, nghịch đảo, phép nhân, lũy thừa và căn. Có thể dùng chúng để biểu diễn những hệ thống không có khái niệm thời gian và không có trạng thái tiến triển. Nói cách khác, thời gian là một hằng số: \emph{bây giờ}.
+% Source: printed 102 / PDF 118
+Tuy có vẻ hạn chế, loại hệ thống này xuất hiện khi nghiên cứu hành vi ở trạng thái xác lập của các hệ động lực, và được dùng để biểu diễn các hàm đại số.
+
+\paragraph{Trạng thái xác lập}
+Xét động lực học của ô tô trong (4.2). Hành vi ở trạng thái xác lập của ô tô xuất hiện khi nó không tăng tốc. Nghĩa là, với các hằng số $T$, $k$ đã biết:
+\[0=\frac{1}{m}(T-kv)\]
+Phương trình này cho biết mô-men xoắn cần để giữ ô tô ở cùng tốc độ: $T=kv$. Lực cản càng lớn, mô-men xoắn càng lớn và càng cần nhiều năng lượng.
+
+\subsection{Cú pháp}
+Các thành phần chính của một CBD là các khối và kết nối giữa các khối. Khối có thể nguyên tử hoặc hợp thành. Khối hợp thành đại diện cho một CBD bên ngoài được đặc tả ở nơi khác. Những khối này được vẽ với đường viền đứt nét. Trong CBD đại số, khối nguyên tử có thể là phép cộng, đổi dấu, nghịch đảo, phép nhân, lũy thừa và căn. Chúng được biểu thị bằng ký hiệu toán học thích hợp.
+
+Vì một khối có thể có nhiều đầu vào và nhiều đầu ra, khái niệm cổng là thiết yếu để phân biệt giữa các đầu vào và giữa các đầu ra. Khối nguyên tử có tối đa hai cổng đầu vào -- tùy phép toán -- và một cổng đầu ra. Khối hợp thành có thể có số lượng cổng đầu vào và đầu ra bất kỳ.
+
+Hình 4.3a trình bày một ví dụ CBD đại số tính lực cản $d$ tác động lên ô tô khi nó chuyển động với vận tốc $v$ cho trước ở đầu vào. Khối hợp thành $c$ tham chiếu một CBD tính hệ số cản, được trình bày chi tiết trong Hình 4.3b.
+\sourcefigure{4.3}{118}{Các ví dụ CBD đại số. (a) Khối lực cản. (b) Khối hệ số cản}
+
+Các cổng gắn với một khối không được vẽ tường minh, nhưng là một phần của CBD và có các định danh (id). Những kết nối có hướng làm rõ các cổng đầu vào và đầu ra nào gắn với một khối. Khi cần, id của cổng đầu vào được ghi ở biên của khối tương ứng. Trong đặc tả một khối hợp thành, các cổng đầu vào và đầu ra được biểu diễn bằng tam giác. Ngữ cảnh cho biết rõ cổng là đầu vào hay đầu ra.
+
+Các khối cũng được tham chiếu bằng id. Id của một cổng gồm tên cổng và id của khối cha. Id của một khối được hình thành từ tên khối cùng id của CBD cha. Lưu ý tính đệ quy của định nghĩa. Mặc dù id hầu như không xuất hiện trong biểu diễn đồ họa, nó luôn được định nghĩa.
+
+Một số công dụng của id là mô tả không nhập nhằng các kết nối giữa cổng và nhận diện không nhập nhằng từng khối sau quá trình làm phẳng (Mục 4.3.2).
+
+Thông thường, tên các khối được thể hiện trong biểu diễn đồ họa để tăng khả năng đọc. Tên không phải id, mà là một phần của id. Chẳng hạn, các khối phép nhân trong Hình 4.3a có hai cổng với id khác nhau, dù những id này không được thể hiện trong biểu diễn đồ họa. Trong cùng hình đó,
+% Source: printed 103 / PDF 119
+tên $v$ của cổng đầu vào và tên $d$ của cổng đầu ra được thể hiện. Tương tự, tên $c$ của khối hợp thành cũng được thể hiện. Lưu ý rằng trong Hình 4.3b, cùng tên $c$ còn biểu thị cổng đầu ra. Không có sự nhập nhằng, vì khối hợp thành và cổng đầu ra có id khác nhau, dù cùng tên.
+
+Mỗi khi một khối hợp thành được dùng, mọi khối bên trong nó nhận các id khác nhau dựa trên id của CBD nơi khối hợp thành được dùng. Chẳng hạn, việc khối hợp thành $c$ được dùng trong CBD ở Hình 4.3a có nghĩa là khi xử lý CBD đó, id của các khối/cổng bên trong $c$ (được trình bày chi tiết trong Hình 4.3b) bao gồm id của $c$. Điều này có hai hệ quả quan trọng:
+\begin{enumerate}
+\item Id của một phần tử rốt cuộc phụ thuộc vào nơi phần tử được dùng, hoặc nơi một trong những phần tử cha của nó được dùng.
+\item Nếu các khối hợp thành được thay bằng đặc tả của chúng trong quá trình làm phẳng, sẽ không có hai id giống nhau, nhờ đó bảo đảm CBD được tạo thành đúng quy cách.
+\end{enumerate}
+
+\subsection{Ngữ nghĩa}
+Ý nghĩa của một CBD đại số là việc gắn một giá trị với từng cổng trong CBD. Có thể truyền đạt ý nghĩa này theo hai cách tổng quát: viết các phương trình toán học tương ứng với CBD (ngữ nghĩa chuyển dịch), hoặc đưa ra một thuật toán tính giá trị gắn với từng cổng đầu vào/đầu ra (ngữ nghĩa thao tác).
+
+Để đơn giản hóa cả hai cách này, giả sử mọi khối hợp thành được thay bằng đặc tả của chúng trong quá trình làm phẳng. Quá trình được thực hiện đệ quy đến khi mọi khối hợp thành đã được thay bằng đặc tả [232]. Những khía cạnh sau quan trọng để bảo đảm CBD được làm phẳng có cấu trúc đúng quy cách:
+\begin{enumerate}
+\item Sau khi thay một khối hợp thành, các cổng đầu vào/đầu ra của nó (chẳng hạn các cổng hình tam giác trong Hình 4.3b) sẽ được kết nối từ cả hai phía. Đây là các cổng dư thừa và do đó được thay bằng một kết nối duy nhất.
+\item Id của khối hợp thành đã được thay vẫn là một phần trong id của các khối/cổng bên trong nó. Điều này bảo đảm các id duy nhất sau khi hoàn tất quá trình làm phẳng.
+\end{enumerate}
+
+Hình 4.4 trình bày kết quả thay khối hợp thành $c$ bằng đặc tả của nó (trong Hình 4.3b). Các id, được thể hiện tường minh trong hình, chứa id của khối hợp thành đã được thay. Trong quá trình này, cổng $c$ của khối hợp thành trở nên dư thừa, nên bị loại bỏ.
+
+Ý nghĩa của một CBD được làm phẳng giống ý nghĩa của CBD ban đầu. Mỗi khối/cổng có một id duy nhất và mỗi kết nối nằm giữa các cổng. Do đó, có thể giải thích ngữ nghĩa CBD với giả định chúng đã được làm phẳng.
+
+\subsubsection{Ngữ nghĩa chuyển dịch}
+Với một CBD đại số được làm phẳng, có thể viết những phương trình mà nó biểu diễn bằng các quy tắc trong Bảng 4.2.
+
+Hệ phương trình thu được khi áp dụng những quy tắc sau cho từng cổng, khối và kết nối của một CBD đại số có thể được giải theo các ẩn để tìm giá trị gắn với từng cổng trong CBD.
+
+CBD đại số được làm phẳng trong Hình 4.4 được chuyển thành tập phương trình đại số sau:
+% Source: printed 104 / PDF 120
+\sourcefigure{4.4}{120}{Phiên bản được làm phẳng của CBD đại số trong Hình 4.3a}
+\begin{table}[htbp]
+\caption{Ngữ nghĩa chuyển dịch của một CBD đại số được làm phẳng}
+\begin{minipage}{\linewidth}\small\hrule\medskip
+\begin{enumerate}
+\item Gán một biến toán học duy nhất cho id của mỗi cổng trong CBD.
+\item Gọi $(p,q)$ là kết nối từ cổng có id $p$ đến cổng có id $q$, và gọi $\operatorname{var}(p)$, $\operatorname{var}(q)$ là các biến toán học tương ứng với $p$, $q$, theo phép gán ở Quy tắc 1. Khi đó, phương trình gắn với kết nối $(p,q)$ là $\operatorname{var}(p)=\operatorname{var}(q)$.
+\item Với mỗi khối nguyên tử, gọi dãy $p_1,p_2,\ldots$ là danh sách id của các cổng đầu vào, và gọi $q$ là id của cổng đầu ra:
+\begin{enumerate}
+\renewcommand{\labelenumii}{\alph{enumii}.}
+\item Nếu khối là hằng số có giá trị $c$, nó không có cổng đầu vào và phương trình thu được là $\operatorname{var}(q)=c$.
+\item Nếu là phép cộng, phương trình thu được là $\operatorname{var}(q)=\operatorname{var}(p_1)+\operatorname{var}(p_2)$.
+\item Nếu là phép nhân, phương trình thu được là $\operatorname{var}(q)=\operatorname{var}(p_1)\times\operatorname{var}(p_2)$.
+\item Nếu là đổi dấu, phương trình thu được là $\operatorname{var}(q)=-\operatorname{var}(p_1)$.
+\item Nếu là nghịch đảo, phương trình thu được là $\operatorname{var}(q)=\frac{1}{\operatorname{var}(p_1)}$.
+\item Nếu là lũy thừa, phương trình thu được là $\operatorname{var}(q)=\operatorname{var}(p_1)^{\operatorname{var}(p_2)}$.
+\item Nếu là căn, phương trình thu được là $\operatorname{var}(q)=\operatorname{var}(p_1)^{1/\operatorname{var}(p_2)}$.
+\end{enumerate}
+\end{enumerate}\medskip\hrule\end{minipage}
+\end{table}
+\begin{equation}\begin{aligned}
+\operatorname{var}(v)&=\operatorname{var}(b_1.i_1)\\
+\operatorname{var}(v)&=\operatorname{var}(b_1.i_2)\\
+\operatorname{var}(b_1.o_1)&=\operatorname{var}(b_2.i_1)\\
+\operatorname{var}(b_2.o_1)&=\operatorname{var}(d)\\
+\operatorname{var}(c.b_3.o_1)&=\operatorname{var}(b_2.i_2)\\
+\operatorname{var}(c.C_d.o_1)&=\operatorname{var}(c.b_1.i_1)\\
+\operatorname{var}(c.b_1.o_1)&=\operatorname{var}(c.b_2.i_1)\\
+\operatorname{var}(c.p.o_1)&=\operatorname{var}(c.b_1.i_2)\\
+\operatorname{var}(c.A.o_1)&=\operatorname{var}(c.b_2.i_2)\\
+\operatorname{var}(c.b_2.o_1)&=\operatorname{var}(c.b_3.i_1)\\
+\operatorname{var}(c.b_3.o_1)&=\operatorname{var}(c.b_4.i_1)\\
+\operatorname{var}(c.b_4.o_1)&=\operatorname{var}(c.b_3.i_2)\\
+\operatorname{var}(c.C_d.o_1)&=C_d\\
+\operatorname{var}(b_1.o_1)&=\operatorname{var}(b_1.i_1)\times\operatorname{var}(b_1.i_2)\\
+\operatorname{var}(b_2.o_1)&=\operatorname{var}(b_2.i_1)\times\operatorname{var}(b_2.i_2)\\
+\operatorname{var}(c.p.o_1)&=p\\
+\operatorname{var}(c.b_1.o_1)&=\operatorname{var}(c.b_1.i_1)\times\operatorname{var}(c.b_1.i_2)\\
+\operatorname{var}(c.A.o_1)&=A\\
+\operatorname{var}(c.b_2.o_1)&=\operatorname{var}(c.b_2.i_1)\times\operatorname{var}(c.b_2.i_2)\\
+\operatorname{var}(c.b_3.o_1)&=\operatorname{var}(c.b_3.i_1)+\operatorname{var}(c.b_3.i_2)\\
+\operatorname{var}(c.b_4.o_1)&=-\operatorname{var}(c.b_4.i_1)
+\end{aligned}\tag{4.5}\end{equation}
+% Source: printed 105 / PDF 121
+Có thể đơn giản hóa hệ trong (4.5) thành lực cản bậc hai $\operatorname{var}(b_2.o_1)=\operatorname{var}(v)^2\times\frac12\times C_d\times p\times A$, trong đó $p$ là mật độ không khí, $C_D$ là hệ số cản và $A$ là diện tích tiết diện ngang của ô tô. Hiển nhiên, phải biết giá trị của cổng đầu vào $v$ để giải tìm giá trị của cổng đầu ra $b_2.o_1$.
+
+Bất kỳ hệ phương trình đại số nào sử dụng các phép toán được những khối nguyên tử của CBD đại số hỗ trợ đều có thể được biểu diễn thành một CBD đại số. Có thể vẽ trực tiếp CBD trong Hình 4.3b từ phương trình:
+\begin{equation}c=C_D\times p\times A-c\tag{4.6}\end{equation}
+trong đó $c$ là đầu ra, còn $C_D$, $A$, $p$ là các hằng số.
+
+\subsubsection{Ngữ nghĩa thao tác}
+Thay vì giao trách nhiệm tính các giá trị gắn với từng cổng cho bộ giải phương trình, có thể tính chúng trực tiếp. Hai thuật toán như vậy được trình bày.
+
+Thuật toán 1 trình bày phiên bản luồng dữ liệu của ngữ nghĩa thao tác. Một danh sách các khối nguyên tử cần tính được duyệt lại nhiều lần cho đến khi không còn khối nào. Chỉ có thể tính một khối sau khi mọi khối mà nó phụ thuộc đã được tính. Thuật toán kết thúc sau $O((\#\text{khối nguyên tử trong }D)^2)$ lần lặp.
+
+Sự kém hiệu quả của thuật toán này nằm ở việc không tận dụng các phụ thuộc giữa những khối để tìm một thứ tự thực thi tối ưu cho các khối. Một thuật toán cải tiến sẽ được trình bày sau, sau khi hình thức hóa thông tin phụ thuộc giữa các khối.
+
+\newcommand{\chfourline}[2]{\noindent\hspace*{#1em}#2\par}
+\paragraph{Thuật toán 1. Thuật toán luồng dữ liệu để tính một CBD đại số $D$}
+\begin{quote}\small
+\chfourline{0}{\textbf{function} $\operatorname{EvalAlgebraicCBD}(D,v_1,\ldots,v_n)$}
+\chfourline{1}{Gọi $\operatorname{val}(p)$ là giá trị đã tính gắn với cổng được định danh bằng $p$.}
+\chfourline{1}{Gọi $i_1,\ldots,i_n$ là các id của những cổng đầu vào gắn với CBD $D$.}
+\chfourline{1}{Gọi $o_1,\ldots,o_m$ là các id của những cổng đầu ra gắn với CBD $D$.}
+\chfourline{1}{Khi đó, $\operatorname{val}(i_1):=v_1,\ldots,\operatorname{val}(i_n):=v_n$ là các giá trị gắn với từng cổng đầu vào của $D$.}
+\chfourline{1}{Gọi $B$ là tập các khối nguyên tử của $D$ chưa được tính.}
+\chfourline{1}{Ban đầu, $B:=$ mọi khối nguyên tử trong $D$.}
+\chfourline{1}{\textbf{while} $B\ne\{\}$ \textbf{do}}
+\chfourline{2}{\textbf{for} $b_i\in B$ \textbf{do}}
+\chfourline{3}{Gọi $p$ là cổng đầu ra duy nhất của $b_i$.}
+\chfourline{3}{Gọi $P=\{p_1,p_2,\ldots\}$ là các cổng đầu vào của $b_i$.}
+\chfourline{3}{Gọi $Q=\{q_1,q_2,\ldots\}$ là các cổng đầu ra lần lượt nối với từng cổng đầu vào $p_j\in P$.}
+\chfourline{3}{Gọi $\mathcal{B}=\operatorname{block}(q_1)\cup\operatorname{block}(q_2)\cup\cdots$ là tập các khối mà $b_i$ phụ thuộc, trong đó $\operatorname{block}(q_j)$ là khối gắn với cổng $q_j$, hoặc tập rỗng nếu không có khối nào như vậy.}
+\chfourline{3}{\textbf{if} $\mathcal{B}\cap B=\{\}$ \textbf{then}}
+\chfourline{4}{Nhận xét: $\operatorname{val}(q_1),\operatorname{val}(q_2),\ldots$ đã được tính trước đó.}
+\chfourline{4}{$\operatorname{val}(p):=\operatorname{ComputeBlock}(b_i,\operatorname{val}(q_1),\operatorname{val}(q_2),\ldots)$}
+\chfourline{4}{Gọi $\mathcal{P}=\{\rho_1,\rho_2,\ldots\}$ là tập các cổng mà cổng $p$ nối tới.}
+\chfourline{4}{$\operatorname{val}(\rho_j):=\operatorname{val}(p)$, với $\rho_1\in\mathcal{P}$}
+\chfourline{4}{$B:=B\setminus\{b_i\}$}
+\chfourline{3}{\textbf{end if}}
+\chfourline{2}{\textbf{end for}}
+\chfourline{1}{\textbf{end while}}
+\chfourline{1}{$P=\{\}$}
+\chfourline{1}{\textbf{return} $\operatorname{val}(o_1),\ldots,\operatorname{val}(o_m)$}
+\chfourline{0}{\textbf{end function}}
+\chfourline{0}{\textbf{function} $\operatorname{ComputeBlock}(b,\operatorname{val}(q_1),\operatorname{val}(q_2),\ldots)$}
+\chfourline{1}{\textbf{if} $b$ là khối phép cộng \textbf{then}}
+\chfourline{2}{\textbf{return} $\operatorname{val}(q_1)+\operatorname{val}(q_2)$}
+\chfourline{1}{\textbf{end if}}
+\chfourline{1}{\textbf{if} $b$ là khối hằng số có giá trị $v$ \textbf{then}}
+\chfourline{2}{\textbf{return} $v$}
+\chfourline{1}{\textbf{end if}}
+\chfourline{1}{$\ldots$}
+\chfourline{0}{\textbf{end function}}
+\end{quote}
+% Source: printed 106 / PDF 122
+Ưu điểm của Thuật toán 1 là sự đơn giản. Nó biểu diễn mô hình thực thi của mô thức luồng dữ liệu và, với điều kiện không có vòng đại số, luôn tìm được các giá trị gắn với mọi cổng của một CBD được làm phẳng.
+
+Một vòng đại số xuất hiện khi một khối gián tiếp phụ thuộc vào chính nó. Do đó, việc nhìn CBD dưới dạng đồ thị phụ thuộc và nhận diện các chu trình trong đồ thị là tự nhiên. Trong CBD ở Hình 4.4, các khối $c.b_4$ và $c.b_3$ thuộc một vòng đại số. Vòng đại số cũng xuất hiện trong các hệ phương trình đại số. Chẳng hạn, trong (4.6), biến $c$ phụ thuộc vào chính nó.
+
+Cả hai vòng này được đưa vào có chủ ý để minh họa. Có thể dễ dàng loại bỏ chúng bằng cách viết lại biểu thức toán học mà CBD biểu diễn. Tuy nhiên, nhìn chung không phải mọi vòng đại số đều có thể được loại bỏ theo cách này, và cần một phương pháp phát hiện chúng.
+
+Với một CBD được làm phẳng, có thể tạo đồ thị phụ thuộc tương ứng bằng các quy tắc trong Bảng 4.3. Chẳng hạn, Hình 4.5 trình bày đồ thị phụ thuộc của CBD được làm phẳng trong Hình 4.4.
+\begin{table}[htbp]
+\caption{Các quy tắc xây dựng đồ thị phụ thuộc}
+\begin{minipage}{\linewidth}\small\hrule\medskip
+\begin{enumerate}
+\item Với mỗi khối được định danh bằng $b$, tạo một nút duy nhất $v$. Gọi $\operatorname{node}(b)$ là nút tương ứng.
+\item Với mỗi kết nối $(p,q)$ từ cổng có id $p$ đến cổng có id $q$, gọi $b_p$ và $b_q$ lần lượt là id của các khối gắn với cổng $p$ và $q$. Nếu $p$ hoặc $q$ không có khối tương ứng, bỏ qua kết nối này và chuyển sang kết nối tiếp theo. Tạo một cạnh có hướng $(\operatorname{node}(b_q),\operatorname{node}(b_p))$ trong đồ thị phụ thuộc để đánh dấu việc $b_q$ phụ thuộc vào $b_p$.
+\end{enumerate}\medskip\hrule\end{minipage}
+\end{table}
+\sourcefigure{4.5}{122}{Đồ thị phụ thuộc và các thành phần liên thông mạnh}
+
+Đồ thị phụ thuộc làm việc phát hiện vòng đại số trở thành bài toán đơn giản là phát hiện các thành phần liên thông mạnh trong đồ thị. Về mặt hình thức, một thành phần liên thông mạnh $S=\{n_1,n_2,\ldots\}$ của đồ thị $G$ là một tập nút, trong đó giữa mọi $n_i,n_j\in S$ có hai đường đi khác nhau: $p_1:n_i\overset{*}{\Rightarrow}n_j$ và $p_2:n_j\overset{*}{\Rightarrow}n_i$. Điều này hàm ý mỗi nút trong một thành phần liên thông mạnh hoặc là nút duy nhất của thành phần đó, hoặc phụ thuộc vào chính nó thông qua một nút khác cũng thuộc cùng thành phần. Hình 4.5 minh họa các thành phần liên thông mạnh của đồ thị phụ thuộc. Đúng như dự kiến, các khối $c.b_4$ và $c.b_3$ thuộc cùng một thành phần liên thông mạnh.
+
+Thuật toán Tarjan [262] nhận một đồ thị và trả về danh sách các thành phần liên thông mạnh đã được sắp xếp. Thứ tự sắp xếp các thành phần là một thứ tự tô-pô theo các phụ thuộc giữa chúng. Với ví dụ ở Hình 4.5, một thứ tự tô-pô có thể có là:
+% Source: printed 107 / PDF 123
+\[\{c.C_D\},\{c.p\},\{c.A\},\{c.b_1\},\{c.b_2\},\{c.b_3,c.b_4\},\{b_1\},\{b_2\}\]
+Nếu không có vòng đại số trong đồ thị được làm phẳng, danh sách các thành phần liên thông mạnh được sắp xếp mà thuật toán trả về chỉ là thứ tự tô-pô của các nút trong đồ thị phụ thuộc. Trong danh sách này, một thành phần liên thông mạnh có một nút luôn xuất hiện sau những nút mà nó phụ thuộc.
+
+Nếu có vòng đại số, mọi nút thuộc cùng một vòng đại số sẽ nằm trong cùng một thành phần liên thông mạnh. Về thứ tự sắp xếp, các thành phần liên thông mạnh không phải tập đơn xuất hiện sau mọi thành phần mà chúng phụ thuộc. Một thành phần liên thông mạnh phụ thuộc vào một thành phần khác nếu bất kỳ nút nào của nó phụ thuộc vào ít nhất một nút của thành phần kia.
+
+Hai đặc điểm này của danh sách các thành phần liên thông mạnh được sắp xếp do thuật toán Tarjan [262] cung cấp tạo cơ sở cho một ngữ nghĩa thao tác CBD đại số cải tiến, không chỉ tính các giá trị gắn với mọi cổng đầu ra nhanh hơn nhiều so với Thuật toán 1, mà còn phát hiện các vòng đại số. Thuật toán 2 tóm tắt các bước tính giá trị của mọi cổng trong một CBD được làm phẳng bằng thuật toán cải tiến.
+
+\paragraph{Thuật toán 2. Tính một CBD đại số $D$, có hỗ trợ vòng đại số}
+\begin{quote}\small
+\chfourline{0}{\textbf{function} $\operatorname{EvalAlgebraicCBD}(D,v_1,\ldots,v_n)$}
+\chfourline{1}{Gọi $\operatorname{val}(p)$ là giá trị đã tính gắn với cổng được định danh bằng $p$.}
+\chfourline{1}{Gọi $i_1,\ldots,i_n$ là các id của cổng đầu vào gắn với CBD $D$.}
+\chfourline{1}{Gọi $o_1,\ldots,o_m$ là các id của cổng đầu ra gắn với CBD $D$.}
+\chfourline{1}{Khi đó, $\operatorname{val}(i_1):=v_1,\ldots,\operatorname{val}(i_n):=v_n$ là các giá trị gắn với từng cổng đầu vào của $D$.}
+\chfourline{1}{Gọi $G$ là đồ thị phụ thuộc do $D$ tạo ra.}
+\chfourline{1}{Gọi $SC=(S_1,S_2,\ldots)$ là danh sách các thành phần liên thông mạnh được sắp xếp, thu được bằng thuật toán Tarjan.}
+\chfourline{1}{\textbf{for} $S_i\in SC$ \textbf{do}}
+\chfourline{2}{\textbf{if} $S_i=\{n\}$ \textbf{then}}
+\chfourline{3}{Gọi $b$ là id của khối duy nhất sao cho $\operatorname{node}(b)=n$.}
+\chfourline{3}{Gọi $p$ là id của cổng đầu ra gắn với $b$.}
+\chfourline{3}{Gọi $\{q_1,q_2,\ldots\}$ là các id của cổng đầu vào của $b$.}
+\chfourline{3}{Nhận xét: $\operatorname{val}(q_1),\operatorname{val}(q_2),\ldots$ đã được tính.}
+\chfourline{3}{$\operatorname{val}(p):=\operatorname{ComputeBlock}(b,\operatorname{val}(q_1),\operatorname{val}(q_2),\ldots)$}
+\chfourline{3}{Gọi $\mathcal{P}=\{\rho_1,\rho_2,\ldots\}$ là các cổng mà cổng $p$ nối tới.}
+\chfourline{3}{$\operatorname{val}(\rho_j):=\operatorname{val}(p)$, với $p_j\in\mathcal{P}$}
+\chfourline{2}{\textbf{else if} $S_i=\{n_1,n_2,\ldots\}$ \textbf{then}}
+\chfourline{3}{Gọi $b_1,b_2,\ldots$ là các khối duy nhất sao cho $\operatorname{node}(b_1)=n_1$, $\operatorname{node}(b_2)=n_2,\ldots$}
+\chfourline{3}{Gọi $p_1,p_2,\ldots$ lần lượt là id của các cổng đầu ra của $b_1,b_2,\ldots$}
+\chfourline{3}{Gọi $Q_1,Q_2,\ldots$ lần lượt là các tập id của các cổng đầu vào của $b_1,b_2,\ldots$, trong đó $Q_i=\{q_1^{(i)},q_2^{(i)},\ldots\}$.}
+\chfourline{3}{Với mỗi $Q_i$, có thể có các cổng đầu vào chưa biết giá trị vì được nối với những cổng đầu ra chưa biết. Gọi $\bar Q_i=\{\bar q_1^{(i)},\bar q_2^{(i)},\ldots\}\subseteq Q_i$ là tập các cổng đầu vào đã biết giá trị.}
+\chfourline{3}{$(\operatorname{val}(p_1),\operatorname{val}(p_2),\ldots):=$}
+\chfourline{4}{$\operatorname{SolveLoop}(b,\operatorname{val}(\bar q_1^{(1)}),\operatorname{val}(\bar q_2^{(1)}),\ldots,\operatorname{val}(\bar q_1^{(2)}),\ldots)$}
+\chfourline{3}{\textbf{for} $p_i\in p_1,p_2,\ldots$ \textbf{do}}
+\chfourline{4}{Gọi $\mathcal{P}_i=\{\rho_1^{(i)},\rho_2^{(i)},\ldots\}$ là các cổng mà cổng $p_i$ nối tới.}
+\chfourline{4}{$\operatorname{val}(\rho_j^{(i)}):=\operatorname{val}(p_i)$, với $\rho_j^{(i)}\in\mathcal{P}_i$}
+\chfourline{3}{\textbf{end for}}
+\chfourline{2}{\textbf{end if}}
+\chfourline{1}{\textbf{end for}}
+\chfourline{1}{\textbf{return} $\operatorname{val}(o_1),\ldots,\operatorname{val}(o_m)$}
+\chfourline{0}{\textbf{end function}}
+\end{quote}
+
+% Translator note C4-N1 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C4-N1).} Trong Thuật toán 1 (trang 105 của bản gốc), phép gán cho $\rho_j$ lại đi kèm điều kiện $\rho_1\in\mathcal P$; trong nhánh một nút của Thuật toán 2 (trang 107), điều kiện tương ứng lại dùng $p_j\in\mathcal P$. Theo tập cổng đích đã định nghĩa, cả hai vòng cần duyệt từng $\rho_j\in\mathcal P$. Ngoài ra, đối số $b$ trong lời gọi $\operatorname{SolveLoop}(b,\ldots)$ ở nhánh nhiều nút chưa được định nghĩa cho nhánh đó: bộ giải cần thông tin về toàn bộ các khối $b_1,b_2,\ldots$ thuộc vòng. Đây là các điểm chưa nhất quán trong mã giả của bản gốc.
+\end{quote}
+% Translator note C4-N1 end
+
+Hàm \textsc{SolveLoop} tính các giá trị của mọi cổng chưa biết (có giá trị chưa biết) gắn với những khối trong vòng. Một cổng đầu vào chưa biết khi một cổng đầu ra chưa biết nối với nó. Một cổng đầu ra chưa biết khi khối gắn với nó thuộc thành phần liên thông mạnh. Tương đương, một cổng đầu vào đã biết khi một cổng đầu ra đã biết nối với nó. Một cổng đầu ra đã biết gắn với một khối không thuộc thành phần liên thông mạnh.
+
+Về bản chất, giải một vòng đại số là tính nghiệm của một phương trình ma trận có dạng $X=F(X,U)$:
+% Source: printed 108 / PDF 124
+\begin{equation}
+\resizebox{0.94\linewidth}{!}{$
+\underbrace{\begin{bmatrix}\operatorname{val}(p_1)\\\operatorname{val}(p_2)\\\vdots\end{bmatrix}}_X
+=\underbrace{\begin{bmatrix}
+F_1(\operatorname{val}(p_1),\operatorname{val}(p_2),\ldots,\operatorname{val}(\bar q_1^{(1)}),\operatorname{val}(\bar q_2^{(1)}),\ldots,\operatorname{val}(\bar q_1^{(2)}),\ldots)\\
+F_2(\operatorname{val}(p_1),\operatorname{val}(p_2),\ldots,\operatorname{val}(\bar q_1^{(1)}),\operatorname{val}(\bar q_2^{(1)}),\ldots,\operatorname{val}(\bar q_1^{(2)}),\ldots)\\
+\vdots
+\end{bmatrix}}_{F(X,U)}
+$}\tag{4.7}
+\end{equation}
+trong đó $X=[\operatorname{val}(p_1),\operatorname{val}(p_2),\ldots]^T$ biểu thị các giá trị chưa biết của những cổng đầu ra trong thành phần liên thông mạnh, và
+\[U=[\operatorname{val}(\bar q_1^{(1)}),\operatorname{val}(\bar q_2^{(1)}),\ldots,\operatorname{val}(\bar q_1^{(2)}),\ldots]^T\]
+biểu thị các giá trị đã biết của các cổng đầu vào.
+
+Trong (4.7), các cổng đầu vào chưa biết không được xét, vì chúng phụ thuộc trực tiếp, thông qua đẳng thức đại số, vào các cổng đầu ra được nối với chúng. Do đó, tìm giá trị của các cổng đầu ra chưa biết là đủ để tìm giá trị của mọi cổng chưa biết trong thành phần liên thông mạnh.
+
+Định nghĩa của $F$ phụ thuộc vào những khối nguyên tử thuộc thành phần liên thông mạnh. Nếu $F$ tuyến tính, có thể viết phương trình trên dưới dạng $AX=BU$ và giải bằng bất kỳ kỹ thuật nào thích hợp cho giải hệ phương trình tuyến tính (xem [60, Chương 6 và 7]). Các ma trận $A$ và $B$ phụ thuộc vào những khối trong thành phần liên thông mạnh, và tích $BU$ đã biết.
+
+Nếu $F$ phi tuyến, có thể dùng các kỹ thuật thế liên tiếp (xem [60, Chương 10]) để thử tìm $X$.
+
+Cần thận trọng khi giải các vòng phi tuyến, vì chúng có thể không có nghiệm hoặc không có nghiệm duy nhất. Các phương pháp lặp đòi hỏi cung cấp những giá trị ước đoán ban đầu cho $X$; tùy các ước đoán đó, có thể đạt được các nghiệm khác nhau. Cả ước đoán ban đầu lẫn nghiệm thu được phải có ý nghĩa vật lý, vì các phương trình thường biểu diễn đặc trưng của các hệ vật lý (chẳng hạn lực cản, nồng độ, v.v.).
+
+Với vòng đại số chứa các khối $c.b_4$ và $c.b_3$ trong Hình 4.5, hệ phương trình tuyến tính thu được và nghiệm giải tích của nó là:
+\[
+\begin{cases}
+\operatorname{val}(c.b_3.o_1)=\operatorname{val}(c.b_3.i_1)+\operatorname{val}(c.b_3.i_2)\\
+\operatorname{val}(c.b_3.i_2)=\operatorname{val}(c.b_4.o_1)\\
+\operatorname{val}(c.b_4.o_1)=-\operatorname{val}(c.b_4.i_1)\\
+\operatorname{val}(c.b_4.i_1)=\operatorname{val}(c.b_3.o_1)
+\end{cases}\Longleftrightarrow
+\]
+\[
+\begin{cases}
+\operatorname{val}(c.b_3.o_1)-\operatorname{val}(c.b_4.o_1)=\operatorname{val}(c.b_3.i_1)\\
+\operatorname{val}(c.b_3.o_1)+\operatorname{val}(c.b_4.o_1)=0
+\end{cases}\Longleftrightarrow
+\]
+\[
+\underbrace{\begin{bmatrix}1&-1\\1&1\end{bmatrix}}_A
+\underbrace{\begin{bmatrix}\operatorname{val}(c.b_3.o_1)\\\operatorname{val}(c.b_4.o_1)\end{bmatrix}}_X
+=\underbrace{\begin{bmatrix}1\\0\end{bmatrix}}_B
+\underbrace{[\operatorname{val}(c.b_3.i_1)]}_U\Longleftrightarrow
+\]
+\[
+\begin{bmatrix}\operatorname{val}(c.b_3.o_1)\\\operatorname{val}(c.b_4.o_1)\end{bmatrix}
+=\begin{bmatrix}\frac12\operatorname{val}(c.b_3.i_1)\\-\frac12\operatorname{val}(c.b_3.i_1)\end{bmatrix}.
+\]
+
+Trong mục này, cú pháp và ngữ nghĩa của CBD đại số đã được mô tả. Chúng được dùng trong những hệ thống không có khái niệm trạng thái tiến triển và thời gian. Mọi hệ phương trình đại số đều có thể được viết thành một CBD đại số.
+
+Chúng tôi đã mô tả hai cách tương đương để thu được ý nghĩa của một CBD đại số, được tóm tắt trong Hình 4.6. Các nghiệm chỉ xấp xỉ bằng nhau, vì khi có vòng đại số, có thể phải giải chúng bằng phương pháp lặp để thu được nghiệm gần đúng.
+\sourcefigure{4.6}{124}{Sự tương đương ngữ nghĩa của CBD đại số (xấp xỉ)}
+% Source: printed 109 / PDF 125
+Trong mục tiếp theo, chúng tôi mở rộng các khối nguyên tử có sẵn để đưa vào khái niệm trạng thái tiến triển qua những bước nhảy rời rạc theo thời gian.
+
+\section{CBD thời gian rời rạc}
+Trong mục này, CBD thời gian rời rạc (Discrete Time, DT) được trình bày. Về cú pháp, khác biệt duy nhất so với CBD đại số là CBD DT cho phép người lập mô hình dùng không chỉ các khối đại số, mà cả một khối trễ một bước. Vì khối Trễ có trạng thái được cập nhật mỗi khi khối được tính, các khối khác trong CBD DT không còn có đầu ra tĩnh (như trong trường hợp CBD đại số), mà thay đổi mỗi khi được tính. CBD DT có nhiều điểm tương tự với các hệ động lực thời gian rời rạc, được trình bày trong Mục 4.2.2.
+
+\subsection{Cú pháp}
+Khối trễ một bước có hai đầu vào $i_1$, $i_c$ và một đầu ra $o_1$. Nó được biểu diễn bằng ký hiệu $\mathcal D$, như phần được làm nổi bật trong CBD DT ở Hình 4.7. Cổng đầu vào $i_c$ được gọi là điều kiện đầu và được phân biệt bằng chỉ số dưới.
+\sourcefigure{4.7}{125}{CBD thời gian rời rạc của bộ điều khiển hành trình, với khối Trễ $\mathcal D$ được làm nổi bật. Tương đương với (4.4)}
+
+\subsection{Ngữ nghĩa}
+Việc đầu ra của khối trễ thay đổi mỗi khi được tính có nghĩa là đầu ra của mọi khối khác phụ thuộc vào khối trễ cũng sẽ có tính động. Để hình thức hóa nhiều giá trị khác nhau mà một cổng có thể nhận, cần khái niệm bước. Bước là một chỉ số tự nhiên cho phép phân biệt các đầu ra khác nhau của mỗi khối. Nó không khác chỉ số dùng trong các phương trình sai phân, được trình bày trong Mục 4.2.2.
+
+\subsubsection{Ngữ nghĩa chuyển dịch}
+Đầu ra của khối trễ được định nghĩa theo đầu vào ở bước trước. Đây là bản chất của các phương trình sai phân, trong đó các giá trị hiện tại được tính từ những giá trị trước đó. Do vậy, việc ý nghĩa của một CBD DT là một tập phương trình sai phân là tự nhiên.
+% Source: printed 110 / PDF 126
+Tương tự trường hợp CBD đại số, quá trình làm phẳng bảo đảm chỉ còn các khối nguyên tử trong CBD DT. Với một CBD DT được làm phẳng, có thể viết các phương trình sai phân mà nó biểu diễn theo các quy tắc trong Bảng 4.4.
+\begin{table}[htbp]
+\caption{Ngữ nghĩa chuyển dịch của một CBD DT được làm phẳng}
+\begin{minipage}{\linewidth}\small\hrule\medskip
+\begin{enumerate}
+\item Gán một biến toán học duy nhất cho định danh của mỗi cổng trong CBD.
+\item Gọi $(p,q)$ là kết nối từ cổng được định danh bằng $p$ đến cổng được định danh bằng $q$, và gọi $\operatorname{var}(p)$, $\operatorname{var}(q)$ là các biến toán học tương ứng với $p$, $q$, theo phép gán ở Quy tắc 1. Khi đó, phương trình gắn với kết nối $(p,q)$ là $\operatorname{var}(p)^{[s+1]}=\operatorname{var}(q)^{[s+1]}$.
+\item Gọi $p_1,p_2,\ldots$ là danh sách id của các cổng đầu vào của một khối nguyên tử, và gọi $q$ là id của cổng đầu ra duy nhất:
+\begin{enumerate}
+\renewcommand{\labelenumii}{\alph{enumii}.}
+\item Nếu là khối trễ, các phương trình thu được là $\operatorname{var}(q)^{[s+1]}=\operatorname{var}(p_1)^{[s]}$ và $\operatorname{var}(q)^{[0]}=\operatorname{var}(p_c)^{[0]}$.
+\item Nếu là khối hằng số có giá trị $c$, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=c$.
+\item Nếu là khối phép cộng, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=\operatorname{var}(p_1)^{[s+1]}+\operatorname{var}(p_2)^{[s+1]}$.
+\item Nếu là khối phép nhân, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=\operatorname{var}(p_1)^{[s+1]}\times\operatorname{var}(p_2)^{[s+1]}$.
+\item Nếu là khối đổi dấu, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=-\operatorname{var}(p_1)^{[s+1]}$.
+\item Nếu là khối nghịch đảo, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=\frac{1}{\operatorname{var}(p_1)^{[s+1]}}$.
+\item Nếu là khối lũy thừa, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=\bigl(\operatorname{var}(p_1)^{[s+1]}\bigr)^{\operatorname{var}(p_2)^{[s+1]}}$.
+\item Nếu là khối căn, phương trình thu được là $\operatorname{var}(q)^{[s+1]}=\bigl(\operatorname{var}(p_1)^{[s+1]}\bigr)^{1/\operatorname{var}(p_2)^{[s+1]}}$.
+\end{enumerate}
+\end{enumerate}\medskip\hrule\end{minipage}
+\end{table}
+
+Kết quả là một tập phương trình sai phân cùng các điều kiện đầu (xem Quy tắc 3(a) trong Bảng 4.4), có thể được giải để thu được nghiệm dạng đóng, hoặc được mô phỏng bằng một bộ giải độc lập. Chẳng hạn, sau khi đơn giản hóa và đổi tên biến, CBD DT trong Hình 4.7 tương ứng với bộ điều khiển phần mềm của (4.4).
+
+Ngược lại, mọi phương trình sai phân viết dưới dạng (4.3) đều có thể được biểu diễn thành một CBD DT. Điều này được minh họa trong Hình 4.8.
+\sourcefigure{4.8}{126}{Phương trình sai phân (viết dưới dạng (4.3)) có thể được biểu diễn bằng một CBD DT. Thành phần thứ $i$ của vectơ $x$ được biểu diễn bằng $x_i$}
+% Source: printed 111 / PDF 127
+\subsubsection{Ngữ nghĩa thao tác}
+So với ngữ nghĩa thao tác của CBD đại số trong Thuật toán 2, một thuật toán mô phỏng CBD DT phải tính các tín hiệu rời rạc, thay vì những giá trị đơn cho các biến. Một tín hiệu rời rạc là một danh sách giá trị có thứ tự, được đánh chỉ số theo bước.
+
+Do vậy, ý nghĩa thao tác của CBD DT là việc tính tín hiệu thời gian rời rạc gắn với mỗi cổng. Có thể thực hiện bằng cách cố định bước ở 0, rồi tính mọi giá trị trong CBD như thể nó là một CBD đại số. Sau đó tăng bước lên 1 và lặp lại việc tính mọi giá trị, cứ như vậy tiếp tục. Việc trong cùng một bước, CBD DT được tính như một CBD đại số cho phép tái sử dụng hàm \textsc{EvalAlgebraicCBD}, được định nghĩa trong Thuật toán 2, với một số thay đổi nhỏ:
+\begin{enumerate}
+\item Thêm tham số $s$ vào hàm \textsc{ComputeBlock}, biểu thị bước hiện tại.
+\item Mọi giá trị được đánh chỉ số theo bước hiện tại. Chẳng hạn, lệnh
+\[\operatorname{val}(p):=\operatorname{ComputeBlock}(b,\operatorname{val}(q_1),\operatorname{val}(q_2),\ldots)\]
+trở thành
+\[\operatorname{val}(p)^{(s)}:=\operatorname{ComputeBlock}(b,\operatorname{val}(q_1)^{(s)},\operatorname{val}(q_2)^{(s)},\ldots,s).\]
+\end{enumerate}
+
+Thuật toán 3 tóm tắt ngữ nghĩa thao tác. Định nghĩa của hàm \textsc{ComputeBlock} được đưa vào để chỉ định việc tính khối trễ. Việc tính các khối nguyên tử còn lại là hiển nhiên.
+
+\paragraph{Thuật toán 3. Ngữ nghĩa thao tác của một CBD DT $D$}
+\begin{quote}\small
+\chfourline{0}{\textbf{function} $\operatorname{EvalDiscreteTimeCBD}(D,v_1,\ldots,v_n,N)$}
+\chfourline{1}{Gọi $\operatorname{val}(p)$ là giá trị đã tính gắn với cổng được định danh bằng $p$.}
+\chfourline{1}{Gọi $i_1,\ldots,i_n$ là các id của cổng đầu vào gắn với CBD $D$.}
+\chfourline{1}{Gọi $o_1,\ldots,o_m$ là các id của cổng đầu ra gắn với CBD $D$.}
+\chfourline{1}{Khi đó, $\operatorname{val}(i_1):=v_1,\ldots,\operatorname{val}(i_n)=v_n$ là các giá trị gắn với mỗi cổng đầu vào của $D$.}
+\chfourline{1}{$s:=0$}
+\chfourline{1}{\textbf{while} $n\le N$ \textbf{do}}
+\chfourline{2}{$\operatorname{EvalAlgebraicCBD}(D,v_1^{(s)},\ldots,v_n^{(s)},s)$}
+\chfourline{2}{$s:=s+1$}
+\chfourline{1}{\textbf{end while}}
+\chfourline{1}{\textbf{return} $\operatorname{val}(o_1),\ldots,\operatorname{val}(o_m)$}
+\chfourline{0}{\textbf{end function}}
+\chfourline{0}{\textbf{function} $\operatorname{ComputeBlock}(b,\operatorname{val}(q_1),\ldots,s)$}
+\chfourline{1}{\textbf{if} $b$ là khối trễ \textbf{then}}
+\chfourline{2}{\textbf{if} $s=0$ \textbf{then}}
+\chfourline{3}{\textbf{return} $\operatorname{val}(q_c)^{(0)}$, trong đó $q_c$ là id của cổng điều kiện đầu.}
+\chfourline{2}{\textbf{else}}
+\chfourline{3}{\textbf{return} $\operatorname{val}(q_c)^{(s-1)}$.}
+\chfourline{2}{\textbf{end if}}
+\chfourline{1}{\textbf{end if}}
+\chfourline{1}{\textbf{if} $b$ là khối phép cộng \textbf{then}}
+\chfourline{2}{\textbf{return} $\operatorname{val}(q_1)^{(s)}+\operatorname{val}(q_2)^{(s)}$}
+\chfourline{1}{\textbf{end if}}
+\chfourline{1}{$\ldots$}
+\chfourline{0}{\textbf{end function}}
+\end{quote}
+
+% Translator note C4-N2 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C4-N2).} Thuật toán 3 (trang 111 của bản gốc) tăng biến bước $s$ nhưng kiểm tra $n\le N$; theo vòng mô phỏng được mô tả, điều kiện cần kiểm tra là $s\le N$. Trong nhánh khối trễ khi $s>0$, bản gốc trả về $\operatorname{val}(q_c)^{(s-1)}$, dù $q_c$ là cổng điều kiện đầu. Theo ngữ nghĩa khối trễ trong Bảng 4.4, giá trị cần dùng ở đây là tín hiệu đầu vào $q_1$ tại bước $s-1$; chỉ ở $s=0$ mới dùng cổng điều kiện đầu.
+\end{quote}
+% Translator note C4-N2 end
+
+Nếu có vòng đại số trong CBD DT, chúng được xử lý như trong CBD đại số. Tuy nhiên, cần lưu ý các phụ thuộc của khối trễ. Ở bước đầu tiên ($s=0$), đầu ra của khối trễ bằng đầu vào gắn với cổng điều kiện đầu của nó ($\operatorname{val}(q_c)^{(0)}$ trong Thuật toán 3). Ở mọi bước khác $s>0$, đầu ra được tính từ bước \emph{trước đó} $s-1$. Điều này có nghĩa là, ngoại trừ $s=0$, khối trễ không có phụ thuộc đại số. Còn ở $s=0$, nó phụ thuộc vào khối được nối với cổng điều kiện đầu. Do vậy, phải điều chỉnh Quy tắc 2 của Bảng 4.3 dành riêng cho khối Trễ và bước hiện tại đang tính.
+
+Theo cùng cấu trúc như Mục 4.3, mục này trình bày cú pháp và cả ngữ nghĩa chuyển dịch lẫn ngữ nghĩa thao tác của CBD DT. Cũng như CBD đại số, hai ngữ nghĩa giao hoán.
+% Source: printed 112 / PDF 128
+\section{CBD thời gian liên tục}
+Ý nghĩa của CBD đại số là một tập phương trình đại số; ý nghĩa của CBD thời gian rời rạc là một tập phương trình sai phân.
+
+Như trình bày trong Mục 4.2.1, phương trình vi phân là lựa chọn lý tưởng để biểu diễn những hệ vật lý có trạng thái tiến triển liên tục theo thời gian. Đến cuối mục này, sẽ thấy rõ rằng CBD thời gian liên tục (Continuous Time, CT) cũng thích hợp để mô hình hóa những hệ thống này.
+
+\subsection{Cú pháp}
+Về cú pháp, CBD CT gồm các khối đại số chuẩn, một khối đạo hàm và một khối tích phân. Khối Trễ không được đưa vào.
+
+Các khối đạo hàm và tích phân có hai đầu vào $i_1$, $i_c$ và một đầu ra $o_1$. Đầu vào có chỉ số dưới $c$ biểu thị điều kiện đầu. Hai khối đều được biểu thị bằng ký hiệu toán học thích hợp: $\frac{\mathrm{d}}{\mathrm{d}t}$ và $\int$.
+\paragraph{CBD thời gian liên tục}
+\sourcefigure{4.9}{128}{Các ví dụ CBD CT. (a) CBD CT của ô tô trong hệ thống điều khiển hành trình ở Hình 4.2. (b) CBD CT của lực cản}
+Hình 4.9a trình bày một ví dụ CBD CT, với khối Lực cản (Drag) được đặc tả trong Hình 4.9b.
+
+\subsection{Ngữ nghĩa}
+\subsubsection{Ngữ nghĩa chuyển dịch sang phương trình vi phân}
+Ý nghĩa của một CBD CT được làm phẳng là một hệ phương trình vi phân thường (ODE). Bảng 4.5 trình bày các quy tắc xây dựng một hệ như vậy. Sau khi đơn giản hóa và đổi tên biến, ý nghĩa của Hình 4.9a được biểu diễn trong (4.2).
+
+Hơn nữa, mọi ODE viết dưới dạng (4.1) đều có thể được chuyển thành một CBD CT, như minh họa trong Hình 4.10.
+
+\subsubsection{Cơ sở rời rạc hóa ODE}
+Với nhiều ODE xuất hiện trong khoa học và kỹ thuật, và theo ngữ nghĩa chuyển dịch thì điều này bao gồm cả CBD CT, không thể tìm được nghiệm dạng đóng. Một cách có thể dùng để hiểu nghiệm là thông qua mô phỏng. Vì phần lớn mô phỏng được thực hiện trên máy tính số, các nghiệm ODE thu được qua mô phỏng chỉ có thể là gần đúng.
+% Source: printed 113 / PDF 129
+\begin{table}[htbp]
+\caption{Ngữ nghĩa chuyển dịch của một CBD CT được làm phẳng}
+\begin{minipage}{\linewidth}\small\hrule\medskip
+\begin{enumerate}
+\item Gán một biến toán học duy nhất cho định danh của mỗi cổng trong CBD.
+\item Gọi $(p,q)$ là kết nối từ cổng được định danh bằng $p$ đến cổng được định danh bằng $q$, và gọi $\operatorname{var}(p)$, $\operatorname{var}(q)$ là các biến toán học tương ứng với $p$, $q$, theo phép gán ở Quy tắc 1. Khi đó, phương trình gắn với kết nối $(p,q)$ là $\operatorname{var}(p)(t)=\operatorname{var}(q)(t)$.
+\item Gọi $p_1,p_2,\ldots$ là danh sách id của các cổng đầu vào của một khối nguyên tử, và gọi $q$ là id của cổng đầu ra duy nhất:
+\begin{enumerate}\renewcommand{\labelenumii}{\alph{enumii}.}
+\item Nếu là khối Tích phân, phương trình thu được là $\operatorname{var}(q)(t)=\int_0^t\operatorname{var}(p_1)(\tau)\,\mathrm{d}\tau+\operatorname{var}(p_c)(0)$.
+\item Nếu là khối Đạo hàm, các phương trình thu được là $\operatorname{var}(q)(t)=\operatorname{var}(p_1)'(t)$ và $\operatorname{var}(q)(0)=\operatorname{var}(p_c)(0)$.
+\item Nếu là khối phép cộng, phương trình thu được là $\operatorname{var}(q)(t)=\operatorname{var}(p_1)(t)+\operatorname{var}(p_2)(t)$.
+\item $\ldots$
+\end{enumerate}
+\end{enumerate}\medskip\hrule\end{minipage}
+\end{table}
+\sourcefigure{4.10}{129}{ODE bậc nhất, viết dưới dạng (4.1), có thể được biểu diễn thành một CBD CT. Thành phần thứ $i$ của vectơ $x$ được biểu diễn bằng $x_i$}
+
+Trong các đoạn sau, chúng tôi chỉ ra cách chuyển ODE thành phương trình sai phân mà nghiệm thu được qua mô phỏng xấp xỉ nghiệm của ODE. Xem [?, 60] để có trình bày chi tiết hơn về các phương pháp xấp xỉ số. Phương pháp được giải thích sau đó được dùng trong Mục 4.5.2.3 làm cơ sở mô tả cách chuyển một CBD CT thành những CBD thời gian rời rạc xấp xỉ nghiệm của mô hình ban đầu.
+
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (P4-1).} Dấu hỏi trong trích dẫn [?, 60] đã có trong bản tiếng Anh (trang in 113); đó là một tham chiếu chưa được xác định trong nguồn. Bản dịch giữ nguyên dấu này. Tài liệu [60] vẫn được liệt kê đầy đủ ở cuối sách.
+\end{quote}
+
+Xét một ODE bậc nhất không có đầu vào:
+\begin{equation}\begin{aligned}x'(t)&=F(x,t)\\x(0)&=x_0\end{aligned}\tag{4.8}\end{equation}
+trong đó:
+\begin{itemize}
+\item $x(t)=[x_1(t),\ldots,x_n(t)]^T$ là vectơ trạng thái; và
+\item $F(x,t)=[F_1(x,t),\ldots,F_n(x,t)]^T$ là hàm đạo hàm trạng thái, còn $x_0$ là giá trị đầu của $x$.
+\end{itemize}
+Gọi $x_i(t)$ là quỹ đạo trạng thái thứ $i$ và $x_i'(t)=F_i(x,t)$ là đạo hàm trạng thái thứ $i$. Giả sử $x_i(t)$ và mọi đạo hàm của nó trơn, có thể xấp xỉ nó quanh bất kỳ điểm $t^*$ nào bằng chuỗi Taylor [302]:
+\begin{equation}
+x_i(t^*+\Delta t)=x_i(t^*)+x_i'(x(t^*),t^*)\Delta t+x_i^{(2)}(t^*)\frac{\Delta t^2}{2!}+\cdots\tag{4.9}
+\end{equation}
+Sử dụng định lý Taylor, có thể viết khai triển chuỗi Taylor ở dạng hữu hạn gồm một đa thức và một số dư dạng Lagrange [60]:
+\[\begin{aligned}
+x_i(t^*+\Delta t)&=x_i(t^*)+x_i'(x(t^*),t^*)\Delta t+\cdots\\
+&\quad+x_i^{(n)}(t^*)\frac{\Delta t^n}{n!}+x_i^{(n+1)}(\xi(t^*))\frac{\Delta t^{n+1}}{(n+1)!}.
+\end{aligned}\]
+% Source: printed 114 / PDF 130
+trong đó $\xi(t^*)$ là một số chưa biết nằm giữa $t^*$ và $t^*+\Delta t$. Số dư $x_i^{(n+1)}(\xi(t^*))\frac{\Delta t^{n+1}}{(n+1)!}$ biểu thị sai số cắt cụt. Không thể tính trực tiếp nó, nhưng vì mọi đạo hàm của $x_i$ trơn tại mọi điểm giữa $t^*$ và $t^*+\Delta t$, tồn tại một hằng số cực đại $K<\infty$ sao cho, với mọi $t^*$ và mọi $n$:
+\[\frac{x_i^{(n+1)}(\xi(t^*))}{(n+1)!}\le K\]
+Khi đó có thể viết một cận trên cho số dư bằng ký hiệu O lớn:
+\[\lim_{\Delta t\to0}\frac{x_i^{(n+1)}(\xi(t^*))}{(n+1)!}\Delta t^{n+1}\le K\Delta t^{n+1}=O(\Delta t^{n+1})\]
+Lưu ý rằng ký hiệu O lớn $O(\Delta t^{n+1})$ làm nổi bật số hạng chi phối khi $\Delta t\to0$.
+
+Định lý Taylor cho phép viết chuỗi Taylor có xét đến ODE (4.8) và thay số dư bằng bậc của nó:
+\begin{equation}x_i(t^*+\Delta t)=x_i(t^*)+F_i(x(t^*),t^*)\Delta t+O(\Delta t^2)\tag{4.10}\end{equation}
+Với $\Delta t<1$ đủ nhỏ, có thể bỏ qua số hạng $O(\Delta t^2)$ và xấp xỉ $x_i(t^*+\Delta t)$ bằng:
+\begin{equation}x_i(t^*+\Delta t)\approx x_i(t^*)+F_i(x(t^*),t^*)\Delta t\tag{4.11}\end{equation}
+Trở lại trường hợp vectơ, điều này gợi ý có thể xấp xỉ vectơ nghiệm $x(t)$ bằng thuật toán sau:
+\begin{equation}\begin{aligned}
+x(\Delta t)&:\approx x(0)+F(x(0),0)\Delta t\\
+x(\Delta t+\Delta t)&:\approx x(\Delta t)+F(x(\Delta t),\Delta t)\Delta t\\
+x(2\Delta t+\Delta t)&:\approx x(2\Delta t)+F(x(2\Delta t),2\Delta t)\Delta t\\
+&\cdots
+\end{aligned}\tag{4.12}\end{equation}
+Đặt $x^{[s]}=x(s\Delta t)$, ta thu được phương pháp \emph{Euler tiến} (Forward Euler) để xấp xỉ số (4.8):
+\begin{equation}x^{[s+1]}=x^{[s]}+F(x^{[s]},s\Delta t)\Delta t\tag{4.13}\end{equation}
+Chuỗi Taylor được giới thiệu trong (4.9) cũng áp dụng theo hướng lùi từ một điểm bất kỳ, kể cả điểm $x_i(t^*+\Delta t)$:
+\begin{equation}\begin{aligned}
+x((t^*+\Delta t)-\Delta t)&=x(t^*+\Delta t)\\
+&\quad-x'(x(t^*+\Delta t),t^*)\Delta t+O(\Delta t^2)
+\end{aligned}\tag{4.14}\end{equation}
+Thay đạo hàm bằng $F$ từ (4.8), bỏ số dư và đơn giản hóa sẽ cho \emph{thương sai phân Newton}:
+\begin{equation}\frac{x(t^*+\Delta t)-x(t^*)}{\Delta t}\approx F(x(t^*+\Delta t))\tag{4.15}\end{equation}
+Viết lại thành phương trình sai phân cho:
+\begin{equation}x^{[s+1]}=x^{[s]}+F(x^{[s+1]})\Delta t\tag{4.16}\end{equation}
+Khác với Euler tiến, không thể suy ra ngay một thuật toán lặp từ phương pháp này: số hạng vectơ $x^{[s+1]}$ phụ thuộc vào chính nó. Đây là một vòng đại số (nhớ lại Mục 4.3.2.2). Cần giải phương trình ma trận theo $x^{[s+1]}$. Sự hiện diện của những vòng này phân biệt các phương pháp ẩn (có vòng) với các phương pháp tường minh (không có vòng). Điểm quan trọng là, như trình bày trong Mục 4.3.2.2, có thể giải các vòng này ở từng bước mô phỏng.
+
+\subsubsection{Ngữ nghĩa chuyển dịch sang CBD thời gian rời rạc}
+Như giải thích trong mục trước, có thể rời rạc hóa các phương trình vi phân thành phương trình sai phân bằng những kỹ thuật xấp xỉ số, rồi dễ dàng mô phỏng chúng.
+% Source: printed 115 / PDF 131
+Vì mọi CBD CT đều có thể được chuyển thành một ODE (theo Bảng 4.5), và vì ý nghĩa của một CBD thời gian rời rạc là một hệ phương trình sai phân, câu hỏi liệu có thể chuyển trực tiếp một CBD thời gian rời rạc thành một CBD thời gian rời rạc thực hiện phép xấp xỉ là tự nhiên. Những khối duy nhất cần được xấp xỉ là khối đạo hàm và khối tích phân. Mọi khối khác đều là khối đại số. Khối tích phân được để lại làm bài tập.
+
+% Translator note C4-N3 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C4-N3).} Ở câu mở đầu Mục 4.5.2.3 (trang 115 của bản gốc), tác giả viết chuyển ``một CBD thời gian rời rạc thành một CBD thời gian rời rạc''. Tiêu đề mục, các khối đạo hàm/tích phân và phép xấp xỉ ngay sau đó cho thấy ý đang xét là chuyển một CBD thời gian \emph{liên tục} thành CBD thời gian rời rạc.
+\end{quote}
+% Translator note C4-N3 end
+
+Khối đạo hàm đưa ra đạo hàm của đầu vào $u$ tại thời điểm $t$:
+\[y(t)=u'(t)\]
+ngoại trừ tại $t=0$, khi đầu ra $y(0)$ được cho bởi đầu vào điều kiện đầu $u_c$, nghĩa là $y(0)=u_c(0)$.
+
+Áp dụng thương sai phân Newton từ (4.15) cho:
+\[\frac{u(t+\Delta t)-u(t)}{\Delta t}\approx y(t+\Delta t)\]
+Giải theo đầu ra $y(t+\Delta t)$ và viết dưới dạng phương trình sai phân cho:
+\begin{equation}y^{[s]}:\approx\frac{u^{[s]}-u^{[s-1]}}{\Delta t}\tag{4.17}\end{equation}
+Vì đầu vào không khả vi tại thời điểm $t=0$, điều kiện đầu của khối đạo hàm được cung cấp với giá trị ban đầu $y(0)=u_c(0)$.
+
+Có thể dễ dàng xây dựng một CBD thời gian rời rạc tương đương với (4.17) bằng một khối trễ và các khối đại số. Khối trễ bảo đảm thu được tín hiệu đầu vào trễ ($u^{[s-1]}$). Tuy nhiên, ở bước ban đầu $s=0$, khối trễ phải có một điều kiện đầu được định nghĩa, vì giá trị $u^{[-1]}$ trong (4.17) chưa biết. Gọi $u_{-1}$ là giá trị chưa biết này. $u_{-1}$ không thể bằng $y^{[0]}$. Điều đó không thỏa mãn điều kiện đầu của đạo hàm, được biểu diễn như sau:
+\[y^{[0]}\approx\frac{u^{[0]}-u_{-1}}{\Delta t}=u_c^{[0]}\]
+Để tìm điều kiện đầu của khối trễ, có thể sắp xếp lại phương trình trên để được $u_{-1}=u^{[0]}-\Delta t\cdot u_c^{[0]}$, qua đó định nghĩa điều kiện đầu của khối trễ. Hình 4.11 trình bày quy tắc biến đổi.
+
+Trong mục này, CBD CT được giới thiệu và ý nghĩa của nó được cho bằng phép chuyển sang CBD thời gian rời rạc. Đến đây, chúng tôi đã giới thiệu tập khái niệm tối thiểu cho phép sử dụng và hiểu ngữ nghĩa CBD. Chúng tôi bỏ qua một vài chi tiết cần được bàn trong mục tiếp theo để trở thành người sử dụng thành thạo CBD CT. Chẳng hạn, chúng tôi mặc nhiên cho rằng nghiệm được phương pháp Euler tiến tính là chính xác. Hơn nữa, chúng tôi chưa giới thiệu ngữ nghĩa thao tác của CBD thời gian liên tục. Có thể dễ dàng xây dựng một thuật toán như vậy cho những phép xấp xỉ khối tích phân và đạo hàm đã nêu -- Euler tiến và thương sai phân Newton -- với sự chú ý đặc biệt rằng phép xấp xỉ đạo hàm có thể đưa các vòng đại số vào CBD. Tuy nhiên, nếu dùng những phương pháp xấp xỉ đó, thuật toán hầu như không hữu ích: việc chuyển sang CBD thời gian rời rạc tương đương và đã tự xử lý vấn đề vòng đại số.
+
+\section{Các khái niệm nâng cao và mở rộng}
+Mục này cho phép bạn xây dựng các phương pháp xấp xỉ thông minh hơn để giảm thiểu sai số xấp xỉ. Chúng tôi tập trung vào những phương pháp tích phân số, nghĩa là các phép xấp xỉ khối tích phân, vì chúng được dùng phổ biến nhất khi mô hình hóa hệ thống vật lý (xem Hình 4.10). Cuối cùng, chúng tôi giới thiệu một mở rộng được dùng rộng rãi trong CBD: các khối logic. Chúng cho phép sử dụng suy luận ở mức cao hơn trong CBD, mang lại khả năng biểu đạt mạnh hơn cho người lập mô hình, nhưng đưa vào những thách thức thú vị khác khi mô phỏng.
+% Source: printed 116 / PDF 132
+\sourcefigure{4.11}{132}{Một CBD CT mẫu có khối Đạo hàm (trái) và CBD thời gian rời rạc tương ứng (phải)}
+\subsection{Sai số xấp xỉ}
+Xét phương pháp Euler tiến trong (4.13). Để suy ra nó, số hạng $O(\Delta t^2)$ của chuỗi Taylor đã được bỏ qua (nhớ lại (4.9), (4.10) và (4.11)).
+
+Gọi $x(t)$ là nghiệm của (4.8) được xấp xỉ bằng Euler tiến, và gọi $\hat x$ là nghiệm chính xác. Số hạng thứ nhất ($x(0)=\hat x(0)$) được biết từ điều kiện đầu của (4.8). Số hạng thứ hai ($x(\Delta t)=x(0)+F(x(0))\Delta t$) lệch khỏi nghiệm chính xác $\hat x(\Delta t)$ một lượng bậc $O(\Delta t^2)$, chính là số dư bị bỏ qua trong chuỗi Taylor (nhớ lại (4.10) và (4.11)). Về mặt hình thức:
+\[\begin{aligned}
+\lVert\hat x(\Delta t)-x(\Delta t)\rVert
+&=\bigl\lVert\hat x(0)+F(\hat x(0))\Delta t+O(\Delta t^2)\\
+&\qquad-x(0)-F(x(0))\bigr\rVert=O(\Delta t^2).
+\end{aligned}\]
+% Translator note C4-N4 begin
+\begin{quote}\small
+\textbf{Ghi chú bản dịch (C4-N4).} Trong biểu thức chuẩn sai số đầu tiên ở Mục 4.6.1 (trang 116 của bản gốc), số hạng bị trừ $F(x(0))$ thiếu thừa số $\Delta t$. Theo bước Euler vừa nêu, số hạng ấy phải là $F(x(0))\Delta t$; nếu thiếu thừa số này, phép trừ không còn so sánh hai nghiệm tại cùng bước Euler.
+\end{quote}
+% Translator note C4-N4 end
+
+Số hạng thứ ba $x(2\Delta t)$ lệch xa hơn khỏi nghiệm chính xác, không chỉ vì số dư -- bậc $O(\Delta t^2)$ -- mà còn vì $F(x(\Delta t),\Delta t)$ được tính với số hạng gần đúng $x(\Delta t)$ (rất có thể $F(x(\Delta t))\ne F(\hat x(\Delta t))$). Quá trình lặp tiếp diễn và dễ thấy sai số tích lũy qua các lần lặp.
+
+Để phân tích sự tích lũy sai số, tốt nhất phân biệt hai loại sai số: sai số cắt cụt cục bộ, do số dư bị bỏ qua; và sai số đạo hàm, do tính đạo hàm $F$ tại những điểm gần đúng $x$. Cả hai đều đóng góp vào sự tích lũy sai số theo thời gian, nghĩa là sai số toàn cục.
+
+Sai số cắt cụt cục bộ biểu thị độ lệch tạo ra bởi một bước của phương pháp số, bắt đầu từ thông tin chính xác, nghĩa là không có sai số đã tích lũy trước đó.
+
+Gọi
+\begin{equation}\hat x((s+1)\cdot\Delta t)=\hat x(s\cdot\Delta t)+F(\hat x(s\cdot\Delta t))\Delta t+O(\Delta t^2)\tag{4.18}\end{equation}
+là nghiệm chính xác được khai triển bằng chuỗi Taylor vô hạn, và gọi
+\[x((s+1)\cdot\Delta t)\approx\hat x(s\cdot\Delta t)+F(\hat x(s\cdot\Delta t))\Delta t\]
+là nghiệm được tính qua một bước của phương pháp Euler tiến, bắt đầu từ thông tin chính xác. Khi đó, sai số cắt cụt cục bộ được cho bởi:
+% Source: printed 117 / PDF 133
+\begin{equation}\lVert\hat x((s+1)\cdot\Delta t)-x((s+1)\cdot\Delta t)\rVert=O(\Delta t^2)\tag{4.19}\end{equation}
+Nghiên cứu sai số toàn cục khó hơn, vì nó phụ thuộc vào sai số đạo hàm; trong một phân tích tổng quát, đạo hàm này có thể là một hàm $F$ bất kỳ. Nếu bất kỳ sai số nào trong đối số của $F$ được khuếch đại, sai số toàn cục tăng nhanh hơn. Nếu sai số được thu nhỏ, sai số toàn cục tăng chậm hơn. Để hình thức hóa, giả sử biết $F$ thỏa mãn:
+\begin{equation}\lVert F(\hat x(t))-F(x(t))\rVert\le K_f\lVert\hat x(t)-x(t)\rVert,\quad\text{với mọi }t\in\mathbb R,\tag{4.20}\end{equation}
+trong đó $0\le K_f<\infty$ là một hằng số. Khi đó, có thể suy ra sai số ở bước thứ hai của Euler tiến như sau:
+\begin{equation}\begin{aligned}
+&\lVert\hat x(2\Delta t)-x(2\Delta t)\rVert\\
+&=\bigl\lVert\hat x(\Delta t)+F(\hat x(\Delta t))\Delta t+O(\Delta t^2)\\
+&\qquad-(x(\Delta t)+F(x(\Delta t))\Delta t)\bigr\rVert\\
+&=\bigl\lVert\hat x(\Delta t)-x(\Delta t)+(F(\hat x(\Delta t))-F(x(\Delta t)))\Delta t+O(\Delta t^2)\bigr\rVert\\
+&\le\lVert\hat x(\Delta t)-x(\Delta t)\rVert+\lVert F(\hat x(\Delta t))-F(x(\Delta t))\rVert\Delta t+O(\Delta t^2)\\
+&\le\lVert\hat x(\Delta t)-x(\Delta t)\rVert+K_f\lVert\hat x(\Delta t)-x(\Delta t)\rVert\Delta t+O(\Delta t^2)\\
+&=(2+K_f\Delta t)O(\Delta t^2)=O(2\Delta t^2)
+\end{aligned}\tag{4.21}\end{equation}
+Lưu ý rằng khi $\Delta t\to0$, định nghĩa O lớn hàm ý:
+\[(2+K_f\Delta t)O(\Delta t^2)=O(2\Delta t^2+K_f\Delta t^3)=O(2\Delta t^2).\]
+Tương tự, ở bước thứ ba: $\lVert\hat x(3\Delta t)-x(3\Delta t)\rVert=O(3\Delta t^2)$. Sau $s$ bước, ta có $\lVert\hat x(s\Delta t)-x(s\Delta t)\rVert=O(s\Delta t^2)$.
+
+Để chạy mô phỏng đến thời điểm $t_f$, phương pháp Euler tiến thực hiện $t_f/\Delta t$ bước, cho:
+\[\lVert\hat x(t_f)-x(t_f)\rVert=O\left(\frac{t_f}{\Delta t}\Delta t^2\right)=O(\Delta t)\]
+Điều này nói rằng sai số toàn cục gần như tuyến tính theo kích thước $\Delta t$ khi $\Delta t\to0$. Để có biểu thức chính xác hơn cho sai số toàn cục của Euler tiến, xem [60, 61].
+
+Một kết luận quan trọng là, với điều kiện hàm $F$ tuân theo (4.20), có thể giảm thiểu sai số toàn cục đơn giản bằng cách chọn $\Delta t$ nhỏ hơn ở mỗi bước mô phỏng dùng Euler tiến. Đây được gọi là \emph{sự hội tụ}, một thuộc tính mà mọi phương pháp số hữu ích đều nên thỏa mãn.
+
+Vì mức độ nhỏ có thể đạt được của $\Delta t$ trên máy tính số có giới hạn, một phương pháp số có bậc chính xác cao hơn $O(\Delta t)$, chẳng hạn $O(\Delta t^2)$, sẽ cho phép dùng bước lớn hơn. Trong mục tiếp theo, chúng tôi giới thiệu các phương pháp số khác.
+
+\subsection{Các phương pháp số khác}
+\subsubsection{Phương pháp Euler lùi}
+Chuỗi Taylor ((4.10)) cũng áp dụng theo hướng lùi từ mọi điểm, kể cả $(t^*+\Delta t)$, như đã làm trong (4.14). Bỏ qua số dư, ta có:
+\[x_i((t^*+\Delta t)-\Delta t)\approx x_i(t^*+\Delta t)-x_i'(x(t^*+\Delta t))\Delta t\]
+Sau một số phép đơn giản hóa, ta được một phương pháp giống Euler tiến:
+\begin{equation}x(t^*+\Delta t)\approx x_i(t^*)+F(x(t^*+\Delta t))\Delta t\tag{4.22}\end{equation}
+Điều này dẫn tới phương pháp \emph{Euler lùi} (Backward Euler):
+\begin{equation}x^{[s+1]}=x^{[s]}+F(x^{[s+1]})\Delta t\tag{4.23}\end{equation}
+% Source: printed 118 / PDF 134
+So với các phương pháp tường minh, Euler lùi đòi hỏi giải một vòng đại số, nên cần thêm một lượng tính toán ở mỗi bước mô phỏng. Hơn nữa, sai số toàn cục và sai số cục bộ của Euler lùi có cùng bậc với Euler tiến. Khác biệt nằm ở việc đạo hàm dùng để ước lượng $x^{[s+1]}$ là đạo hàm gần nó nhất. Trong Euler tiến, đạo hàm đã \emph{lỗi thời}. Điều này mang lại lợi ích khi xử lý các hệ cứng. Xem [61, 60, 69] để biết thêm chi tiết.
+
+\subsubsection{Phương pháp Taylor bậc hai}
+Đến đây, chúng tôi luôn bỏ qua số hạng $O(\Delta t^2)$ của chuỗi Taylor. Hãy xét điều gì xảy ra khi bỏ qua các số hạng bậc cao hơn. Chẳng hạn, chuỗi Taylor sau khi bỏ số hạng $O(\Delta t^3)$ trở thành:
+\[x(t^*+\Delta t)\approx x(t^*)+F(x(t^*),t^*)\Delta t+\frac{\mathrm{d}F(x(t^*),t^*)}{\mathrm{d}t}\frac{\Delta t^2}{2!}\]
+Có thể khai triển đạo hàm $\frac{\mathrm{d}F(x(t^*),t^*)}{\mathrm{d}t}$ bằng quy tắc dây chuyền\footnote{Lưu ý rằng, để tổng quát, chúng tôi biểu diễn đạo hàm $F(x(t^*),t^*)$ như một hàm phụ thuộc trực tiếp vào thời gian. Nếu không như vậy thì $\frac{\partial F(x(t^*),t^*)}{\partial t}=0$.}:
+\[\frac{\mathrm{d}F(x(t^*),t^*)}{\mathrm{d}t}=\frac{\partial F(x(t^*),t^*)}{\partial x}F(x(t^*),t^*)+\frac{\partial F(x(t^*),t^*)}{\partial t}\]
+Khi đó, phương pháp chuỗi Taylor bậc hai trở thành:
+\begin{equation}\begin{aligned}
+x^{[s+1]}&=x^{[s]}+F(x^{[s]},s\cdot\Delta t)\Delta t\\
+&\quad+\left(\frac{\partial F(x^{[s]},s\cdot\Delta t)}{\partial x}F(x^{[s]},s\cdot\Delta t)+\frac{\partial F(x^{[s]},s\cdot\Delta t)}{\partial t}\right)\frac{\Delta t^2}{2!}
+\end{aligned}\tag{4.24}\end{equation}
+Sai số cắt cụt cục bộ của phương pháp này là số hạng bị bỏ qua $O(\Delta t^3)$, tốt hơn các phương pháp Euler. Nhược điểm là phương pháp đòi hỏi tính các đạo hàm riêng của $F$ (bằng ký hiệu hoặc bằng số) -- một thao tác tốn kém. Sai số toàn cục có bậc $O(\Delta t^2)$.
+
+Các phương pháp Taylor bậc cao hơn đòi hỏi tính nhiều đạo hàm hơn nữa, khiến chúng không thực tiễn. Có những phương pháp đạt cùng bậc sai số toàn cục với lượng tính toán ở mỗi bước nhỏ hơn nhiều. Tiếp theo, chúng tôi trình bày một phương pháp như vậy.
+
+\subsubsection{Phương pháp điểm giữa}
+Phương pháp Euler lùi dùng đạo hàm mới nhất để ước lượng nghiệm tại $t^*+\Delta t$, nhưng có nhược điểm là cần nhiều tính toán hơn để giải phương trình ẩn. Để tránh điều này mà vẫn cố đạt kết quả tốt hơn Euler tiến, có thể thử ước lượng đạo hàm tại điểm giữa $t^*$ và $t^*+\Delta t$, rồi dùng đạo hàm đó để tính $x(t^*+\Delta t)$:
+\[x(t^*+\Delta t)=x(t^*)+F\left(x\left(t^*+\frac{\Delta t}{2}\right)\right)\Delta t.\]
+Tuy nhiên, ta không biết giá trị $x(t^*+\frac{\Delta t}{2})$. Có thể dùng lại chuỗi Taylor để được:
+\[x\left(t^*+\frac{\Delta t}{2}\right)=x(t^*)+F(x(t^*))\frac{\Delta t}{2}\]
+Do đó, ta thu được phương pháp điểm giữa:
+\begin{equation}x^{[s+1]}=x^{[s]}+F\left[x^{[s]}+F(x^{[s]},s\cdot\Delta t)\frac{\Delta t}{2},\left(s+\frac12\right)\cdot\Delta t\right]\Delta t\tag{4.25}\end{equation}
+Có thể tổng quát hóa phương pháp điểm giữa (4.25) thành:
+% Source: printed 119 / PDF 135
+\[\begin{aligned}
+x_C^{[s+1]}&=x^{[s]}+\beta_{C1}\cdot\Delta t\cdot F^{[s]}\\
+&\quad+\beta_{C2}\cdot\Delta t\cdot F\bigl(x^{[s]}+\beta_p\cdot F^{[s]}\cdot\Delta t,(s+\alpha_p)\cdot\Delta t\bigr)
+\end{aligned}\]
+trong đó $F^{[s]}=F(x^{[s]},s\cdot\Delta t)$, $\beta_p=\alpha_p=\frac12$, $\beta_{C1}=0$ và $\beta_{C2}=1$.
+
+Khai triển $F\bigl(x^{[s]}+\beta_p\cdot F^{[s]}\cdot\Delta t,(s+\alpha_p)\cdot\Delta t\bigr)$ bằng phiên bản nhiều biến của chuỗi Taylor, ta được:
+\[\begin{aligned}
+&F\bigl(x^{[s]}+\beta_p\cdot F^{[s]}\cdot\Delta t,(s+\alpha_p)\cdot\Delta t\bigr)\\
+&\quad\approx F^{[s]}+\beta_p\cdot\frac{\partial F^{[s]}}{\partial x}\cdot F^{[s]}\cdot\Delta t+\alpha_p\cdot\frac{\partial F^{[s]}}{\partial t}\cdot\Delta t
+\end{aligned}\]
+trong đó số hạng bậc hai đã bị bỏ qua. Thay vào phương trình trước cho:
+\[\begin{aligned}
+x_C^{[s+1]}&=x^{[s]}+\beta_{C1}\cdot F^{[s]}\cdot\Delta t\\
+&\quad+\beta_{C2}\cdot\left[F^{[s]}+\beta_p\cdot\frac{\partial F^{[s]}}{\partial x}\cdot F^{[s]}\cdot\Delta t+\alpha_p\cdot\frac{\partial F^{[s]}}{\partial t}\cdot\Delta t\right]\cdot\Delta t\\
+&=x^{[s]}+(\beta_{C1}+\beta_{C2})F^{[s]}\cdot\Delta t\\
+&\quad+\beta_{C2}\left[\beta_p\cdot\frac{\partial F^{[s]}}{\partial x}\cdot F^{[s]}+\alpha_p\cdot\frac{\partial F^{[s]}}{\partial t}\right]\cdot\Delta t^2
+\end{aligned}\]
+Để tìm sai số cắt cụt cục bộ, hãy tìm khai triển chuỗi Taylor của nghiệm chính xác rồi so sánh với phương trình trước. Có thể khai triển nghiệm chính xác như sau:
+\[\hat x^{[s+1]}=\hat x^{[s]}+F^{[s]}\cdot\Delta t+\frac12\frac{\partial F^{[s]}}{\partial x}\Delta t^2+O(\Delta t^3)\]
+Áp dụng quy tắc dây chuyền cho đạo hàm cho:
+\[\hat x^{[s+1]}=\hat x^{[s]}+F^{[s]}\cdot\Delta t+\frac12\left[\frac{\partial F^{[s]}}{\partial x}F^{[s]}+\frac{\partial F^{[s]}}{\partial t}\right]\cdot\Delta t^2+O(\Delta t^3)\]
+So sánh $\hat x^{[s+1]}$ với $x_C^{[s+1]}$, và giả sử chúng bắt đầu từ nghiệm chính xác $\hat x^{[s]}$, cho:
+\[x_C^{[s+1]}=\hat x^{[s+1]}\Longleftrightarrow\]
+\[\begin{aligned}
+&\hat x^{[s]}+(\beta_{C1}+\beta_{C2})F^{[s]}\cdot\Delta t\\
+&\quad+\beta_{C2}\left[\beta_p\cdot\frac{\partial F^{[s]}}{\partial x}\cdot F^{[s]}+\alpha_p\cdot\frac{\partial F^{[s]}}{\partial t}\right]\cdot\Delta t^2\\
+&=\hat x^{[s]}+F^{[s]}\cdot\Delta t+\frac12\left[\frac{\partial F^{[s]}}{\partial x}F^{[s]}+\frac{\partial F^{[s]}}{\partial t}\right]\cdot\Delta t^2+O(\Delta t^3)
+\end{aligned}\]
+Giải phương trình trên theo các tham số cho:
+\[\begin{cases}\beta_{C1}+\beta_{C2}=1\\2\beta_{C2}\beta_p=1\\2\beta_{C2}\alpha_p=1\end{cases}\]
+Miễn là các tham số $\beta_p$, $\alpha_p$, $\beta_{C1}$, $\beta_{C2}$ tuân theo hệ phương trình trên, phương pháp tổng quát có sai số cắt cụt cục bộ bậc $O(\Delta t^3)$ mà không phải tính bất kỳ đạo hàm nào của $F$. Điều này cũng cho thấy phương pháp điểm giữa chỉ là một phần tử trong một họ phương pháp, mỗi phương pháp có tập tham số khác nhau, gọi là các phương pháp \emph{Runge--Kutta hai giai đoạn} [69].
+
+Bằng lập luận giống với Euler tiến (trong Mục 4.6.1), ta kết luận sai số toàn cục của phương pháp Runge--Kutta hai giai đoạn có bậc $O(\Delta t^2)$.
+% Source: printed 120 / PDF 136
+\subsection{Kích thước bước thích nghi}
+Các lược đồ tích phân số được giới thiệu đến đây dùng một kích thước bước $\Delta t$ được giả định không đổi trong suốt quá trình mô phỏng. Những thuật toán số này tốn nhiều tính toán trong các hệ mà hành vi động thay đổi chậm, ngoại trừ trong một số khoảng thời gian hạn chế.
+
+Nhớ lại rằng bậc tăng của sai số toàn cục rốt cuộc phụ thuộc vào hằng số Lipschitz $K_f$ trong (4.20). Hằng số này biểu diễn độ lệch trong trường hợp xấu nhất của hàm $F$ khi đáp ứng các độ lệch trong đối số của nó\footnote{$F(x(t))=F(\hat x(t)+e(t))$, với $e$ là sai số xấp xỉ.}, đối với mọi giá trị có thể có của $\hat x(t)$.
+
+$K_f$ lớn hơn cho thấy sai số toàn cục có thể tăng nhanh hơn, nghĩa là kích thước bước $\Delta t$ nên nhỏ hơn. Nói rõ hơn: nếu một hệ có $K_f$ lớn, tồn tại ít nhất một cặp giá trị $x(t)$ và $\hat x(t)$ mà $\lVert F(\hat x(t))-F(x(t))\rVert$ lớn. Điều này không hàm ý độ lệch của $F$ lớn với mọi cặp giá trị $x(t)$ và $\hat x(t)$. Hơn nữa, nó không hàm ý rằng nếu mô phỏng hệ trong một miền bị chặn (chẳng hạn $0<t<t_f$), hằng số Lipschitz trong miền đó sẽ nhỏ hơn. Hằng số Lipschitz nhỏ hơn có nghĩa là có thể chọn $\Delta t$ lớn hơn.
+
+Với một đạo hàm $F$ cho trước, khó tìm $K_f$ thích hợp để chọn đúng $\Delta t$.
+
+Một thuật toán có thể thay đổi $\Delta t$ trong suốt quá trình mô phỏng không chỉ tận dụng đặc trưng của từng miền trong không gian trạng thái để cải thiện hiệu năng chạy mô phỏng, mà còn giải phóng người dùng khỏi việc phải chọn một $\Delta t$ thích hợp. Tất cả điều này đạt được mà không hy sinh độ chính xác.
+
+Việc thay đổi $\Delta t$ phải được kích hoạt bởi một ước lượng nào đó về sai số phát sinh ở mỗi bước mô phỏng. Giả sử có ước lượng này, $\Delta t$ tăng nếu sai số trở nên quá nhỏ và giảm nếu sai số quá lớn.
+
+Thách thức là tìm một ước lượng tốt về sai số phát sinh. Giả sử có hai phương pháp, với sai số cắt cụt cục bộ lần lượt là $O(c\Delta t^v)$ và $O(c'\Delta t^{v'})$, trong đó $c,c',v,v'$ là các hằng số dương. Về mặt hình thức, gọi $x(t)$ là nghiệm tính bằng phương pháp thứ nhất, $\tilde x(t)$ là nghiệm tính bằng phương pháp thứ hai và $\hat x(t)$ là nghiệm chính xác. Khi đó, sau một bước không chính xác, có thể viết các nghiệm $x(t+\Delta t)$ và $\tilde x(t+\Delta t)$ như sau:
+\begin{equation}\begin{aligned}
+x(t+\Delta t)&=\hat x(t+\Delta t)+O(c\Delta t^v)\\
+\tilde x(t+\Delta t)&=\hat x(t+\Delta t)+O(c'\Delta t^{v'})
+\end{aligned}\tag{4.26}\end{equation}
+So sánh $x(t+\Delta t)$ với $\tilde x(t+\Delta t)$ cho:
+\[\lVert x(t+\Delta t)-\tilde x(t+\Delta t)\rVert=\bigl\lVert O(c\Delta t^v)-O(c'\Delta t^{v'})\bigr\rVert\]
+Ký hiệu O lớn cho biết tồn tại các hằng số $K_1$ và $K_2$ sao cho, trong giới hạn $\Delta t\to0$:
+\[\bigl\lVert O(c\Delta t^v)-O(c'\Delta t^{v'})\bigr\rVert=\bigl\lVert K_1c\Delta t^v-K_2c'\Delta t^{v'}\bigr\rVert\]
+Giả sử $c'>c$ và $v'<v$ (các trường hợp khác tương tự), khi $\Delta t\to0$ ta có:
+\[\begin{aligned}
+\lVert x(t+\Delta t)-\tilde x(t+\Delta t)\rVert
+&=O(c'\Delta t^{v'})\\
+&=\lVert\tilde x(t+\Delta t)-\hat x(t+\Delta t)\rVert,
+\end{aligned}\]
+qua đó chứng minh rằng so sánh nghiệm của hai phương pháp cho một ước lượng sai số có cùng bậc với sai số cắt cụt cục bộ của phương pháp kém chính xác hơn.
+
+Từ các mục trước, có hai cách ảnh hưởng đến độ chính xác của một phương pháp: (a) dùng kích thước bước nhỏ hơn; và (b) dùng một phương pháp xấp xỉ bậc cao hơn (chẳng hạn điểm giữa).
+
+Cách (a) khá trực tiếp: lấy một phương pháp số bất kỳ hiện có, tính nghiệm hai lần (một lần với hai nửa bước và một lần với một bước đơn), rồi so sánh hai ước lượng.
+
+Để minh họa cách (b), dùng phương pháp điểm giữa tính nghiệm $x(t)$ và ở mỗi bước, so sánh nó với kết quả $\tilde x(t)$ của Euler tiến. Dễ thấy cách này có một số tính toán dư thừa. May thay, có thể kết hợp các phương pháp Runge--Kutta bậc cao, tái sử dụng phần lớn tính toán dư thừa. Chúng được gọi là các phương pháp \emph{Runge--Kutta--Fehlberg}.
+% Source: printed 121 / PDF 137
+\subsection{Các khối logic}
+Các khối quyết định được dùng rộng rãi trong CBD để tăng khả năng biểu đạt của ngôn ngữ. Khối quyết định phổ biến nhất là khối chuyển mạch. Khối chuyển mạch trong Hình 4.12 đưa ra giá trị $u(t)$ hoặc $v(t)$ tùy giá trị $c(t)$. Nếu $c(t)\ge0$, đầu ra là $u(t)$; ngược lại là $v(t)$. Ngữ nghĩa chuyển dịch là:
+\[y(t)=\begin{cases}u(t),&\text{nếu }c(t)\ge0\\v(t),&\text{ngược lại}\end{cases}\]
+\sourcefigure{4.12}{137}{Khối chuyển mạch}
+Như sẽ trình bày ngay sau đây, ngữ nghĩa thao tác của khối này đưa ra những thách thức thú vị.
+
+\subsubsection{Xử lý gián đoạn -- định vị điểm qua không}
+Nhớ lại rằng chỉ có thể mô phỏng CBD thời gian liên tục theo cách gần đúng trên máy tính số. Xem Mục 4.5.2. Điều này có nghĩa mô phỏng một CBD liên tục thực ra là một tập điểm rời rạc:
+\[x(0),x(1\Delta t_1),x(2\Delta t_2),\ldots\]
+được tính bằng một phương pháp kích thước bước thích nghi (xem Mục 4.6.3).
+
+Giả sử thời điểm là $t$ và bộ mô phỏng sắp tính nghiệm cho đầu ra của khối chuyển mạch $y(t+\Delta t)$. Hơn nữa, giả sử $y(t)=u(t)$, nghĩa là $c(t)\ge0$. Nếu $c(t+\Delta t)\le0$, có thể nhận diện hai vấn đề:
+\begin{enumerate}
+\item $y(t+\Delta t)=v(t+\Delta t)$ có thể rất khác $y(t)$, vì $v(t+\Delta t)\ne u(t+\Delta t)$.
+\item $t+\Delta t$ có thể không biểu diễn đúng thời điểm tín hiệu $c(t)$ đi qua không. Nghĩa là $c(t+\Delta t)=0-\delta$, với một $\epsilon>0$ nào đó.
+\end{enumerate}
+Vấn đề thứ hai hàm ý rằng, theo định lý giá trị trung gian, tồn tại ít nhất một điểm $t^*\in[t,t+\Delta t]$ tại đó $c(t+\Delta t)=0$. Lý tưởng là chọn $\Delta t$ sao cho $t+\Delta t\approx t^*$, qua đó giảm thiểu $\delta$, vì hai lý do:
+\begin{enumerate}
+\item Độ chính xác được cải thiện vì mọi khối phụ thuộc vào nghiệm $x(t+\Delta t)$ sẽ tạo ra đầu ra gần điểm chuyển mạch $t^*$.
+\item Các khối tích phân áp dụng những phương pháp số trong Mục 4.6.2 có thể cần biết sự gián đoạn trong đầu vào, do sự gián đoạn của $y$ quanh $t^*$ gây ra (vấn đề 1 ở trên).
+\end{enumerate}
+Để thấy vì sao đây có thể là vấn đề, xét CBD trừu tượng trong Hình 4.13. Có thể viết nó thành phương trình vi phân $x'(t)=F(x(t))$ (nhớ lại Hình 4.10). Tại thời điểm gián đoạn $t^*$, trong giới hạn $\epsilon\to0$, $x(t^*-\epsilon)=x(t^*+\epsilon)$, nhưng $F(x(t^*-\epsilon))\ne F(x(t^*+\epsilon))$ do khối chuyển mạch. Điều này khiến một giả định cơ bản về hành vi của $F$ -- điều kiện (4.20) -- bị vi phạm. Về mặt hình thức:
+\[\lVert F(x(t^*+\epsilon))-F(x(t^*-\epsilon))\rVert\le K_f\lVert x(t^*+\epsilon)-x(t^*-\epsilon)\rVert\le0\]
+là một mâu thuẫn.
+% Source: printed 122 / PDF 138
+Nếu không giả định điều kiện Lipschitz, khó bảo đảm một bậc tăng của sai số toàn cục. Có nhiều cách xử lý vấn đề này khi đã định vị chính xác thời điểm gián đoạn (xem [211, 310]). Ở đây, chúng tôi tập trung vào định vị thời điểm gián đoạn (cũng được gọi là tìm nghiệm, hoặc định vị điểm qua không trong tài liệu).
+\sourcefigure{4.13}{138}{CBD trừu tượng có thể vi phạm điều kiện (4.20)}
+\sourcefigure{4.14}{138}{Phương pháp chia đôi}
+
+Nhiều thuật toán khác nhau đã được đề xuất qua các năm (xem [60, 69]). Bản chất luôn giống nhau: định vị $t^*$ trong khoảng $[t,t+\Delta t]$ sao cho điều kiện chuyển mạch thỏa mãn $c(t+\Delta t)=0$.
+
+Một thuật toán vững chắc nhưng đơn giản là phương pháp chia đôi. Như tên gọi gợi ý, phương pháp hoạt động bằng cách liên tục chia đôi khoảng. Ở mỗi lần lặp, nó chọn khoảng con có điểm qua không để tìm vị trí không. Thuật toán được minh họa trong Hình 4.14. Các bước ban đầu phát hiện một điểm qua không trong khoảng giữa $t_1$ và $t_2$. Thủ tục lặp tính trước điểm $a$, rồi điểm $b$, rồi điểm $c$, và cuối cùng điểm $d$ nằm trong các giới hạn dung sai.
+
+Các thuật toán khác được mô tả trong tài liệu [60].
+
+\section{Sai số toàn cục của phương pháp Euler}
+Sai số toàn cục đo độ lệch tích lũy của phương pháp số so với nghiệm chính xác, qua một số bước bất kỳ. Cần giả định $F(x,t)$ liên tục Lipschitz.
+
+Ở bước ban đầu, sai số toàn cục giống sai số cắt cụt cục bộ:
+\[\begin{aligned}
+e^{(1)}&=x^{(1)}-\tilde x^{(1)}\\
+&=x^{(0)}+F(x^{(0)},k\Delta t)\Delta t+O(\Delta t^2)\\
+&\quad-\bigl(x^{(k)}+F(x^{(k)},k\Delta t)\Delta t\bigr)=O(\Delta t^2).
+\end{aligned}\]
+% Source: printed 123 / PDF 139
+Ở bước thứ hai:
+\[\begin{aligned}
+e^{(2)}&=x^{(2)}-\tilde x^{(2)}\\
+&=x^{(1)}+F(x^{(1)},\Delta t)\Delta t+O(\Delta t^2)\\
+&\quad-\bigl(\tilde x^{(1)}+F(\tilde x^{(1)},\Delta t)\Delta t\bigr)\\
+&=e^{(1)}+F(x^{(1)},\Delta t)\Delta t-F(\tilde x^{(1)},\Delta t)\Delta t+O(\Delta t^2)\\
+&=\bigl[F(x^{(1)},\Delta t)-F(\tilde x^{(1)},\Delta t)\bigr]\Delta t+e^{(1)}+O(\Delta t^2).
+\end{aligned}\]
+Ta biết rằng, với một hằng số $K$ nào đó, $\tilde x^{(1)}=x^{(1)}-e^{(1)}$, nên có thể viết:
+\[\bigl[F(x^{(1)},\Delta t)-F(x^{(1)}-e^{(1)},\Delta t)\bigr]\Delta t+e^{(1)}+O(\Delta t^2)\]
+Điều kiện liên tục Lipschitz cho biết:
+\[\bigl\lvert F(x^{(1)},\Delta t)-F(x^{(1)}-e^{(1)},\Delta t)\bigr\rvert\le Ke^{(1)},\]
+Do đó, có thể đưa ra một cận trên cho sai số trên:
+\[\begin{aligned}
+e^{(2)}&=\bigl[F(x^{(1)},k\Delta t)-F(\tilde x^{(1)},k\Delta t)\bigr]\Delta t+e^{(1)}+O(\Delta t^2)\\
+&\le Ke^{(1)}\Delta t+e^{(1)}+O(\Delta t^2)\\
+&\le Ke^{(1)}\Delta t+e^{(1)}+O(\Delta t^2)\\
+&=(K\Delta t+1)e^{(1)}+O(\Delta t^2).
+\end{aligned}\]
+Tổng quát:
+\[\begin{aligned}
+e^{(k+1)}&=x^{(k+1)}-\tilde x^{(k+1)}\\
+&=x^{(k)}+F(x^{(k)},k\Delta t)\Delta t+O(\Delta t^2)\\
+&\quad-\bigl(\tilde x^{(k)}+F(\tilde x^{(k)},k\Delta t)\Delta t\bigr)\\
+&=e^{(k)}+\bigl[F(x^{(k)},k\Delta t)-F(\tilde x^{(k)},k\Delta t)\bigr]\Delta t+O(\Delta t^2)\\
+&\le K\Delta t e^{(k)}+e^{(k)}+O(\Delta t^2)\\
+&\le O(\Delta t^2)+(K+1)e^{(k)}.
+\end{aligned}\]
+Khai triển đệ quy và giả sử $\Delta t<1$, ta có:
+\[\begin{aligned}
+e^{(1)}&=O(\Delta t^2)\\
+e^{(2)}&\le O(\Delta t^2)+(K+1)O(\Delta t^2)=(K+2)O(\Delta t^2)\\
+e^{(3)}&\le O(\Delta t^2)+(K+2)O(\Delta t^2)=(K+3)O(\Delta t^2)\\
+&\cdots\\
+e^{(k)}&\le O(\Delta t^2)+(K+k-1)O(\Delta t^2)=(K+k)O(\Delta t^2).
+\end{aligned}\]
+Để mô phỏng hệ từ 0 đến $t_f$, cần $\frac{t_f}{\Delta t}$ bước. Do đó, sai số là:
+\[\begin{aligned}
+e^{(t_f/\Delta t)}&\le\left(K+\frac{t_f}{\Delta t}\right)O(\Delta t^2)\\
+&=KO(\Delta t^2)+\frac{t_f}{\Delta t}O(\Delta t^2)\\
+&\le(K+t_f)O(\Delta t)=O(\Delta t).
+\end{aligned}\]
+Điều này dẫn đến kết luận rằng bậc sai số toàn cục của Euler tiến là $O(\Delta t)$.
+% Source: printed 124 / PDF 140
+\section{Tổng kết}
+Sơ đồ khối nhân quả là sự hình thức hóa ký pháp đồ họa trực quan gồm các khối và mũi tên. Chương này giới thiệu các biến thể khác nhau của hệ hình thức đó theo từng bước.
+
+Những cách dùng điển hình nhất của các hệ hình thức này là: (i) CBD đại số để nghiên cứu hành vi ở trạng thái xác lập của hệ thống; (ii) CBD thời gian rời rạc để biểu diễn tính toán và các thành phần phần mềm; và (iii) CBD thời gian liên tục để mô hình hóa các hệ vật lý. Để kết nối ba biến thể này, một ví dụ xuyên suốt về hệ thống điều khiển hành trình được sử dụng.
+
+CBD đại số biểu diễn các hệ đại số không có khái niệm thời gian trôi qua. CBD thời gian rời rạc đưa vào sự trôi qua của thời gian, nhưng tại những điểm rời rạc. Chúng tương tự các phương trình sai phân. Cuối cùng, CBD thời gian liên tục, trong đó thời gian là một miền liên tục, tương ứng với các phương trình vi phân. $x$
+
+Ưu điểm của CBD so với các phương trình sai phân/vi phân thuần túy là hỗ trợ tự nhiên cho mô tả phân cấp các hệ thống phức tạp, cung cấp một cách quản lý độ phức tạp.
+
+Nhược điểm nằm ở khả năng tái sử dụng các mô hình thành phần vật lý được biểu diễn thành CBD. Các đối tượng vật lý không có khái niệm đầu vào và đầu ra. Tốt nhất nên mô hình hóa chúng bằng phương trình mà bất kỳ biến nào cũng có thể là đầu vào/đầu ra tùy việc đã biết nó hay chưa (xem chương Mô hình hóa phi nhân quả). Theo cách đó, có thể tái sử dụng cùng một thành phần trong nhiều bối cảnh khác nhau, với đầu vào/đầu ra được xác định khi tạo thể hiện. Trong CBD, người lập mô hình buộc phải nghĩ đến những cách tạo thể hiện có thể có của mô hình và định nghĩa đầu vào/đầu ra tương ứng.
+
+CBD được sử dụng rộng rãi trong phát triển các hệ thống nhúng. Hiểu ngữ nghĩa của chúng và các kỹ thuật tính toán số được dùng là một bước đệm để hiểu những ngôn ngữ mô hình hóa khác.
+
+\section{Tài liệu và đọc thêm}
+Trong các tài liệu đã trích dẫn, chúng tôi nhấn mạnh: [69] cung cấp tổng quan rộng về mô phỏng các hệ liên tục. [279] giới thiệu tốt về mô hình hóa và mô phỏng hệ liên tục cho người có nền tảng khoa học máy tính. [60] mô tả nhiều kỹ thuật tính toán số theo hướng toán học. Cuối cùng, [211] và [310] cung cấp tổng quan về những thách thức trong mô phỏng hệ lai, mà CBD có khối logic là một trường hợp.
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Phần mềm điều khiển đúng có nghĩa là gì?
+\item Vai trò của thành phần $K_p\bigl(v_d^{[s]}-v^{[s]}\bigr)$ trong (4.4) là gì? Vai trò của $K_i e^{[s]}$ trong cùng phương trình là gì? (Gợi ý: viết (4.4) không có thành phần $K_i e^{[s]}$, rồi giải nó cùng (4.2) với vận tốc ô tô không đổi.)
+\item Ý nghĩa của một phương trình đại số, như phương trình trong Ví dụ 4.3, là gì?
+\item Thủ tục tổng quát để vẽ một CBD từ phương trình đại số cho trước là gì?
+\item CBD nào là trường hợp xấu nhất đối với Thuật toán 1?
+\item Có thể xấp xỉ khối tích phân bằng phương pháp Euler tiến trong (4.13) như thế nào?
+\item Xây dựng một CBD CT cho bài toán giá trị đầu $x''(t)=-x$; $x(0)=1$; $x'(0)=1$, chỉ dùng các khối tích phân. Có thể chỉ dùng các khối đạo hàm hay không?
+\item Chuyển các CBD CT thành CBD DT bằng phương pháp xấp xỉ được trình bày ở đây, rồi kiểm tra xem có vòng đại số hay không.
+\item Áp dụng Euler lùi để xấp xỉ khối tích phân, như trong Câu hỏi 6 ở trên.
+\item Với cách tiếp cận (b), nên hiển thị nghiệm nào trong hai nghiệm gần đúng cho người dùng?
+\end{enumerate}
+% Source: printed 125 / PDF 141
+\section*{Lời cảm ơn}
+Công trình này được tài trợ một phần bằng học bổng tiến sĩ của Agency for Innovation by Science and Technology in Flanders (IWT), và COST Action MPM4CPS. Chúng tôi cũng trân trọng ghi nhận sự hỗ trợ một phần của trung tâm nghiên cứu chiến lược Flanders Make dành cho ngành công nghiệp chế tạo.
+
+\section*{Truy cập mở}
+Chương này được cấp phép theo các điều khoản của Giấy phép Creative Commons Attribution 4.0 International (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, chuyển thể, phân phối và sao chép trên bất kỳ phương tiện hoặc định dạng nào, miễn là ghi công thích hợp cho (các) tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons và chỉ rõ nếu đã có thay đổi.
+
+Các hình ảnh hoặc tư liệu của bên thứ ba khác trong chương này thuộc giấy phép Creative Commons của chương, trừ khi có chỉ dẫn khác trong dòng ghi công của tư liệu. Nếu tư liệu không thuộc giấy phép Creative Commons của chương và việc sử dụng dự định của bạn không được pháp luật cho phép hoặc vượt quá phạm vi sử dụng được phép, bạn cần xin phép trực tiếp từ chủ sở hữu bản quyền.

@@ -1,0 +1,1805 @@
+% Complete Chapter 3 Vietnamese text draft; self-review: review/chapter-03.md.
+% Source: printed 45 / PDF 61
+\chapter{Modelica: Mô hình hóa hệ thống vật lý dựa trên phương trình và hướng đối tượng}
+\chapterauthors{Peter Fritzson}
+\begin{flushleft}
+\small
+Peter Fritzson\\
+Linköping University, Department of Computer and Information Science, SE-58183 Linköping, Thụy Điển\\
+Thư điện tử: \url{peter.fritzson@liu.se}\\
+\copyright{} Các tác giả 2020. P. Carreira và cộng sự (chủ biên), \emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+\url{https://doi.org/10.1007/978-3-030-43946-0_3}
+\end{flushleft}
+
+\section*{Tóm tắt}
+Lĩnh vực các ngôn ngữ và công cụ mô hình hóa hướng đối tượng dựa trên phương trình tiếp tục thành công và được sử dụng ngày càng rộng rãi trên toàn thế giới, chủ yếu trong kỹ nghệ và khoa học tự nhiên, nhưng đôi khi cả trong khoa học xã hội và kinh tế học. Các đặc tính chính của những ngôn ngữ này, mà Modelica là một ví dụ tiêu biểu, gồm: mô hình hóa phi nhân quả bằng phương trình; khả năng mô hình hóa đa miền, bao quát nhiều miền ứng dụng; tính hướng đối tượng hỗ trợ tái sử dụng thành phần và tiến hóa mô hình; cùng các đặc tính kiến trúc hỗ trợ mô hình hóa kiến trúc hệ thống, bao gồm tạo và kết nối thành phần. Nhờ đó, việc sử dụng trở nên dễ dàng, có thể thiết kế mô hình trực quan bằng cách kết hợp các khối xây dựng mô hình định nghĩa sẵn như những khối Lego, và có thể định nghĩa các thư viện mô hình với những thành phần tái sử dụng được. Chương này giới thiệu và trình bày tổng quan về Modelica như một ví dụ tiêu biểu của ngôn ngữ hướng đối tượng dựa trên phương trình.
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi mong bạn có thể:
+\begin{itemize}
+\item Tạo mô hình Modelica biểu diễn hành vi động của thành phần vật lý ở mức trừu tượng hóa tham số tập trung.
+\item Sử dụng những cấu trúc hướng đối tượng quen thuộc trong các ngôn ngữ phần mềm (như chuyên biệt hóa lớp, lồng nhau và đóng gói) để tái sử dụng và quản lý độ phức tạp.
+\item Lắp ráp các mô hình vật lý phức tạp bằng các phép trừu tượng hóa thành phần và đầu nối.
+\item Hiểu cách mô hình được chuyển thành các phương trình vi phân--đại số để thực thi.
+\end{itemize}
+
+\section{Giới thiệu}
+Modelica trước hết là một ngôn ngữ mô hình hóa cho phép đặc tả các mô hình toán học của những hệ thống tự nhiên hoặc nhân tạo phức tạp, chẳng hạn để mô phỏng bằng máy tính các hệ thống động có hành vi tiến triển theo hàm của thời gian. Modelica cũng là một ngôn ngữ lập trình hướng đối tượng dựa trên phương trình, hướng tới các ứng dụng tính toán có độ phức tạp cao và đòi hỏi hiệu năng cao. Bốn đặc tính quan trọng nhất của Modelica là:
+\begin{itemize}
+\item Modelica chủ yếu dựa trên phương trình thay vì câu lệnh gán. Điều này cho phép mô hình hóa phi nhân quả, giúp tái sử dụng lớp tốt hơn vì phương trình không chỉ định một hướng luồng dữ liệu nhất định. Nhờ vậy, một lớp Modelica có thể thích ứng với nhiều bối cảnh luồng dữ liệu.
+% Source: printed 46 / PDF 62
+\item Modelica có khả năng mô hình hóa đa miền, nghĩa là có thể mô tả và kết nối các thành phần mô hình tương ứng với những đối tượng vật lý thuộc nhiều miền khác nhau, chẳng hạn điện, cơ học, nhiệt động lực học, thủy lực, sinh học và ứng dụng điều khiển.
+\item Modelica là ngôn ngữ hướng đối tượng với một khái niệm lớp tổng quát, thống nhất lớp, cấu trúc tổng quát (generics, được gọi là template trong C++) và quan hệ kiểu con tổng quát vào một cấu trúc ngôn ngữ duy nhất. Điều này hỗ trợ tái sử dụng thành phần và tiến hóa mô hình.
+\item Modelica có một mô hình thành phần phần mềm mạnh, với các cấu trúc để tạo và kết nối thành phần. Vì thế, ngôn ngữ đặc biệt phù hợp để mô tả kiến trúc của các hệ thống vật lý phức tạp, và ở một mức độ nhất định cả các hệ thống phần mềm.
+\end{itemize}
+
+Đó là những đặc tính chính khiến Modelica vừa mạnh vừa dễ sử dụng, đặc biệt cho mô hình hóa và mô phỏng. Chúng ta sẽ bắt đầu bằng phần giới thiệu từng bước về Modelica từ những điều đầu tiên.
+
+\section{Bắt đầu với Modelica}
+Chương trình Modelica được xây dựng từ các lớp, cũng gọi là mô hình. Từ một định nghĩa lớp, có thể tạo số lượng đối tượng bất kỳ, được gọi là các thể hiện của lớp đó. Hãy hình dung lớp như một tập hợp bản thiết kế và chỉ dẫn mà một nhà máy dùng để tạo ra các đối tượng. Trong trường hợp này, trình biên dịch và hệ thống thời gian chạy Modelica chính là nhà máy.
+
+Một lớp Modelica chứa các phần tử, chẳng hạn khai báo biến và các phần phương trình chứa phương trình. Biến chứa dữ liệu thuộc các thể hiện của lớp; chúng tạo thành nơi lưu trữ dữ liệu của thể hiện. Phương trình của một lớp đặc tả hành vi của các thể hiện thuộc lớp đó.
+
+Từ lâu, chương trình ví dụ đầu tiên trong mọi ngôn ngữ máy tính thường là một chương trình đơn giản in chuỗi \texttt{"Hello World"}. Vì Modelica là ngôn ngữ dựa trên phương trình, việc in một chuỗi không có nhiều ý nghĩa. Thay vào đó, chương trình Modelica \texttt{HelloWorld} của chúng ta giải một \emph{phương trình vi phân} đơn giản:
+\begin{equation}
+\dot{x}=-a\cdot x \tag{3.1}
+\end{equation}
+Biến $x$ trong phương trình này là biến động (ở đây cũng là biến trạng thái), có thể thay đổi giá trị theo thời gian. Đạo hàm theo thời gian $\dot{x}$ là đạo hàm của $x$ theo thời gian, được biểu diễn bằng \texttt{der(x)} trong Modelica. Vì mọi chương trình Modelica, thường được gọi là \emph{mô hình}, đều gồm các khai báo lớp, chương trình \texttt{HelloWorld} được khai báo như một lớp:
+\begin{verbatim}
+class HelloWorld
+   Real x(start = 1);
+   parameter Real a = 1;
+equation
+   der(x) = -a * x;
+end HelloWorld;
+\end{verbatim}
+Hãy dùng trình soạn thảo văn bản hoặc môi trường lập trình Modelica yêu thích để nhập đoạn mã Modelica này\footnote{Môi trường Modelica mã nguồn mở OpenModelica của OSMC có thể tải về tại \url{www.openmodelica.org}. Dymola là sản phẩm của Dassault Systems, \url{www.dymola.com}; xem \url{www.modelica.org} để biết thêm sản phẩm.}, hoặc mở tài liệu điện tử DrModelica (một phần của OpenModelica), chứa phần lớn các ví dụ và bài tập trong sách này. Sau đó gọi lệnh mô phỏng trong môi trường Modelica. Lệnh sẽ biên dịch mã Modelica thành mã trung gian, thường là mã C, rồi mã này được biên dịch thành mã máy và thực thi cùng một bộ giải số phương trình vi phân thường (ODE) hoặc phương trình vi phân--đại số (DAE), để tạo ra nghiệm $x$ theo thời gian. Lệnh sau trong môi trường OpenModelica tạo ra nghiệm từ thời điểm 0 giây đến thời điểm 2 giây:
+
+\noindent\texttt{simulate(HelloWorld,stopTime=2)}\footnote{Trước khi mô phỏng một mô hình hiện có, cần mở hoặc nạp mô hình, chẳng hạn \texttt{loadModel(HelloWorld)} trong OpenModelica. Lệnh mô phỏng của OpenModelica là \texttt{simulate}. Lệnh tương ứng trong Dymola là \texttt{simulateModel("HelloWorld", stopTime=2)}.}
+
+Vì nghiệm $x$ là một hàm của thời gian, có thể vẽ nó bằng lệnh vẽ đồ thị:
+
+% Source: printed 47 / PDF 63
+\noindent\texttt{plot(x)}\footnote{\texttt{plot} là lệnh OpenModelica để vẽ kết quả mô phỏng. Lệnh Dymola tương ứng là \texttt{plot(\{"x"\})}.}
+
+(Hoặc dạng dài hơn \texttt{plot(x,xrange=\{0,2\})}, chỉ định trục $x$), thu được đường cong trong Hình 3.31:
+\sourcefigure{3.1}{63}{Đồ thị mô phỏng mô hình HelloWorld đơn giản.}
+
+Giờ đây, chúng ta có một mô hình Modelica nhỏ thực hiện được một việc, nhưng nó thực sự có ý nghĩa gì? Chương trình chứa một khai báo lớp tên \texttt{HelloWorld}, với hai biến và một phương trình. Thuộc tính đầu tiên của lớp là biến \texttt{x}, được khởi tạo bằng giá trị ban đầu 1 khi mô phỏng bắt đầu. Mọi biến trong Modelica đều có một thuộc tính \texttt{start} với giá trị mặc định thường được đặt bằng 0. Để có giá trị ban đầu khác, ta cung cấp một thành phần sửa đổi (modifier) trong dấu ngoặc đơn sau tên biến, tức một phương trình sửa đổi đặt thuộc tính \texttt{start} bằng 1 và thay thế phương trình mặc định ban đầu của thuộc tính.
+
+Thuộc tính thứ hai là biến \texttt{a}, một hằng được khởi tạo bằng 1 ở đầu mô phỏng. Hằng như vậy có tiền tố là từ khóa \texttt{parameter}, cho biết nó không đổi trong suốt mô phỏng nhưng là tham số mô hình có thể thay đổi giữa các lần mô phỏng, chẳng hạn thông qua một lệnh trong môi trường mô phỏng. Ví dụ, có thể chạy lại mô phỏng với một giá trị \texttt{a} khác mà không cần biên dịch lại nếu thay đổi \texttt{a} bằng chức năng cập nhật tham số của môi trường.
+
+Cũng lưu ý rằng mỗi biến có một kiểu đứng trước tên khi biến được khai báo. Trong trường hợp này, cả biến \texttt{x} lẫn ``biến'' \texttt{a} đều có kiểu \texttt{Real}.
+
+Phương trình duy nhất trong ví dụ \texttt{HelloWorld} đặc tả rằng đạo hàm theo thời gian của $x$ bằng hằng $-a$ nhân với $x$. Trong Modelica, dấu bằng \texttt{=} luôn có nghĩa là quan hệ bằng nhau, tức thiết lập một phương trình, chứ không phải phép gán như trong nhiều ngôn ngữ khác. Đạo hàm theo thời gian của một biến được chỉ định bằng giả hàm \texttt{der( )}.
+
+Ví dụ thứ hai chỉ phức tạp hơn một chút, chứa năm phương trình khá đơn giản:
+\begin{equation}m\dot{v}_x=-\frac{x}{L}F\tag{3.2}\end{equation}
+\begin{equation}m\dot{v}_y=-\frac{y}{L}F-mg\tag{3.3}\end{equation}
+\begin{equation}\dot{x}=v_x\tag{3.4}\end{equation}
+\begin{equation}\dot{y}=v_y\tag{3.5}\end{equation}
+\begin{equation}x^2+y^2=L^2\tag{3.6}\end{equation}
+Ví dụ này thực sự là một mô hình toán học của một hệ thống vật lý, con lắc phẳng, được minh họa trong Hình 3.2.
+
+% Source: printed 48 / PDF 64
+\sourcefigure{3.2}{64}{Một con lắc phẳng.}
+\begin{equation}v_x\tag{3.7}\end{equation}
+\begin{equation}x^2+y^2=L^2\tag{3.8}\end{equation}
+\begin{equation}v_y\tag{3.9}\end{equation}
+Các phương trình là những phương trình chuyển động Newton của khối lượng con lắc dưới tác động của trọng lực, cùng một ràng buộc hình học, phương trình thứ năm $x^2+y^2=L^2$, quy định rằng vị trí $(x,y)$ của nó phải nằm trên đường tròn bán kính $L$. Các biến $v_x$ và $v_y$ lần lượt là vận tốc theo hướng $x$ và $y$. Mô hình Modelica của con lắc như sau:
+\begin{verbatim}
+class Pendulum "Planar Pendulum"
+   constant Real PI=3.141592653589793;
+   parameter Real m=1, g=9.81, L=0.5;
+   Real F;
+   output Real x(start=0.5),y(start=0);
+   output Real vx,vy;
+equation
+   m*der(vx)=-(x/L)*F;
+   m*der(vy)=-(y/L)*F-m*g;
+   der(x)=vx;
+   der(y)=vy;
+   x^2+y^2=L^2;
+end Pendulum;
+\end{verbatim}
+Tuy nhiên, đặc tính thú vị của mô hình này là phương trình thứ năm thuộc một loại khác: một \emph{phương trình đại số}, chỉ chứa các công thức đại số của biến mà không có đạo hàm. Bốn phương trình đầu của mô hình là phương trình vi phân như trong ví dụ \texttt{HelloWorld}. Những hệ phương trình chứa cả phương trình vi phân lẫn phương trình đại số được gọi là \emph{hệ phương trình vi phân--đại số} (DAE).
+
+Chúng ta mô phỏng mô hình \texttt{Pendulum} và vẽ tọa độ $x$, như trong Hình 3.3:
+\begin{verbatim}
+simulate(Pendulum, stopTime=4)
+plot(x);
+\end{verbatim}
+
+% Source: printed 49 / PDF 65
+\sourcefigure{3.3}{65}{Đồ thị mô phỏng mô hình DAE Pendulum.}
+
+Bạn cũng có thể viết các hệ phương trình DAE không có ý nghĩa vật lý, với các phương trình chứa những công thức được chọn ít nhiều ngẫu nhiên, như lớp \texttt{DAEexample} dưới đây:
+\begin{verbatim}
+class DAEexample
+  Real x(start=0.9);
+  Real y;
+equation
+  der(y) + (1+0.5*sin(y)) * der(x) = sin(time);
+  x-y = exp(-0.9*x) * cos(y);
+end DAEexample;
+\end{verbatim}
+Lớp này chứa một phương trình vi phân và một phương trình đại số. Hãy tự thử mô phỏng và vẽ nó để xem có xuất hiện đường cong hợp lý nào không. Cuối cùng, một nhận xét quan trọng về mô hình Modelica: số \emph{biến} phải bằng số \emph{phương trình}!
+
+Phát biểu này đúng với ba mô hình chúng ta đã gặp, và đúng với mọi mô hình Modelica giải được. Biến ở đây là thứ có thể biến thiên, tức không phải các hằng có tên và tham số sẽ được mô tả trong một mục phía sau.
+
+\subsection{Biến và các kiểu định nghĩa sẵn}
+Ví dụ sau cho thấy một mô hình phức tạp hơn một chút, mô tả một bộ dao động Van der Pol\footnote{Balthazar van der Pol là một kỹ sư điện người Hà Lan, người khởi xướng động lực học thực nghiệm hiện đại trong phòng thí nghiệm vào những năm 1920 và 1930. Van der Pol nghiên cứu các mạch điện sử dụng đèn điện tử chân không và phát hiện chúng có những dao động ổn định, nay gọi là chu trình giới hạn. Bộ dao động van der Pol là một mô hình do ông phát triển để mô tả hành vi của các mạch đèn điện tử chân không phi tuyến.}. Lưu ý rằng từ khóa \texttt{model} được dùng thay cho \texttt{class}, với ý nghĩa gần như giống nhau.
+\begin{verbatim}
+model VanDerPol "Van der Pol oscillator model"
+  Real x(start = 1) "Descriptive string for x"; // x starts at 1
+  Real y(start = 1) "Descriptive string for y"; // y starts at 1
+parameter
+  Real lambda = 0.3;
+equation
+  der(x) = y; // This is the first equation
+  der(y) = -x + lambda*(1 - x*x)*y; // The 2nd differential equation
+end VanDerPol;
+\end{verbatim}
+Ví dụ này chứa khai báo hai biến động (ở đây cũng là biến trạng thái) \texttt{x} và \texttt{y}, đều có kiểu \texttt{Real} và giá trị ban đầu 1 khi mô phỏng bắt đầu, thường là thời điểm 0. Tiếp theo là khai báo hằng tham số \texttt{lambda}, được gọi là tham số mô hình.
+
+Một \emph{tham số} là một loại hằng đặc biệt, được hiện thực như một biến tĩnh chỉ khởi tạo một lần và không bao giờ đổi giá trị trong một lần thực thi cụ thể. Tham số là một biến hằng giúp người dùng dễ sửa đổi hành vi mô hình, chẳng hạn thay đổi tham số \texttt{lambda}, vốn ảnh hưởng mạnh đến hành vi của bộ dao động Van der Pol. Ngược lại, một hằng Modelica cố định, được khai báo với tiền tố \texttt{constant}, không bao giờ thay đổi và có thể được thay thế bằng giá trị của nó ở mọi nơi xuất hiện.
+
+% Source: printed 50 / PDF 66
+Cuối cùng, chúng tôi trình bày khai báo ba biến giả chỉ để minh họa các biến có kiểu dữ liệu khác \texttt{Real}: biến Boolean \texttt{bb}, có giá trị ban đầu mặc định \texttt{false} nếu không chỉ định khác; biến chuỗi \texttt{dummy}, luôn bằng \texttt{"dummy string"}; và biến số nguyên \texttt{fooint}, luôn bằng 0.
+\begin{verbatim}
+  Boolean bb;
+  String dummy = "dummy string";
+  Integer fooint = 0;
+\end{verbatim}
+Modelica có các kiểu dữ liệu ``nguyên thủy'' định nghĩa sẵn, tích hợp trong ngôn ngữ, để hỗ trợ giá trị dấu phẩy động, số nguyên, Boolean và chuỗi. Những kiểu nguyên thủy này chứa dữ liệu mà Modelica hiểu trực tiếp, khác với các kiểu lớp do lập trình viên định nghĩa. Cũng có kiểu \texttt{Complex} cho tính toán số phức, được định nghĩa sẵn trong một thư viện. Kiểu của mỗi biến phải được khai báo tường minh. Các kiểu dữ liệu cơ bản định nghĩa sẵn của Modelica là:
+\begin{center}
+\begin{tabular}{p{0.20\linewidth}p{0.72\linewidth}}
+\hline
+\texttt{Boolean} & Hoặc \texttt{true}, hoặc \texttt{false}.\\
+\texttt{Integer} & Bù hai 32 bit, thường tương ứng với kiểu dữ liệu \texttt{int} của C.\\
+\texttt{Real} & Dấu phẩy động 64 bit, thường tương ứng với kiểu dữ liệu \texttt{double} của C.\\
+\texttt{String} & Chuỗi ký tự văn bản.\\
+\texttt{enumeration(...)} & Kiểu liệt kê gồm các giá trị literal liệt kê.\\
+\texttt{Clock} & Kiểu đồng hồ cho các mô hình đồng bộ theo nhịp đồng hồ.\\
+\texttt{Complex} & Dùng cho tính toán số phức, một kiểu cơ bản định nghĩa sẵn trong thư viện.\\
+\hline
+\end{tabular}
+\end{center}
+
+Cuối cùng, có một phần phương trình bắt đầu bằng từ khóa \texttt{equation}, chứa hai phương trình phụ thuộc lẫn nhau để định nghĩa động lực học của mô hình. Để minh họa hành vi mô hình, chúng ta đưa ra một lệnh mô phỏng bộ dao động Van der Pol trong 25 giây, bắt đầu ở thời điểm 0:
+\begin{verbatim}
+simulate(VanDerPol, stopTime=25)
+\end{verbatim}
+Đồ thị mặt phẳng pha của các biến trạng thái trong mô hình bộ dao động Van der Pol (Hình 3.4):
+\begin{verbatim}
+plotParametric(x,y, stopTime=25)
+\end{verbatim}
+\sourcefigure{3.4}{66}{Đồ thị tham số của mô phỏng mô hình bộ dao động Van der Pol.}
+
+Tên của biến, hàm, lớp, v.v. được gọi là \emph{định danh}. Modelica có hai dạng. Dạng thông dụng nhất bắt đầu bằng một chữ cái, theo sau bởi các chữ cái hoặc chữ số, ví dụ \texttt{x2}. Dạng thứ hai bắt đầu bằng dấu nháy đơn, theo sau bởi các ký tự bất kỳ và kết thúc bằng dấu nháy đơn, ví dụ \texttt{'2nd * 3'}.
+
+\subsection{Chú thích}
+Các văn bản mô tả tùy ý, chẳng hạn bằng tiếng Anh, được chèn vào khắp chương trình máy tính là những \emph{chú thích} cho mã. Modelica có ba kiểu chú thích, tất cả đều được minh họa trong ví dụ \texttt{VanDerPol} trước đó.
+
+% Source: printed 51 / PDF 67
+Chú thích cho phép viết văn bản mô tả cùng với mã, khiến mô hình dễ sử dụng hơn đối với người dùng, hoặc dễ hiểu hơn đối với lập trình viên có thể đọc mã của bạn trong tương lai. Người lập trình đó rất có thể chính là bạn, nhiều tháng hoặc nhiều năm sau. Chú thích mã của mình giúp bạn tiết kiệm công sức sau này. Ngoài ra, bạn thường tìm thấy lỗi trong mã khi viết chú thích, vì việc giải thích mã buộc bạn suy nghĩ về nó thêm một lần nữa.
+
+Loại chú thích đầu tiên là một chuỗi trong dấu nháy chuỗi, ví dụ \texttt{"a comment"}, có thể xuất hiện sau khai báo biến hoặc ở đầu khai báo lớp. Đó là những ``chú thích định nghĩa'', được xử lý để sử dụng trong môi trường lập trình Modelica, chẳng hạn xuất hiện trong các menu hoặc dưới dạng văn bản trợ giúp cho người dùng. Xét về cú pháp, chúng không thực sự là chú thích vì là một phần của cú pháp ngôn ngữ. Trong ví dụ trước, các chú thích định nghĩa như vậy xuất hiện cho lớp \texttt{VanDerPol} và các biến \texttt{x}, \texttt{y}.
+
+Hai loại chú thích còn lại được trình biên dịch Modelica bỏ qua, và chỉ có mặt để hỗ trợ lập trình viên Modelica. Văn bản theo sau \texttt{//} đến cuối dòng bị trình biên dịch bỏ qua, cũng như văn bản nằm giữa \texttt{/*} và \texttt{*/} tiếp theo. Vì vậy, loại chú thích cuối có thể dùng cho những phần văn bản lớn chiếm nhiều dòng.
+
+Cuối cùng, cần đề cập một cấu trúc gọi là \emph{annotation}, một dạng ``chú thích'' có cấu trúc có thể lưu trữ thông tin cùng với mã, được mô tả trong mục về annotation ở cuối chương.
+
+\subsection{Hằng}
+Các giá trị literal hằng trong Modelica có thể là số nguyên như 4, 75, 3078; giá trị dấu phẩy động như 3.14159, 0.5, 2.735E-10, 8.6835e+5; giá trị chuỗi như \texttt{"hello world"}, \texttt{"red"}; và giá trị liệt kê như \texttt{Colors.red}, \texttt{Sizes.xlarge}.
+
+Lập trình viên ưu tiên dùng hằng có tên vì hai lý do. Thứ nhất, tên hằng là một dạng tài liệu có thể mô tả giá trị cụ thể đó dùng để làm gì. Lý do thứ hai, có lẽ còn quan trọng hơn, là một hằng có tên được định nghĩa tại một nơi duy nhất trong chương trình. Khi cần thay đổi hoặc sửa hằng, chỉ cần sửa tại một nơi, giúp đơn giản hóa bảo trì chương trình.
+
+Hằng có tên trong Modelica được tạo bằng cách dùng tiền tố \texttt{constant} hoặc \texttt{parameter} trong khai báo, và cung cấp một phương trình khai báo như một phần của khai báo. Ví dụ:
+\begin{verbatim}
+constant Real PI = 3.141592653589793;
+constant String redcolor = "red";
+constant Integer one = 1;
+parameter Real mass = 22.5;
+\end{verbatim}
+Các hằng tham số (thường gọi là \emph{tham số}) thường có thể được truy cập và thay đổi từ giao diện đồ họa của công cụ Modelica. Phần lớn công cụ Modelica hỗ trợ mô phỏng lại mô hình mà không biên dịch lại sau khi đổi tham số, thường giúp rút ngắn đáng kể thời gian chờ kết quả.
+
+Có thể khai báo tham số mà không có phương trình khai báo (nhưng nên có giá trị ban đầu mặc định), vì giá trị của nó có thể được định nghĩa, chẳng hạn bằng thao tác tương tác hoặc đọc từ tệp, trước khi mô phỏng bắt đầu. Điều này không thể thực hiện đối với hằng có tiền tố \texttt{constant}. Ví dụ:
+\begin{verbatim}
+parameter Real mass, gravity, length;
+\end{verbatim}
+Một tham số có giá trị ban đầu mặc định như dưới đây nghĩa là tham số có một giá trị, nhưng giá trị đó dự kiến được thay bằng giá trị thực tế hơn, chẳng hạn do người dùng cung cấp trong một lần mô phỏng thực:
+\begin{verbatim}
+parameter Real mass(start=0), gravity(start=0), length(start=0);
+\end{verbatim}
+Hằng và tham số rất giống nhau nhưng cũng có những khác biệt. Tham số thường xuất hiện nhiều hơn đáng kể trong các mô hình ứng dụng. Khi không chắc nên dùng \texttt{constant} hay \texttt{parameter}, hãy dùng \texttt{parameter}, ngoại trừ khi khai báo hằng trong một gói/thư viện, nơi cho phép \texttt{constant} nhưng không cho phép \texttt{parameter}.
+
+% Source: printed 52 / PDF 68
+\subsection{Mức biến thiên}
+Chúng ta đã thấy một số biến có thể thay đổi giá trị tại bất kỳ thời điểm nào, trong khi các hằng có tên ít nhiều không đổi. Thực tế, có một khái niệm tổng quát về bốn mức biến thiên của biến và biểu thức trong Modelica:
+\begin{itemize}
+\item Biểu thức hoặc biến có \emph{mức biến thiên thời gian liên tục} có thể thay đổi tại bất kỳ thời điểm nào.
+\item \emph{Mức biến thiên thời gian rời rạc} nghĩa là giá trị chỉ có thể thay đổi tại những thời điểm gọi là sự kiện. Có hai loại: \emph{mức biến thiên thời gian rời rạc không theo nhịp đồng hồ} và \emph{mức biến thiên thời gian rời rạc theo nhịp đồng hồ}. Trong trường hợp sau, giá trị chỉ có thể thay đổi tại các sự kiện nhịp đồng hồ.
+\item \emph{Mức biến thiên tham số} nghĩa là giá trị có thể thay đổi lúc khởi tạo trước mô phỏng, nhưng cố định trong mô phỏng.
+\item \emph{Mức biến thiên hằng} nghĩa là giá trị luôn cố định. Tuy nhiên, phương trình định nghĩa một hằng có tên có thể được thay thế bằng một phép khai báo lại hoặc sửa đổi.
+\end{itemize}
+
+\subsection{Giá trị ban đầu mặc định}
+Nếu một biến số không có giá trị định nghĩa hoặc giá trị ban đầu được chỉ định trong khai báo, nó thường được khởi tạo bằng 0 khi bắt đầu mô phỏng. Nếu không chỉ định khác, biến Boolean có giá trị ban đầu \texttt{false}, còn biến chuỗi có giá trị ban đầu là chuỗi rỗng \texttt{""}.
+
+Ngoại lệ của quy tắc này là \emph{kết quả hàm} và \emph{biến cục bộ} trong hàm, trong đó giá trị khởi tạo mặc định lúc gọi hàm là \emph{không được định nghĩa}.
+
+\section{Mô hình hóa toán học hướng đối tượng}
+Các ngôn ngữ lập trình hướng đối tượng truyền thống như Simula, C++, Java và Smalltalk, cũng như các ngôn ngữ thủ tục như Fortran hoặc C, hỗ trợ lập trình bằng thao tác trên dữ liệu được lưu trữ. Dữ liệu lưu trữ của chương trình gồm giá trị biến và dữ liệu đối tượng. Số đối tượng thường thay đổi động. Cách nhìn của Smalltalk về hướng đối tượng nhấn mạnh việc gửi thông điệp giữa các đối tượng được tạo ra (một cách động).
+
+Cách nhìn của Modelica về hướng đối tượng khác đi, vì Modelica nhấn mạnh mô hình hóa toán học \emph{có cấu trúc}. Hướng đối tượng được xem là một khái niệm tổ chức cấu trúc, dùng để xử lý độ phức tạp của những mô tả hệ thống lớn. Mô hình Modelica chủ yếu là một mô tả toán học khai báo, giúp đơn giản hóa việc phân tích tiếp theo. Các tính chất động của hệ thống được biểu đạt theo cách khai báo bằng phương trình.
+
+Khái niệm lập trình \emph{khai báo} được lấy cảm hứng từ toán học, nơi người ta thường phát biểu hoặc khai báo \emph{điều gì đúng}, thay vì đưa ra một \emph{thuật toán} chi tiết theo từng bước về \emph{cách} đạt mục tiêu mong muốn như khi dùng ngôn ngữ thủ tục. Điều này giúp lập trình viên giảm gánh nặng theo dõi những chi tiết như vậy. Hơn nữa, mã trở nên ngắn gọn hơn và dễ thay đổi hơn mà không gây thêm lỗi.
+
+Vì thế, quan niệm khai báo của Modelica về hướng đối tượng, từ góc độ mô hình hóa toán học hướng đối tượng, có thể được tóm lược như sau:
+\begin{itemize}
+\item Hướng đối tượng chủ yếu được dùng như một khái niệm \emph{tổ chức cấu trúc}, nhấn mạnh cấu trúc khai báo và khả năng tái sử dụng mô hình toán học. Ba cách tổ chức cấu trúc của chúng ta là phân cấp, kết nối thành phần và kế thừa.
+\item Các tính chất động của mô hình được biểu đạt theo cách khai báo bằng \emph{phương trình}\footnote{Thuật toán cũng được cho phép, nhưng theo cách có thể xem một phần thuật toán như một hệ phương trình.}.
+\item Một đối tượng là một tập hợp \emph{biến thể hiện} và phương trình dùng chung một tập dữ liệu.
+\end{itemize}
+Tuy nhiên:
+\begin{itemize}
+\item Hướng đối tượng trong mô hình hóa toán học \emph{không} được xem là truyền thông điệp động.
+\end{itemize}
+
+% Source: printed 53 / PDF 69
+Cách mô tả hệ thống và hành vi theo hướng đối tượng khai báo mà Modelica cung cấp có mức trừu tượng cao hơn lập trình hướng đối tượng thông thường, vì có thể bỏ qua một số chi tiết hiện thực. Chẳng hạn, không cần viết mã để vận chuyển dữ liệu tường minh giữa các đối tượng bằng câu lệnh gán hoặc mã truyền thông điệp. Trình biên dịch Modelica tự động sinh mã đó dựa trên các phương trình đã cho.
+
+Cũng như trong các ngôn ngữ hướng đối tượng thông thường, lớp là bản thiết kế để tạo đối tượng. Cả biến và phương trình đều có thể được kế thừa giữa các lớp. Định nghĩa hàm cũng có thể được kế thừa. Tuy nhiên, việc đặc tả hành vi chủ yếu thực hiện bằng phương trình thay vì phương thức. Modelica cũng có những phương tiện để diễn đạt mã thuật toán, bao gồm hàm, nhưng đó là ngoại lệ hơn là thông lệ.
+
+\subsection{Lớp và thể hiện}
+Giống mọi ngôn ngữ máy tính hướng đối tượng, Modelica cung cấp các khái niệm lớp và đối tượng, cũng gọi là thể hiện, như công cụ giải quyết các bài toán mô hình hóa và lập trình. Mọi đối tượng trong Modelica đều có một lớp định nghĩa dữ liệu và hành vi của nó. Một lớp có ba loại thành viên:
+\begin{itemize}
+\item Các biến dữ liệu gắn với lớp và các thể hiện của lớp. Biến biểu diễn kết quả của phép tính do việc giải các phương trình của một lớp cùng với phương trình của những lớp khác tạo ra. Khi giải số các bài toán phụ thuộc thời gian, biến lưu kết quả quá trình giải tại thời điểm hiện tại.
+\item Các phương trình đặc tả hành vi của lớp. Cách phương trình tương tác với phương trình của những lớp khác quyết định quá trình giải, tức việc thực thi chương trình.
+\item Lớp có thể là thành viên của lớp khác. Sau đây là khai báo một lớp đơn giản có thể biểu diễn một điểm trong không gian ba chiều:
+\end{itemize}
+\begin{verbatim}
+class Point "Point in a three-dimensional space"
+public
+  Real x;
+  Real y, z;
+end Point;
+\end{verbatim}
+Lớp \texttt{Point} có ba biến biểu diễn các tọa độ $x$, $y$, $z$ của một điểm và không có phương trình. Một khai báo lớp như vậy giống một bản thiết kế định nghĩa hình dạng của các thể hiện tạo ra từ lớp đó, cùng các chỉ dẫn dưới dạng phương trình định nghĩa hành vi của những đối tượng ấy. Có thể truy cập thành viên lớp bằng ký pháp dấu chấm (\texttt{.}). Chẳng hạn, với một thể hiện \texttt{myPoint} của lớp \texttt{Point}, có thể truy cập biến \texttt{x} bằng cách viết \texttt{myPoint.x}.
+
+Thành viên của lớp có thể có hai mức hiển thị. Khai báo \texttt{public} của \texttt{x}, \texttt{y}, \texttt{z}, là mặc định nếu không chỉ định khác, có nghĩa là mọi mã có quyền truy cập một thể hiện \texttt{Point} đều có thể tham chiếu các giá trị đó. Mức hiển thị còn lại, chỉ định bằng từ khóa \texttt{protected}, có nghĩa là chỉ mã bên trong lớp và mã trong những lớp kế thừa lớp này mới được phép truy cập.
+
+Lưu ý rằng một lần xuất hiện từ khóa \texttt{public} hoặc \texttt{protected} khiến mọi khai báo thành viên theo sau nhận mức hiển thị tương ứng, cho đến khi một trong hai từ khóa ấy xuất hiện tiếp, hoặc đến cuối lớp chứa các khai báo thành viên.
+
+\subsubsection{Tạo thể hiện}
+Trong Modelica, đối tượng được tạo ngầm chỉ bằng việc khai báo các thể hiện của lớp. Điều này khác với các ngôn ngữ hướng đối tượng như Java hoặc C++, nơi việc tạo đối tượng được chỉ định bằng từ khóa \texttt{new} khi cấp phát trên heap. Chẳng hạn, để tạo ba thể hiện của lớp \texttt{Point}, ta chỉ cần khai báo ba biến kiểu \texttt{Point} trong một lớp, ở đây là \texttt{Triangle}:
+\begin{verbatim}
+class Triangle
+  Point point1;
+  Point point2;
+  Point point3;
+\end{verbatim}
+% Source: printed 54 / PDF 70
+\begin{verbatim}
+end Triangle;
+\end{verbatim}
+Tuy nhiên, còn một vấn đề: nên tạo thể hiện của \texttt{Triangle} trong bối cảnh nào, và khi nào chỉ nên hiểu nó là một lớp thư viện chưa tạo thể hiện cho đến khi thực sự sử dụng?
+
+Vấn đề được giải quyết bằng cách xem lớp ở \emph{đỉnh} cấu trúc phân cấp tạo thể hiện trong chương trình Modelica cần thực thi như một loại lớp ``chính'', luôn được tạo thể hiện ngầm. Điều này kéo theo việc tạo thể hiện cho các biến của lớp, rồi các biến của những biến ấy, v.v. Vì vậy, để tạo thể hiện \texttt{Triangle}, hoặc chọn lớp \texttt{Triangle} làm lớp ``đỉnh'', hoặc khai báo một thể hiện \texttt{Triangle} trong lớp ``chính''. Trong ví dụ sau, cả lớp \texttt{Triangle} lẫn lớp \texttt{Foo1} đều được tạo thể hiện.
+\begin{verbatim}
+class Foo1
+  ...
+end Foo1;
+
+class Foo2
+  ...
+end Foo2; ...
+
+class Triangle
+  Point point1;
+  Point point2;
+  Point point3;
+end Triangle;
+
+class Main
+  Triangle pts;
+  Foo1 f1;
+end Main;
+\end{verbatim}
+Các biến của lớp Modelica được tạo thể hiện riêng cho từng đối tượng. Điều này nghĩa là một biến trong một đối tượng khác với biến cùng tên trong mọi đối tượng khác tạo thể hiện từ lớp đó. Nhiều ngôn ngữ hướng đối tượng cho phép biến lớp. Những biến ấy thuộc riêng một lớp, khác với các thể hiện của lớp, và được dùng chung giữa mọi đối tượng của lớp đó. Khái niệm biến lớp chưa có trong Modelica.
+
+\subsubsection{Khởi tạo}
+Một vấn đề khác là khởi tạo biến. Như đã đề cập trong mục về mức biến thiên, nếu không chỉ định khác, giá trị ban đầu mặc định của mọi biến số là 0, ngoại trừ kết quả hàm và biến cục bộ, nơi giá trị ban đầu tại thời điểm gọi chưa được chỉ định. Có thể chỉ định giá trị ban đầu khác bằng cách đặt thuộc tính \texttt{start} của biến thể hiện. Lưu ý rằng giá trị ban đầu này chỉ là một gợi ý về giá trị khởi tạo; bộ giải có thể chọn giá trị khác trừ khi thuộc tính \texttt{fixed} của biến đó là \texttt{true}. Dưới đây, một giá trị ban đầu được chỉ định trong lớp ví dụ \texttt{Triangle}:
+\begin{verbatim}
+class Triangle
+  Point point1(start=Point(1,2,3));
+  Point point2;
+  Point point3;
+end Triangle;
+\end{verbatim}
+Hoặc có thể chỉ định giá trị ban đầu của \texttt{point1} khi tạo thể hiện \texttt{Triangle}, như dưới đây:
+\begin{verbatim}
+class Main
+  Triangle pts(point1.start=Point(1,2,3));
+  Foo1 f1;
+end Main;
+\end{verbatim}
+Một cách tổng quát hơn để khởi tạo một tập biến theo những ràng buộc là đặc tả một hệ phương trình cần giải để thu được giá trị ban đầu của các biến đó. Modelica hỗ trợ phương pháp này thông qua cấu trúc \texttt{initial equation}.
+
+% Source: printed 55 / PDF 71
+Dưới đây là ví dụ về một bộ điều khiển thời gian liên tục được khởi tạo ở trạng thái xác lập, tức khi các đạo hàm phải bằng 0:
+\begin{verbatim}
+model Controller
+parameter
+  Real a=1, b=2;
+  Real y;
+equation
+  der(y) = a*y + b*u;
+initial
+  equation
+    der(y)=0;
+end Controller;
+\end{verbatim}
+Khi khởi tạo, hệ có nghiệm sau:
+\begin{verbatim}
+  der(y) = 0;
+  y = -(b/a)*u;
+\end{verbatim}
+
+\subsubsection{Các lớp chuyên biệt}
+Khái niệm lớp là nền tảng của Modelica và được sử dụng cho nhiều mục đích khác nhau. Hầu như mọi thứ trong Modelica đều là lớp. Tuy nhiên, để mã Modelica dễ đọc và bảo trì hơn, các từ khóa đặc biệt được đưa vào cho những cách sử dụng cụ thể của khái niệm lớp. Các từ khóa \texttt{model}, \texttt{connector}, \texttt{record}, \texttt{block}, \texttt{type}, \texttt{package} và \texttt{function} có thể được dùng để biểu thị một lớp dưới những điều kiện thích hợp, gọi là các hạn chế (restrictions). Một số lớp chuyên biệt còn có khả năng bổ sung, gọi là các mở rộng khả năng (enhancements). Chẳng hạn, lớp \texttt{function} có khả năng bổ sung là có thể được gọi, trong khi \texttt{record} là một lớp dùng để khai báo cấu trúc dữ liệu bản ghi và có hạn chế là không được chứa phương trình, chỉ được chứa các khai báo \texttt{public}.
+\begin{verbatim}
+record Person
+  Real age;
+  String name;
+end Person;
+\end{verbatim}
+Một \texttt{model} gần như giống một \texttt{class}, tức hai từ khóa này hoàn toàn có thể thay thế nhau. Một \texttt{block} là một lớp có tính nhân quả cố định: với mỗi biến đầu nối của lớp, ta chỉ định nó có tính nhân quả đầu vào hay đầu ra. Vì vậy, mỗi biến đầu nối trong giao diện lớp \texttt{block} phải được khai báo với từ khóa tiền tố nhân quả \texttt{input} hoặc \texttt{output}.
+
+Lớp \texttt{connector} dùng để khai báo cấu trúc các ``cổng'' hoặc điểm giao diện của một thành phần, không được chứa phương trình và chỉ có các phần \texttt{public}, nhưng có đặc tính bổ sung là cho phép \texttt{connect(...)} đến các thể hiện của lớp đầu nối. Một \texttt{type} là một lớp có thể là bí danh hoặc phần mở rộng của một kiểu định nghĩa sẵn, kiểu liệt kê hoặc mảng của một kiểu. Ví dụ:
+\begin{verbatim}
+type vector3D = Real[3];
+\end{verbatim}
+Ý tưởng về lớp chuyên biệt có những ưu điểm vì tái sử dụng phần lớn các đặc tính của khái niệm \emph{lớp} tổng quát. Khái niệm lớp chuyên biệt cũng cho người dùng cơ hội biểu đạt chính xác hơn mục đích của lớp, và yêu cầu trình biên dịch Modelica kiểm tra rằng các ràng buộc sử dụng thực sự được thỏa mãn.
+
+May mắn là khái niệm lớp chuyên biệt khá thống nhất, vì mọi đặc tính cơ bản của lớp, như cú pháp và ngữ nghĩa của định nghĩa, tạo thể hiện, kế thừa và các đặc tính tổng quát, đều giống nhau ở mọi loại lớp chuyên biệt. Hơn nữa, việc xây dựng bộ chuyển dịch Modelica được đơn giản hóa, vì chỉ cần hiện thực cú pháp và ngữ nghĩa của khái niệm lớp tổng quát, cùng một số phép kiểm tra bổ sung về hạn chế và mở rộng khả năng của lớp.
+
+Các lớp chuyên biệt \texttt{package} và \texttt{function} trong Modelica có nhiều điểm chung với khái niệm lớp, nhưng cũng có nhiều đặc tính bổ sung, gọi là mở rộng khả năng. Đặc biệt, hàm có khá nhiều khả năng bổ sung, chẳng hạn có thể được gọi với một danh sách đối số, được tạo thể hiện trong thời gian chạy, v.v. Một lớp \texttt{operator} tương tự một gói, vốn giống nơi chứa các định nghĩa khác, nhưng chỉ có thể chứa khai báo hàm và dành cho các toán tử nạp chồng do người dùng định nghĩa.
+
+% Source: printed 56 / PDF 72
+\subsubsection{Tái sử dụng lớp bằng các sửa đổi}
+Khái niệm lớp là chìa khóa để tái sử dụng tri thức mô hình hóa trong Modelica. Các cơ chế biểu đạt việc điều chỉnh hoặc sửa đổi lớp thông qua những thành phần sửa đổi (modifier) trong Modelica giúp tái sử dụng dễ dàng hơn. Chẳng hạn, giả sử chúng ta muốn mắc nối tiếp hai mô hình bộ lọc có hằng số thời gian khác nhau.
+
+Thay vì tạo hai lớp bộ lọc riêng biệt, tốt hơn là định nghĩa một lớp bộ lọc chung và tạo hai thể hiện được sửa đổi phù hợp của lớp đó, rồi kết nối chúng. Một ví dụ kết nối hai bộ lọc thông thấp đã sửa đổi được trình bày sau lớp bộ lọc thông thấp dưới đây:
+\begin{verbatim}
+model LowPassFilter
+  parameter
+    Real T=1 "Time constant of filter";
+    Real u, y(start=1);
+  equation
+    T*der(y) + y = u;
+end LowPassFilter;
+\end{verbatim}
+Có thể dùng lớp mô hình để tạo hai thể hiện bộ lọc với các hằng số thời gian khác nhau và ``kết nối'' chúng bằng phương trình $F2.u=F1.y$ như sau:
+\begin{verbatim}
+model FiltersInSeries
+  LowPassFilter F1(T=2), F2(T=3);
+equation
+  F1.u = sin(time);
+  F2.u = F1.y;
+end FiltersInSeries;
+\end{verbatim}
+Ở đây, chúng ta dùng các thành phần sửa đổi, tức những phương trình thuộc tính như \texttt{T=2} và \texttt{T=3}, để sửa đổi hằng số thời gian của bộ lọc thông thấp khi tạo các thể hiện \texttt{F1}, \texttt{F2}. Biến thời gian độc lập là một biến tích hợp định nghĩa sẵn, ký hiệu \texttt{time}. Nếu dùng mô hình \texttt{FiltersInSeries} để khai báo biến ở mức phân cấp cao hơn, ví dụ \texttt{F12}, ta vẫn có thể điều chỉnh hằng số thời gian bằng sửa đổi phân cấp, như với \texttt{F1}, \texttt{F2} dưới đây:
+\begin{verbatim}
+model ModifiedFiltersInSeries
+   FiltersInSeries F12(F1(T=6), F2.T=11);
+end ModifiedFiltersInSeries;
+\end{verbatim}
+
+\subsubsection{Các lớp tích hợp}
+Các lớp kiểu tích hợp định nghĩa sẵn của Modelica tương ứng với các kiểu \texttt{Real}, \texttt{Integer}, \texttt{Boolean}, \texttt{String}, \texttt{enumeration(...)} và \texttt{Clock}, và có phần lớn các đặc tính của lớp, chẳng hạn có thể được kế thừa, sửa đổi, v.v. Chỉ thuộc tính giá trị có thể thay đổi trong thời gian chạy, và được truy cập bằng chính tên biến, không phải bằng ký pháp dấu chấm; tức dùng \texttt{x}, không dùng \texttt{x.value}, để truy cập giá trị. Các thuộc tính khác được truy cập bằng ký pháp dấu chấm.
+
+Chẳng hạn, một biến \texttt{Real} có tập thuộc tính mặc định như đơn vị đo, giá trị ban đầu, giá trị nhỏ nhất và lớn nhất. Có thể thay đổi những thuộc tính mặc định này khi khai báo lớp mới, ví dụ:
+\begin{verbatim}
+class Voltage = Real(unit="V", min=-220.0, max=220.0);
+\end{verbatim}
+
+\subsection{Kế thừa}
+Một lợi ích lớn của hướng đối tượng là khả năng mở rộng hành vi và đặc tính của một lớp hiện có. Lớp ban đầu, gọi là \emph{lớp cha} hoặc \emph{lớp cơ sở}, được mở rộng để tạo một phiên bản chuyên biệt hơn, gọi là \emph{lớp con} hoặc \emph{lớp dẫn xuất}. Trong quá trình này, hành vi và đặc tính của lớp ban đầu, dưới dạng khai báo biến, phương trình và những nội dung khác, được lớp con tái sử dụng, hay kế thừa.
+
+Hãy xét một ví dụ mở rộng một lớp Modelica đơn giản, chẳng hạn lớp \texttt{Point} đã giới thiệu. Trước tiên, chúng ta đưa vào hai lớp tên \texttt{ColorData} và \texttt{Color}, trong đó \texttt{Color} kế thừa các biến dữ liệu để biểu diễn
+% Source: printed 57 / PDF 73
+màu từ lớp \texttt{ColorData} và thêm một phương trình làm ràng buộc. Lớp mới \texttt{ColoredPoint} kế thừa từ nhiều lớp, tức sử dụng đa kế thừa, để lấy các biến vị trí từ lớp \texttt{Point}, cùng các biến màu và phương trình từ lớp \texttt{Color}.
+\begin{verbatim}
+record ColorData
+  Real red;
+  Real blue;
+  Real green;
+end ColorData;
+
+class Color
+  extends ColorData;
+equation
+  red + blue + green = 1;
+end Color;
+
+class Point
+  public
+    Real x;
+    Real y, z;
+end Point;
+
+class ColoredPoint
+   extends Point;
+   extends Color;
+end ColoredPoint;
+\end{verbatim}
+
+\subsection{Các lớp tổng quát}
+Trong nhiều trường hợp, việc biểu đạt các mẫu tổng quát cho mô hình hoặc chương trình là có lợi. Thay vì viết nhiều đoạn mã tương tự, có cấu trúc về cơ bản giống nhau, có thể tránh một khối lượng đáng kể công việc lập trình và bảo trì phần mềm bằng cách trực tiếp biểu đạt cấu trúc chung của bài toán, rồi cung cấp các trường hợp riêng dưới dạng giá trị \emph{tham số}.
+
+Những cấu trúc tổng quát như vậy có trong nhiều ngôn ngữ lập trình, chẳng hạn template trong C++, generics trong Ada, và tham số kiểu trong các ngôn ngữ hàm như Haskell hoặc Standard ML. Trong Modelica, cấu trúc lớp đủ tổng quát để xử lý mô hình hóa và lập trình tổng quát ngoài các chức năng lớp thông thường.
+
+Về cơ bản, có hai trường hợp tham số hóa lớp tổng quát trong Modelica: \emph{tham số lớp} có thể là \emph{tham số thể hiện}, tức có giá trị là các khai báo thể hiện (thành phần), hoặc là \emph{tham số kiểu}, tức có giá trị là kiểu. Lưu ý rằng tham số lớp trong bối cảnh này thường không có nghĩa là các tham số mô hình có tiền tố từ khóa \texttt{parameter}, dù những ``biến'' ấy cũng là một loại tham số lớp. Thay vào đó, chúng ta muốn nói đến các \emph{tham số hình thức của lớp}. Những tham số hình thức này có tiền tố từ khóa \texttt{replaceable}. Trường hợp riêng của hàm cục bộ có thể thay thế gần tương đương với phương thức ảo trong một số ngôn ngữ lập trình hướng đối tượng.
+
+\subsubsection{Tham số lớp là thể hiện}
+Trước hết, chúng tôi trình bày trường hợp tham số lớp là biến, tức khai báo thể hiện, thường gọi là thành phần. Lớp \texttt{C} trong ví dụ dưới có ba tham số lớp được đánh dấu bằng từ khóa \texttt{replaceable}. Những tham số lớp này, là các thành phần (biến) của lớp \texttt{C}, được khai báo lần lượt có các kiểu (mặc định) \texttt{GreenClass}, \texttt{YellowClass} và \texttt{GreenClass}. Cũng có một khai báo đối tượng đỏ không thể thay thế, nên không phải tham số lớp (Hình 3.5).
+
+% Source: printed 58 / PDF 74
+\sourcefigure{3.5}{74}{Ba tham số lớp pobj1, pobj2 và pobj3 là các thể hiện (biến) của lớp C. Về bản chất, chúng là những ô có thể chứa các đối tượng mang màu khác nhau.}
+
+Dưới đây là lớp \texttt{C} với ba tham số lớp \texttt{pobj1}, \texttt{pobj2}, \texttt{pobj3} và một biến \texttt{obj4} không phải tham số lớp:
+\begin{verbatim}
+class C
+  replaceable GreenClass pobj1(p1=5);
+  replaceable YellowClass pobj2;
+  replaceable GreenClass pobj3;
+  RedClass obj4;
+equation
+  ...
+end C;
+\end{verbatim}
+Giờ đây, một lớp \texttt{C2} được định nghĩa bằng cách cung cấp hai khai báo \texttt{pobj1}, \texttt{pobj2} làm đối số thực tế cho lớp \texttt{C}, lần lượt là đỏ và xanh lá thay vì các giá trị mặc định xanh lá và vàng. Từ khóa \texttt{redeclare} phải đứng trước đối số thực tế của một tham số hình thức lớp để cho phép thay đổi kiểu của nó. Modelica yêu cầu từ khóa khi khai báo lại nhằm tránh vô tình thay đổi kiểu của đối tượng bằng một thành phần sửa đổi thông thường.
+
+Nói chung, không thể thay đổi kiểu của một thành phần lớp nếu nó không được khai báo \texttt{replaceable} và có cung cấp khai báo lại. Một biến trong khai báo lại có thể thay thế biến gốc nếu có kiểu là kiểu con của kiểu gốc hoặc ràng buộc kiểu của nó. Cũng có thể khai báo các ràng buộc kiểu (không trình bày ở đây) đối với những lớp được thay thế.
+\begin{verbatim}
+  class C2 = C(redeclare RedClass pobj1, redeclare GreenClass pobj2);
+\end{verbatim}
+Lớp \texttt{C2} thu được bằng khai báo lại \texttt{pobj1}, \texttt{pobj2} như vậy tất nhiên tương đương với việc trực tiếp định nghĩa \texttt{C2} mà không tái sử dụng lớp \texttt{C}, như dưới đây.
+\begin{verbatim}
+class C2
+  RedClass pobj1(p1=5);
+  GreenClass pobj2;
+  GreenClass pobj3;
+  RedClass obj4;
+equation
+    ...
+end C2;
+\end{verbatim}
+
+\subsubsection{Tham số lớp là kiểu}
+Tham số lớp cũng có thể là một kiểu, hữu ích để thay đổi kiểu của nhiều đối tượng. Chẳng hạn, bằng cách cung cấp một tham số kiểu \texttt{ColoredClass} trong lớp \texttt{C} dưới đây, ta dễ dàng thay đổi màu của mọi đối tượng kiểu \texttt{ColoredClass}.
+\begin{verbatim}
+class C
+  replaceable class ColoredClass = GreenClass;
+  ColoredClass obj1(p1=5);
+\end{verbatim}
+% Source: printed 59 / PDF 75
+\begin{verbatim}
+  replaceable YellowClass obj2;
+  ColoredClass obj3;
+  RedClass obj4;
+equation
+  ...
+end C;
+\end{verbatim}
+Hình 3.6 mô tả cách giá trị kiểu của tham số lớp \texttt{ColoredClass} được truyền đến các khai báo đối tượng thành viên \texttt{obj1} và \texttt{obj3}.
+\sourcefigure{3.6}{75}{Tham số lớp ColoredClass là một tham số kiểu được truyền đến hai khai báo thể hiện thành viên obj1 và obj3.}
+
+Chúng ta tạo lớp \texttt{C2} bằng cách cho tham số kiểu \texttt{ColoredClass} của lớp \texttt{C} giá trị \texttt{BlueClass}.
+\begin{verbatim}
+  class C2 = C(redeclare class ColoredClass = BlueClass);
+\end{verbatim}
+Điều này tương đương với định nghĩa \texttt{C2} sau:
+\begin{verbatim}
+class C2
+  BlueClass obj1(p1=5);
+  YellowClass obj2;
+  BlueClass obj3;
+  RedClass obj4;
+equation
+  ...
+end C2;
+\end{verbatim}
+
+\section{Phương trình}
+Như đã trình bày, Modelica chủ yếu là một ngôn ngữ dựa trên phương trình, khác với các ngôn ngữ lập trình thông thường vốn có rất nhiều câu lệnh gán. Phương trình linh hoạt hơn phép gán vì không quy định một hướng luồng dữ liệu hoặc thứ tự thực thi cụ thể. Đây là chìa khóa cho khả năng mô hình hóa vật lý và tiềm năng tái sử dụng cao hơn của các lớp Modelica.
+
+Tư duy bằng phương trình hơi khác thường đối với phần lớn lập trình viên. Trong Modelica, những điều sau là đúng:
+\begin{enumerate}
+\item Câu lệnh gán trong các ngôn ngữ thông thường thường được biểu diễn thành phương trình trong Modelica.
+\item Phép gán thuộc tính được biểu diễn thành phương trình.
+\item Kết nối giữa các đối tượng sinh ra phương trình.
+\end{enumerate}
+Phương trình mạnh hơn câu lệnh gán. Chẳng hạn, xét một phương trình điện trở, trong đó điện trở $R$ nhân với dòng điện $i$ bằng điện áp $v$:
+
+% Source: printed 60 / PDF 76
+\begin{equation}R\times i=v\tag{3.10}\end{equation}
+Có thể dùng phương trình này theo ba cách, tương ứng với ba câu lệnh gán có thể có: tính dòng điện từ điện áp và điện trở, tính điện áp từ điện trở và dòng điện, hoặc tính điện trở từ điện áp và dòng điện. Điều này được biểu đạt bằng ba câu lệnh gán sau:
+\begin{verbatim}
+  i := v/R;
+  v := R * i;
+  R := v/i;
+\end{verbatim}
+Các phương trình trong Modelica có thể được phân loại không hình thức thành bốn nhóm khác nhau tùy theo bối cảnh cú pháp xuất hiện:
+\begin{enumerate}
+\item \emph{Phương trình thông thường} trong các phần phương trình, bao gồm phương trình \texttt{connect}, một dạng phương trình đặc biệt.
+\item \emph{Phương trình khai báo}, là một phần của khai báo biến hoặc hằng.
+\item \emph{Phương trình sửa đổi}, thường dùng để sửa đổi thuộc tính.
+\item \emph{Phương trình khởi tạo}, được chỉ định trong các phần \texttt{initial equation} hoặc dưới dạng phương trình thuộc tính \texttt{start}. Những phương trình này được dùng để giải bài toán khởi tạo lúc bắt đầu.
+\end{enumerate}
+Như đã thấy trong nhiều ví dụ, phương trình thông thường xuất hiện trong các phần phương trình bắt đầu bằng từ khóa \texttt{equation} và kết thúc bằng một từ khóa được phép khác:
+\begin{verbatim}
+  equation
+  ... <equations> ...
+  <some other allowed keyword>
+\end{verbatim}
+Phương trình điện trở trên là một ví dụ về phương trình thông thường có thể đặt trong phần phương trình. Phương trình khai báo thường được đưa vào như một phần khai báo hằng cố định hoặc hằng tham số, ví dụ:
+\begin{verbatim}
+  constant Integer one = 1;
+  parameter Real mass = 22.5;
+\end{verbatim}
+Một phương trình luôn đúng, nghĩa là \texttt{mass} trong ví dụ trên không bao giờ đổi giá trị trong mô phỏng. Cũng có thể chỉ định phương trình khai báo cho một biến thông thường, ví dụ:
+\begin{verbatim}
+  Real speed = 72.4;
+\end{verbatim}
+Tuy nhiên, điều này không có nhiều ý nghĩa vì ràng buộc biến phải giữ cùng một giá trị suốt quá trình tính toán, thực chất hành xử như một hằng. Do đó, phương trình khai báo khác hẳn biểu thức khởi tạo biến trong các ngôn ngữ khác: nó luôn đúng và có thể được giải cùng những phương trình khác trong toàn bộ hệ phương trình.
+
+Đối với phép gán thuộc tính, chúng thường được chỉ định bằng phương trình sửa đổi. Chẳng hạn, nếu cần chỉ định giá trị ban đầu cho một biến, tức giá trị lúc bắt đầu tính toán, ta đưa ra một phương trình thuộc tính cho thuộc tính \texttt{start} của biến, ví dụ:
+\begin{verbatim}
+  Real speed(start = 72.4);
+\end{verbatim}
+
+\subsection{Các cấu trúc phương trình lặp lại}
+Trước khi đọc mục này, bạn có thể muốn xem mục về mảng ở phía sau, cùng mục về câu lệnh và vòng lặp \texttt{for} theo nghĩa thuật toán ở phía sau.
+
+Đôi khi cần biểu đạt thuận tiện các tập phương trình có cấu trúc đều đặn, tức lặp lại. Thường có thể biểu đạt điều này bằng phương trình mảng, bao gồm tham chiếu phần tử mảng ký hiệu bằng ngoặc vuông. Tuy nhiên, cho trường hợp tổng quát hơn của các cấu trúc phương trình lặp lại, Modelica cung cấp một cấu trúc vòng lặp. Lưu ý rằng đây không phải vòng lặp theo nghĩa thuật toán, mà là ký pháp viết gọn để biểu đạt một tập phương trình.
+
+Chẳng hạn, xét một phương trình cho biểu thức đa thức:
+% Source: printed 61 / PDF 77
+\begin{equation}
+y=a[1]+a[2]\times x+a[3]\times x^2+\cdots+a[n+1]\times x^n\tag{3.11}
+\end{equation}
+Phương trình đa thức (3.11) trên có thể được biểu đạt thành một tập phương trình có cấu trúc đều đặn trong Modelica, với $y$ bằng tích vô hướng của các vectơ \texttt{a} và \texttt{xpowers}, cả hai có độ dài $n+1$:
+\begin{verbatim}
+  xpowers[2] = xpowers[1]*x;
+  xpowers[3] = xpowers[2]*x;
+  ...
+  xpowers[n+1] = xpowers[n]*x;
+  y = a * xpowers;
+\end{verbatim}
+Tập phương trình đều đặn liên quan đến \texttt{xpowers} có thể được biểu đạt thuận tiện hơn bằng ký pháp vòng lặp \texttt{for}:
+\begin{verbatim}
+  for i in 1:n loop
+    xpowers[i+1] = xpowers[i]*x;
+  end for;
+\end{verbatim}
+Trong trường hợp cụ thể này, một phương trình vectơ cho ký pháp còn ngắn gọn hơn:
+\begin{verbatim}
+  powers[2:n+1] = xpowers[1:n]*x;
+\end{verbatim}
+Ở đây, các vectơ \texttt{x} và \texttt{xpowers} có độ dài $n+1$. Ký pháp dấu hai chấm \texttt{2:n+1} có nghĩa là trích ra một vectơ độ dài $n$, bắt đầu từ phần tử 2 đến và bao gồm phần tử $n+1$.
+
+\subsection{Phương trình đạo hàm riêng}
+Phương trình đạo hàm riêng (viết tắt là PDE) chứa đạo hàm theo những biến khác ngoài thời gian, chẳng hạn các tọa độ không gian Descartes như $x$ và $y$. Mô hình các hiện tượng như truyền nhiệt hoặc dòng chất lưu thường liên quan đến PDE. Tại thời điểm viết tài liệu này, chức năng PDE chưa thuộc ngôn ngữ Modelica chính thức.
+
+\section{Mô hình hóa vật lý phi nhân quả}
+Mô hình hóa phi nhân quả là một phong cách mô hình hóa khai báo, nghĩa là mô hình hóa dựa trên phương trình thay vì câu lệnh gán. Phương trình không chỉ định biến nào là đầu vào, biến nào là đầu ra, trong khi ở câu lệnh gán, biến bên trái luôn là đầu ra (kết quả), còn biến bên phải luôn là đầu vào. Vì vậy, tính nhân quả của mô hình dựa trên phương trình chưa được chỉ định và chỉ được cố định khi giải các hệ phương trình tương ứng. Đây được gọi là \emph{mô hình hóa phi nhân quả}. Thuật ngữ \emph{mô hình hóa vật lý} phản ánh việc mô hình hóa phi nhân quả rất phù hợp để biểu diễn cấu trúc vật lý của các hệ thống được mô hình hóa.
+
+Lợi thế chính của mô hình hóa phi nhân quả là hướng giải phương trình sẽ thích ứng với bối cảnh luồng dữ liệu mà trong đó nghiệm được tính. Bối cảnh luồng dữ liệu được định nghĩa bằng cách nêu những biến nào cần làm \emph{đầu ra}, và những biến nào là \emph{đầu vào} bên ngoài của hệ thống được mô phỏng.
+
+Tính phi nhân quả của các lớp thư viện Modelica khiến chúng dễ tái sử dụng hơn các lớp truyền thống chứa câu lệnh gán với tính nhân quả đầu vào--đầu ra cố định.
+
+Để minh họa ý tưởng mô hình hóa vật lý phi nhân quả, chúng tôi đưa ra ví dụ một mạch điện đơn giản (Hình 3.7). Sơ đồ kết nối\footnote{Sơ đồ kết nối nhấn mạnh những kết nối giữa các thành phần của một mô hình, trong khi sơ đồ hợp thành chỉ định mô hình được hợp thành từ những thành phần nào, các thành phần con của chúng, v.v. Biểu đồ lớp thường thể hiện các quan hệ kế thừa và hợp thành.} của mạch điện cho thấy cách các thành phần được nối với nhau. Có thể vẽ sơ đồ với vị trí thành phần gần tương ứng với bố trí vật lý của mạch điện trên bảng mạch in. Các kết nối vật lý trong mạch thật tương ứng với các kết nối logic trong sơ đồ. Vì vậy, thuật ngữ \emph{mô hình hóa vật lý} khá thích hợp.
+
+% Source: printed 62 / PDF 78
+Mô hình Modelica \texttt{SimpleCircuit} dưới đây tương ứng trực tiếp với mạch được mô tả trong sơ đồ kết nối ở Hình 3.7. Mỗi đối tượng đồ họa trong sơ đồ tương ứng với một thể hiện được khai báo trong mô hình mạch đơn giản. Mô hình phi nhân quả vì không chỉ định luồng tín hiệu, tức luồng nguyên nhân--kết quả. Kết nối giữa các đối tượng được chỉ định bằng cấu trúc phương trình \texttt{connect}, một dạng cú pháp phương trình đặc biệt mà chúng ta sẽ khảo sát sau. Các lớp \texttt{Resistor}, \texttt{Capacitor}, \texttt{Inductor}, \texttt{VsourceAC} và \texttt{Ground} sẽ được trình bày chi tiết hơn ở phía sau chương.
+\sourcefigure{3.7}{78}{Sơ đồ kết nối của mô hình phi nhân quả SimpleCircuit.}
+\begin{verbatim}
+model SimpleCircuit
+  Resistor R1(R=10);
+  Capacitor C(C=0.01);
+  Resistor R2(R=100);
+  Inductor L(L=0.1);
+  VsourceAC AC;
+  Ground G;
+equation
+  connect(AC.p, R1.p);
+  connect(R1.n, C.p);
+  connect(C.n, AC.n);
+  connect(R1.p, R2.p);
+  connect(R2.n, L.p);
+  connect(L.n, C.n);
+  connect(AC.n, G.p);
+end SimpleCircuit;
+\end{verbatim}
+Để so sánh, chúng tôi trình bày cùng mạch ấy được mô hình hóa bằng cách tiếp cận hướng khối nhân quả, dưới dạng sơ đồ trong Hình 3.8. Ở đây, cấu trúc liên kết vật lý bị mất: cấu trúc sơ đồ không có sự tương ứng đơn giản với cấu trúc bảng mạch vật lý.
+
+% Source: printed 63 / PDF 79
+\sourcefigure{3.8}{79}{Mô hình mạch đơn giản sử dụng mô hình hóa hướng khối nhân quả với luồng tín hiệu tường minh.}
+
+Mô hình này có tính nhân quả vì luồng tín hiệu đã được suy ra và thể hiện rõ trong sơ đồ. Ngay cả với ví dụ đơn giản này, việc phân tích để chuyển mô hình vật lý trực quan thành mô hình hướng khối nhân quả cũng không đơn giản. Một bất lợi khác là biểu diễn điện trở phụ thuộc bối cảnh. Chẳng hạn, các điện trở \texttt{R1} và \texttt{R2} có định nghĩa khác nhau, khiến việc tái sử dụng thành phần thư viện mô hình khó khăn. Hơn nữa, các mô hình hệ thống như vậy thường khó bảo trì vì ngay cả những thay đổi nhỏ trong cấu trúc vật lý cũng có thể dẫn đến thay đổi lớn trong mô hình hệ thống hướng khối tương ứng.
+
+\section{Mô hình thành phần phần mềm của Modelica}
+Từ lâu, người phát triển phần mềm đã nhìn những người xây dựng hệ thống phần cứng với sự ghen tị trước vẻ dễ dàng khi dùng các thành phần phần cứng tái sử dụng được để xây dựng hệ thống phức tạp. Với phần mềm, quá thường xuyên xuất hiện nhu cầu hoặc xu hướng phát triển từ đầu thay vì tái sử dụng thành phần. Các nỗ lực sớm về thành phần phần mềm bao gồm thư viện thủ tục, nhưng đáng tiếc chúng có phạm vi áp dụng quá hạn chế và tính linh hoạt thấp. Sự ra đời của lập trình hướng đối tượng đã thúc đẩy phát triển những khung thành phần phần mềm như CORBA, mô hình đối tượng thành phần COM/DCOM của Microsoft và JavaBeans. Những mô hình thành phần này đạt thành công đáng kể ở một số miền ứng dụng, nhưng vẫn còn một chặng đường dài để đạt mức tái sử dụng và chuẩn hóa thành phần có trong ngành phần cứng.
+
+Bạn đọc có thể tự hỏi những điều này liên quan gì đến Modelica. Thực tế, Modelica cung cấp một mô hình thành phần phần mềm khá mạnh, ngang hàng với hệ thống thành phần phần cứng về tính linh hoạt và tiềm năng tái sử dụng. Chìa khóa của tính linh hoạt cao hơn này là các lớp Modelica dựa trên phương trình. Mô hình thành phần phần mềm là gì? Nó cần bao gồm ba yếu tố sau:
+\begin{enumerate}
+\item Thành phần.
+\item Cơ chế kết nối.
+\item Khung thành phần.
+\end{enumerate}
+Các thành phần được nối qua cơ chế kết nối, có thể được trực quan hóa bằng sơ đồ kết nối. Khung thành phần hiện thực các thành phần và kết nối, bảo đảm truyền thông hoạt động và các ràng buộc được duy trì trên kết nối. Với các hệ thống hợp thành từ thành phần phi nhân quả, trình biên dịch tự động suy ra hướng luồng dữ liệu, tức tính nhân quả, tại thời điểm hợp thành.
+
+% Source: printed 64 / PDF 80
+\subsection{Thành phần}
+Thành phần đơn giản là thể hiện của lớp Modelica. Những lớp ấy cần có giao diện được định nghĩa rõ ràng, đôi khi gọi là cổng, trong Modelica gọi là \emph{đầu nối} (connector), để giao tiếp và ghép nối giữa thành phần với thế giới bên ngoài.
+
+Thành phần được mô hình hóa độc lập với môi trường sử dụng nó, điều thiết yếu cho khả năng tái sử dụng. Điều này nghĩa là trong định nghĩa thành phần, bao gồm các phương trình, chỉ có thể dùng biến cục bộ và biến đầu nối. Không nên cho phép phương tiện giao tiếp nào giữa thành phần và phần còn lại của hệ thống ngoài việc đi qua đầu nối. Tuy nhiên, trong Modelica vẫn có thể truy cập dữ liệu thành phần bằng ký pháp dấu chấm. Bên trong một thành phần có thể gồm những thành phần khác được nối với nhau, tức mô hình hóa phân cấp.
+
+\subsection{Sơ đồ kết nối}
+Các hệ thống phức tạp thường gồm rất nhiều thành phần kết nối với nhau; nhiều thành phần có thể được phân rã phân cấp thành những thành phần khác qua nhiều mức. Để nắm bắt độ phức tạp này, việc biểu diễn bằng hình ảnh các thành phần và kết nối khá quan trọng. Biểu diễn đồ họa như vậy có dưới dạng sơ đồ kết nối, với một ví dụ sơ lược trong Hình 3.9. Trước đó, chúng tôi đã trình bày sơ đồ kết nối của một mạch đơn giản trong Hình 3.7.
+\sourcefigure{3.9}{80}{Hình sơ lược về một sơ đồ kết nối các thành phần.}
+
+Mỗi hình chữ nhật trong ví dụ sơ đồ biểu diễn một thành phần vật lý, chẳng hạn điện trở, tụ điện, transistor, bánh răng cơ học, van, v.v. Các kết nối biểu diễn bằng đường trong sơ đồ tương ứng với kết nối vật lý thực. Chẳng hạn, kết nối có thể được hiện thực bằng dây điện, kết nối cơ học, ống dẫn chất lưu, trao đổi nhiệt giữa các thành phần, v.v. Đầu nối, tức điểm giao diện, được thể hiện bằng những điểm vuông nhỏ trên hình chữ nhật trong sơ đồ. Biến tại các điểm giao diện đó định nghĩa tương tác giữa thành phần mà hình chữ nhật biểu diễn với những thành phần khác.
+\sourcefigure{3.10}{80}{Một sơ đồ kết nối của mô hình ô tô đơn giản.}
+
+Một ví dụ ô tô đơn giản về sơ đồ kết nối cho ứng dụng trong miền cơ học được trình bày trong Hình 3.10.
+
+% Source: printed 65 / PDF 81
+Mô hình ô tô đơn giản dưới đây bao gồm các biến cho thành phần con như bánh xe, khung xe và bộ điều khiển. Chuỗi ``chú thích'' sau tên lớp mô tả ngắn gọn lớp. Các bánh xe được nối với cả khung xe lẫn bộ điều khiển. Những phương trình \texttt{connect} có mặt nhưng không được thể hiện trong ví dụ chưa đầy đủ này.
+\begin{verbatim}
+class Car "A car class to combine car components"
+  Wheel w1,w2,w3,w4 "Wheel one to four";
+  Chassis chassis "Chassis";
+  CarController controller "Car controller";
+  ...
+end Car;
+\end{verbatim}
+
+\subsection{Đầu nối và lớp đầu nối}
+Đầu nối Modelica là thể hiện của các lớp đầu nối, định nghĩa những biến thuộc giao diện truyền thông mà đầu nối đặc tả. Như vậy, đầu nối đặc tả các giao diện bên ngoài cho tương tác.
+
+Chẳng hạn, \texttt{Pin} là một lớp đầu nối có thể dùng để đặc tả giao diện bên ngoài của các thành phần điện (Hình 3.11) có chân nối. Các kiểu \texttt{Voltage} và \texttt{Current} dùng trong \texttt{Pin} giống \texttt{Real}, nhưng có đơn vị đi kèm khác nhau. Theo quan điểm ngôn ngữ Modelica, các kiểu \texttt{Voltage}, \texttt{Current} tương tự \texttt{Real} và được xem là có kiểu tương đương. Kiểm tra sự tương thích đơn vị trong phương trình là tùy chọn.
+\begin{verbatim}
+  type Voltage = Real(unit="V");
+  type Current = Real(unit="A");
+\end{verbatim}
+\sourcefigure{3.11}{81}{Một thành phần có một đầu nối điện Pin.}
+
+Lớp đầu nối \texttt{Pin} dưới đây chứa hai biến. Tiền tố \texttt{flow} của biến thứ hai cho biết biến này biểu diễn một đại lượng dòng, có ý nghĩa đặc biệt đối với kết nối như giải thích trong mục tiếp theo.
+\begin{verbatim}
+  connector Pin
+    Voltage v;
+    flow Current i;
+  end Pin;
+\end{verbatim}
+
+\subsubsection{Kết nối}
+Có thể thiết lập kết nối giữa các thành phần thông qua những đầu nối có kiểu tương đương. Modelica hỗ trợ kết nối phi nhân quả dựa trên phương trình, nghĩa là kết nối được hiện thực dưới dạng phương trình. Với kết nối phi nhân quả, không cần biết hướng luồng dữ liệu trong kết nối. Ngoài ra, có thể thiết lập kết nối nhân quả bằng cách nối một đầu nối có thuộc tính \texttt{output} với một đầu nối được khai báo \texttt{input}.
+
+Hai loại ghép nối có thể được thiết lập, tùy theo biến trong các đầu nối được kết nối là biến thế (mặc định) hay được khai báo bằng tiền tố \texttt{flow}:
+\begin{enumerate}
+\item Ghép nối bằng nhau, đối với biến thế, theo định luật thứ nhất của Kirchhoff.
+\item Ghép nối tổng bằng 0, đối với biến dòng, theo định luật dòng điện Kirchhoff.
+\end{enumerate}
+
+% Source: printed 66 / PDF 82
+Chẳng hạn, từ khóa \texttt{flow} cho biến \texttt{i} kiểu \texttt{Current} trong lớp đầu nối \texttt{Pin} cho biết tổng các dòng điện trong những chân nối được kết nối bằng 0, theo định luật dòng điện Kirchhoff.
+\sourcefigure{3.12}{82}{Kết nối hai thành phần có chân nối điện.}
+
+Phương trình kết nối được dùng để nối các thể hiện của lớp đầu nối. Một phương trình kết nối \texttt{connect(R1.p,R2.p)}, với \texttt{R1.p}, \texttt{R2.p} thuộc lớp đầu nối \texttt{Pin}, nối hai chân (Hình 3.12) để tạo thành một nút. Điều này tạo ra hai phương trình:
+\begin{verbatim}
+  R1.p.v = R2.p.v;
+  R1.p.i + R2.p.i = 0;
+\end{verbatim}
+Phương trình thứ nhất nói rằng điện áp của các đầu dây được nối bằng nhau. Phương trình thứ hai tương ứng với định luật thứ hai của Kirchhoff, nói rằng tổng các dòng điện tại một nút bằng 0 (giả định giá trị dương khi dòng đi vào thành phần). Các phương trình tổng bằng 0 được sinh khi dùng tiền tố \texttt{flow}. Những định luật tương tự áp dụng cho dòng trong mạng đường ống và cho lực, mômen lực trong hệ thống cơ học.
+
+Cũng cần đề cập khái niệm \emph{kết nối ngầm}, chẳng hạn hữu ích để mô hình hóa trường lực, được biểu diễn bằng cấu trúc \texttt{inner/outer} của Modelica.
+
+\subsubsection{Kết nối ngầm bằng inner/outer}
+Cho đến nay, chúng ta tập trung vào kết nối tường minh giữa các đầu nối, trong đó mỗi kết nối được biểu diễn tường minh bằng một phương trình \texttt{connect} và một đường tương ứng trong sơ đồ kết nối. Tuy nhiên, khi mô hình hóa một số loại mô hình lớn với nhiều thành phần tương tác, cách tiếp cận này trở nên khá cồng kềnh vì số kết nối tiềm năng lớn: có thể cần một kết nối giữa mỗi cặp thành phần. Điều này đặc biệt đúng với mô hình hệ thống có \emph{trường lực}, dẫn đến tối đa $n\times n$ kết nối giữa $n$ thành phần chịu tác động của trường lực, hoặc $1\times n$ kết nối giữa một đối tượng trung tâm và $n$ thành phần nếu bỏ qua tương tác giữa các thành phần.
+
+Trong trường hợp $1\times n$ kết nối, thay vì dùng rất nhiều kết nối tường minh, Modelica cung cấp cơ chế thuận tiện cho \emph{kết nối ngầm} giữa một đối tượng và $n$ thành phần của nó, thông qua các tiền tố khai báo \texttt{inner}, \texttt{outer}.
+
+Một loại tương tác ngầm khá phổ biến là một \emph{thuộc tính dùng chung} của một đối tượng môi trường duy nhất được nhiều thành phần trong môi trường đó \emph{truy cập}. Chẳng hạn, có thể có môi trường bao gồm các thành phần ngôi nhà, mỗi thành phần truy cập nhiệt độ môi trường dùng chung, hoặc môi trường bảng mạch với các thành phần điện tử truy cập nhiệt độ của bảng mạch.
+
+Một mô hình ví dụ môi trường--thành phần Modelica theo cách đó được trình bày dưới đây, trong đó biến nhiệt độ môi trường dùng chung \texttt{T0} được khai báo như một \emph{khai báo định nghĩa}, đánh dấu bằng từ khóa \texttt{inner}. Khai báo này được truy cập ngầm qua các \emph{khai báo tham chiếu} của \texttt{T0}, đánh dấu bằng tiền tố \texttt{outer} trong các thành phần \texttt{comp1}, \texttt{comp2}.
+\begin{verbatim}
+model Environment
+  inner
+    Real T0; //Definition of actual environment temperature T0
+    Component comp1, comp2; // Lookup match comp1.T0 = comp2.T0 = T0
+  parameter
+    Real k=1;
+  equation
+    T0 = sin(k*time);
+end Environment;
+\end{verbatim}
+
+% Source: printed 67 / PDF 83
+\begin{verbatim}
+model Component
+  outer
+    Real T0; // Reference to temperature T0 defined in the environments
+      Real T;
+  equation
+    T = T0;
+end Component;
+\end{verbatim}
+
+\subsubsection{Đầu nối mở rộng cho bus thông tin}
+Trong kỹ nghệ, thường có những bus thông tin nhằm vận chuyển thông tin giữa các thành phần hệ thống khác nhau, chẳng hạn cảm biến, cơ cấu chấp hành, bộ điều khiển. Một số bus còn được chuẩn hóa (ví dụ IEEE), nhưng thường khá tổng quát để cho phép nhiều loại thành phần khác nhau.
+
+Đây là ý tưởng cốt lõi của cấu trúc đầu nối mở rộng trong Modelica. Một đầu nối mở rộng hoạt động như bus thông tin vì được dùng để kết nối nhiều loại thành phần. Để làm được điều này, nó tự động mở rộng kiểu đầu nối để phù hợp với mọi thành phần được nối vào cùng những giao diện khác nhau của chúng. Nếu một phần tử có tên và kiểu nhất định chưa có mặt, phần tử ấy được thêm vào.
+
+Mọi trường trong đầu nối mở rộng được xem như thể hiện đầu nối ngay cả khi không được khai báo như vậy; tức có thể kết nối, chẳng hạn, với một biến \texttt{Real}.
+
+Hơn nữa, khi nối hai đầu nối mở rộng, mỗi đầu nối được bổ sung những biến chỉ được khai báo trong đầu nối kia. Điều này được lặp lại cho đến khi mọi thể hiện đầu nối mở rộng được nối với nhau có các biến tương ứng, tức mỗi thể hiện đầu nối được mở rộng thành hợp của mọi biến đầu nối. Nếu một biến xuất hiện như đầu vào trong một đầu nối mở rộng, nó phải xuất hiện như một biến không phải đầu vào trong ít nhất một thể hiện đầu nối mở rộng khác của tập được kết nối. Sau đây là một ví dụ nhỏ:
+\begin{verbatim}
+expandable connector EngineBus
+end EngineBus;
+
+block Sensor
+  RealOutput speed;
+end Sensor;
+
+block Actuator
+  RealInput speed;
+end Actuator;
+
+model Engine
+   EngineBus bus;
+   Sensor sensor;
+   Actuator actuator;
+equation
+    connect(bus.speed, sensor.speed); // provides the non-input
+    connect(bus.speed, actuator.speed);
+end Engine;
+\end{verbatim}
+
+\subsubsection{Đầu nối stream}
+Trong nhiệt động lực học với các ứng dụng chất lưu, nơi vật chất có thể chảy hai chiều cùng những đại lượng đi kèm, hai loại biến cơ bản trong đầu nối---biến thế và biến dòng---không đủ để mô tả những mô hình cho phép một cách giải vững chắc về mặt số. Các ứng dụng này thường có dòng vật chất hai chiều với sự vận chuyển đối lưu của các đại lượng riêng, chẳng hạn enthalpy riêng và thành phần hóa học.
+
+% Source: printed 68 / PDF 84
+Nếu dùng đầu nối thông thường với biến dòng và biến thế, các mô hình tương ứng sẽ chứa những hệ phương trình phi tuyến với các ẩn Boolean cho hướng dòng và các điểm kỳ dị gần dòng bằng 0. Nhìn chung, không thể giải đáng tin cậy những hệ phương trình như vậy. Có thể đơn giản hóa cách xây dựng mô hình bằng cách lập hai phương trình cân bằng khác nhau cho hai hướng dòng có thể có. Tuy nhiên, chỉ dùng biến dòng và biến thế thì không làm được điều này.
+
+Modelica giải quyết vấn đề cơ bản đó bằng cách đưa vào loại biến đầu nối thứ ba, gọi là \emph{biến stream}, được khai báo với tiền tố \texttt{stream}. Một biến stream mô tả một đại lượng được vận chuyển bởi biến dòng, tức một hiện tượng vận chuyển thuần túy do đối lưu.
+
+Nếu ít nhất một biến trong đầu nối có tiền tố \texttt{stream}, đầu nối được gọi là \emph{đầu nối stream} và biến tương ứng gọi là \emph{biến stream}. Ví dụ:
+\begin{verbatim}
+connector FluidPort ...
+  flow Real m_flow "Flow of matter; m_flow>0 if flow into component";
+  stream Real h_outflow "Specific variable in component if m_flow < 0"
+end FluidPort
+
+model FluidSystem ...
+   FluidComponent m1, m2, ..., mN;
+   FluidPort c1, c2, ..., cM;
+equation connect(m1.c, m2.c); ...
+    connect(m1.c, cM); ...
+end FluidSystem;
+\end{verbatim}
+
+\subsection{Các lớp chưa hoàn chỉnh}
+Một đặc tính chung của nhiều thành phần điện là có hai chân nối. Vì thế, định nghĩa một lớp mô hình ``bản thiết kế'', chẳng hạn gọi là \texttt{TwoPin}, nắm bắt đặc tính chung này là hữu ích. Đây là một \emph{lớp chưa hoàn chỉnh} (partial class), vì không chứa đủ phương trình để đặc tả hoàn toàn hành vi vật lý của nó; do đó lớp có tiền tố từ khóa \texttt{partial}. Trong các ngôn ngữ hướng đối tượng khác, lớp chưa hoàn chỉnh thường được gọi là \emph{lớp trừu tượng}. Vì chưa hoàn chỉnh, nó không thể được dùng làm lớp để tạo thể hiện một đối tượng dữ liệu.
+\begin{verbatim}
+partial class TwoPin8 "Superclass of elements with two electrical pins"
+  Pin p, n;
+  Voltage v;
+  Current i;
+equation
+  v = p.v - n.v;
+  0 = p.i + n.i;
+  i = p.i;
+end TwoPin;
+\end{verbatim}
+Lớp \texttt{TwoPin} này được gọi bằng tên \texttt{Modelica.Electrical.Analog.Interfaces.OnePort} trong thư viện chuẩn Modelica, vì đó là tên các chuyên gia mô hình hóa điện sử dụng. Ở đây, chúng tôi dùng tên \texttt{TwoPin} trực quan hơn vì lớp dành cho những thành phần có hai cổng vật lý chứ không phải một. Cách đặt tên \texttt{OnePort} dễ hiểu hơn nếu xem nó là chỉ một cổng hợp thành chứa hai cổng con.
+
+Lớp \texttt{TwoPin} có hai chân \texttt{p}, \texttt{n}, một đại lượng \texttt{v} định nghĩa độ sụt áp trên thành phần, và một đại lượng \texttt{i} định nghĩa dòng điện đi vào chân \texttt{p}, qua thành phần rồi đi ra chân \texttt{n} (Hình 3.13). Việc gắn nhãn khác nhau cho các chân, chẳng hạn \texttt{p}, \texttt{n}, và dùng đồ họa, chẳng hạn lần lượt là ô vuông tô kín và không tô, giúp xác định rõ dấu của \texttt{v}, \texttt{i}, dù trên thực tế các chân không có khác biệt vật lý.
+
+% Source: printed 69 / PDF 85
+\sourcefigure{3.13}{85}{Lớp tổng quát TwoPin mô tả cấu trúc chung của các thành phần điện đơn giản có hai chân nối.}
+
+Các phương trình định nghĩa những quan hệ tổng quát giữa các đại lượng của thành phần điện đơn giản. Để hữu ích, cần bổ sung một phương trình cấu thành mô tả các đặc tính vật lý cụ thể của thành phần.
+
+\subsection{Tái sử dụng lớp chưa hoàn chỉnh}
+Với lớp tổng quát chưa hoàn chỉnh \texttt{TwoPin}, việc tạo lớp \texttt{Resistor} chuyên biệt hơn trở nên đơn giản bằng cách thêm một phương trình cấu thành:
+\begin{verbatim}
+R * i = v;
+\end{verbatim}
+Phương trình này mô tả những đặc tính vật lý cụ thể của quan hệ giữa điện áp và dòng điện đối với một điện trở (Hình 3.14).
+\sourcefigure{3.14}{85}{Một thành phần điện trở.}
+\begin{verbatim}
+class Resistor "Ideal electrical resistor"
+  extends TwoPin;
+  parameter Real R(unit="Ohm") "Resistance";
+equation
+    R*i = v;
+end class
+\end{verbatim}
+Một lớp tụ điện cũng có thể tái sử dụng \texttt{TwoPin} theo cách tương tự, bổ sung phương trình cấu thành cho tụ điện (Hình 3.15).
+\sourcefigure{3.15}{85}{Một thành phần tụ điện.}
+\begin{verbatim}
+class Capacitor "Ideal electrical capacitor"
+  extends TwoPin;
+  parameter Real C(Unit="F") "Capacitance";
+equation
+    C*der(v) = i;
+end Capacitor;
+\end{verbatim}
+
+% Source: printed 70 / PDF 86
+Trong mô phỏng hệ thống, các biến \texttt{i}, \texttt{v} được chỉ định trong các thành phần trên tiến triển như những hàm của thời gian. Bộ giải phương trình vi phân tính các giá trị $v(t)$ và $i(t)$ (trong đó $t$ là thời gian) sao cho $C\cdot\dot{v}(t)=i(t)$ với mọi giá trị $t$, thỏa mãn phương trình cấu thành của tụ điện.
+
+\section{Thiết kế và sử dụng thư viện thành phần}
+Tương tự cách đã tạo thành phần điện trở và tụ điện, có thể tạo thêm các lớp thành phần điện, hình thành một thư viện thành phần điện đơn giản để sử dụng cho mô hình ứng dụng như \texttt{SimpleCircuit}. Thư viện các thành phần tái sử dụng được thực sự là chìa khóa để mô hình hóa hiệu quả hệ thống phức tạp.
+
+Dưới đây, chúng tôi trình bày một ví dụ thiết kế thư viện nhỏ gồm những thành phần điện cần cho ví dụ mạch đơn giản, cùng các phương trình có thể trích xuất từ những thành phần này.
+
+\paragraph*{Điện trở}
+\sourcefigure{3.16}{86}{Thành phần điện trở.}
+Có thể trích xuất bốn phương trình từ mô hình điện trở được mô tả trong Hình 3.14 và Hình 3.16. Ba phương trình đầu bắt nguồn từ lớp \texttt{TwoPin} được kế thừa, còn phương trình cuối là phương trình cấu thành của điện trở.
+\begin{verbatim}
+  0 = p.i + n.i
+  v = p.v - n.v
+  i = p.i
+  v = R*i
+\end{verbatim}
+
+\paragraph*{Tụ điện}
+\sourcefigure{3.17}{86}{Thành phần tụ điện.}
+Bốn phương trình sau bắt nguồn từ mô hình tụ điện được mô tả trong Hình 3.15 và Hình 3.17, trong đó phương trình cuối là phương trình cấu thành của tụ điện.
+\begin{verbatim}
+  0 = p.i + n.i;
+  v = p.v - n.v;
+  i = p.i;
+  i = C * der(v);
+\end{verbatim}
+
+% Source: printed 71 / PDF 87
+\paragraph*{Cuộn cảm}
+\sourcefigure{3.18}{87}{Thành phần cuộn cảm.}
+Lớp cuộn cảm được mô tả trong Hình 3.18 và trình bày dưới đây cho một mô hình của cuộn cảm điện lý tưởng.
+\begin{verbatim}
+  class Inductor "Ideal electrical inductor"
+    extensd TwoPin;
+    parameter Real L(unit="H") "Inductance";
+  equation
+    v = L*der(i);
+  end Inductor;
+\end{verbatim}
+Có thể trích xuất các phương trình sau từ lớp cuộn cảm, trong đó ba phương trình đầu đến từ \texttt{TwoPin} như thường lệ, còn phương trình cuối là phương trình cấu thành của cuộn cảm.
+\begin{verbatim}
+  0 = p.i + n.i;
+  v = p.v - n.v;
+  i = p.i;
+  v = L * der(i);
+\end{verbatim}
+
+\paragraph*{Nguồn điện áp}
+\sourcefigure{3.19}{87}{Thành phần nguồn điện áp VsourceAC, trong đó $v(t)=VA\times\sin(2\times PI\times f\times time)$.}
+Lớp \texttt{VsourceAC} cho nguồn điện áp dạng sin dùng trong ví dụ mạch được mô tả trong Hình 3.19 và có thể được định nghĩa như dưới đây. Mô hình này, cũng như những mô hình Modelica khác, đặc tả hành vi tiến triển như một hàm của thời gian. Lưu ý việc dùng biến tích hợp định nghĩa sẵn \texttt{time}. Để giữ ví dụ đơn giản, hằng \texttt{PI} được khai báo tường minh dù thường được nhập từ thư viện chuẩn Modelica.
+\begin{verbatim}
+class VsourceAC "Sin-wave voltage source"
+  extends TwoPin;
+  parameter Voltage VA = 220 "Amplitude";
+  parameter Real f(unit="Hz") = 50 "Frequency";
+  constant Real PI = 3.141592653589793;
+equation
+  v = VA*sin(2*PI*f*time);
+end VsourceAC;
+\end{verbatim}
+Trong mô hình dựa trên \texttt{TwoPin} này, có thể trích xuất bốn phương trình, trong đó ba phương trình đầu được kế thừa từ \texttt{TwoPin}:
+
+% Source: printed 72 / PDF 88
+\begin{verbatim}
+  0 = p.i + n.i;
+  v = p.v - n.v;
+  i = p.i;
+  v = VA*sin(2*PI*f*time);
+\end{verbatim}
+
+\paragraph*{Đất}
+\sourcefigure{3.20}{88}{Thành phần đất.}
+Cuối cùng, chúng ta định nghĩa một lớp cho các điểm đất, có thể tạo thể hiện làm giá trị tham chiếu cho các mức điện áp trong mạch điện. Lớp này chỉ có một chân nối (Hình 3.20).
+\begin{verbatim}
+class Ground "Ground"
+  Pin p;
+equation
+  p.v = 0;
+end Ground;
+\end{verbatim}
+Có thể trích xuất một phương trình duy nhất từ lớp \texttt{Ground}.
+\begin{verbatim}
+  p.v = 0
+\end{verbatim}
+
+\subsection{Mô hình mạch đơn giản}
+Sau khi tập hợp một thư viện nhỏ các thành phần điện đơn giản, giờ đây chúng ta có thể lắp ráp mạch điện đơn giản đã trình bày trước đó và trong Hình 3.21.
+\sourcefigure{3.21}{88}{Mô hình SimpleCircuit.}
+
+% Source: printed 73 / PDF 89
+Hai thể hiện điện trở \texttt{R1}, \texttt{R2} được khai báo cùng phương trình sửa đổi cho giá trị tham số điện trở tương ứng. Tương tự, thể hiện \texttt{C} của tụ điện và thể hiện \texttt{L} của cuộn cảm được khai báo với các thành phần sửa đổi lần lượt cho điện dung và điện cảm. Nguồn điện áp \texttt{AC} và thể hiện đất \texttt{G} không có thành phần sửa đổi. Các phương trình \texttt{connect} được cung cấp để nối các thành phần trong mạch.
+\begin{verbatim}
+class SimpleCircuit
+  Resistor R1(R=10);
+  Capacitor C(C=0.01);
+  Resistor R2(R=100);
+  Inductor L(L=0.1);
+  VsourceAC AC;
+  Ground G;
+equation
+  connect(AC.p, R1.p); // Wire1, Capacitor circuit
+  connect(R1.n, C.p);  // Wire 2
+  connect(C.n, AC.n);  // Wire 3
+  connect(R1.p, R2.p); // Wire4, Inductor circuit
+  connect(R2.n, L.p);  // Wire 5
+  connect(L.n, C.n);   // Wire 6
+  connect(AC.n, G.p);  // Wire7, Ground
+end SimpleCircuit;
+\end{verbatim}
+
+\subsection{Mảng}
+Mảng là một tập hợp biến đều cùng kiểu. Phần tử mảng được truy cập bằng các chỉ số \texttt{Integer} đơn giản, từ cận dưới 1 đến cận trên là kích thước của chiều tương ứng, hoặc bằng chỉ số Boolean từ \texttt{false} đến \texttt{true}, hoặc bằng chỉ số liệt kê. Có thể khai báo một biến mảng bằng cách thêm các chiều trong ngoặc vuông sau tên lớp, như trong Java, hoặc sau tên biến, như trong C. Ví dụ:
+\begin{verbatim}
+  Real[3] positionvector = {1,2,3};
+  Real[3,3] identitymatrix = {{1,0,0}, {0,1,0}, {0,0,1}};
+  Real[3,3,3] arr3d;
+\end{verbatim}
+Đoạn mã này khai báo một vectơ vị trí ba chiều, một ma trận biến đổi và một mảng ba chiều. Dùng cú pháp khác đặt các chiều sau tên biến, có thể biểu đạt cùng những khai báo ấy như sau:
+\begin{verbatim}
+  Real positionvector[3] = {1,2,3};
+  Real identitymatrix[3,3] = {{1,0,0}, {0,1,0}, {0,0,1}};
+  Real arr3d[3,3,3];
+\end{verbatim}
+Trong hai khai báo mảng đầu, các phương trình khai báo được cung cấp, dùng cấu trúc tạo mảng \texttt{\{ \}} để xây dựng giá trị mảng định nghĩa \texttt{positionvector}, \texttt{identitymatrix}. Đánh chỉ số mảng \texttt{A} được viết là \texttt{A[i,j,...]}, trong đó 1 là cận dưới và \texttt{size(A,k)} là cận trên của chỉ số ở chiều thứ $k$. Có thể tạo các ma trận con bằng ký pháp \texttt{:} cho khoảng chỉ số, chẳng hạn \texttt{A[i1:i2, j1:j2]}, trong đó khoảng \texttt{i1:i2} có nghĩa là mọi phần tử có chỉ số từ \texttt{i1} đến và bao gồm \texttt{i2}.
+
+Có thể tạo biểu thức mảng bằng các toán tử số học \texttt{+}, \texttt{-}, \texttt{*}, \texttt{/}, vì chúng có thể thao tác trên đại lượng vô hướng, vectơ, ma trận, hoặc (khi áp dụng được) mảng nhiều chiều có phần tử kiểu \texttt{Real} hay \texttt{Integer}. Toán tử nhân \texttt{*} biểu thị tích vô hướng khi dùng giữa các vectơ, phép nhân ma trận khi dùng giữa các ma trận hoặc giữa ma trận với vectơ, và nhân từng phần tử khi dùng giữa mảng với đại lượng vô hướng. Chẳng hạn, nhân \texttt{positionvector} với đại lượng vô hướng 2 được biểu đạt bằng:
+\begin{verbatim}
+  positionvector * 2
+\end{verbatim}
+cho kết quả:
+
+% Source: printed 74 / PDF 90
+\begin{verbatim}
+  {2, 4, 6}
+\end{verbatim}
+Khác với Java, các mảng có số chiều lớn hơn 1 trong Modelica luôn là hình chữ nhật, như trong Matlab hoặc Fortran.
+
+Có một số hàm mảng tích hợp, trong đó vài hàm được trình bày trong bảng dưới.
+\begin{center}
+\begin{tabular}{p{0.31\linewidth}p{0.61\linewidth}}
+\hline
+\texttt{transpose(A)} & Hoán vị hai chiều đầu tiên của mảng \texttt{A}.\\
+\texttt{zeros(n1,n2,n3,...)} & Trả về mảng số nguyên $n_1\times n_2\times n_3\times\cdots$ chứa toàn số 0.\\
+\texttt{ones(n1,n2,n3,...)} & Trả về mảng số nguyên $n_1\times n_2\times n_3\times\cdots$ chứa toàn số 1.\\
+\texttt{fill(s,n1,n2,n3,...)} & Trả về mảng $n_1\times n_2\times n_3\times\cdots$ mà mọi phần tử đều có giá trị của biểu thức vô hướng \texttt{s}.\\
+\texttt{min(A)} & Trả về phần tử nhỏ nhất của biểu thức mảng \texttt{A}.\\
+\texttt{max(A)} & Trả về phần tử lớn nhất của biểu thức mảng \texttt{A}.\\
+\texttt{sum(A)} & Trả về tổng mọi phần tử của biểu thức mảng \texttt{A}.\\
+\hline
+\end{tabular}
+\end{center}
+
+Một hàm Modelica vô hướng với một đối số vô hướng được tự động tổng quát hóa để áp dụng cả cho mảng theo từng phần tử. Chẳng hạn, nếu \texttt{A} là vectơ số thực, \texttt{cos(A)} là một vectơ mà mỗi phần tử là kết quả áp dụng hàm \texttt{cos} cho phần tử tương ứng trong \texttt{A}. Ví dụ:
+\begin{verbatim}
+  cos({ 1, 2, 3 }) = {cos(1), cos(2), cos(3)}
+\end{verbatim}
+Có thể nối mảng tổng quát bằng toán tử nối mảng \texttt{cat(k,A,B,C,...)}, nối các mảng \texttt{A,B,C,...} theo chiều thứ $k$. Chẳng hạn, \texttt{cat(1, \{2,3\}, \{5,8,4\})} cho kết quả \texttt{\{2,3,5,8,4\}}.
+\[m\times n\]
+Các trường hợp riêng thông dụng của việc nối theo chiều thứ nhất và thứ hai lần lượt được hỗ trợ qua những dạng cú pháp đặc biệt \texttt{[A;B;C;...]} và \texttt{[A,B,C,...]}. Có thể kết hợp hai dạng này. Để tương thích với cú pháp mảng Matlab, một chuẩn trên thực tế, đối số vô hướng và vectơ của các toán tử đặc biệt này được nâng lên thành ma trận trước khi nối. Nhờ vậy, có thể xây dựng ma trận từ các biểu thức vô hướng bằng cách ngăn các hàng bằng dấu chấm phẩy và các cột bằng dấu phẩy. Ví dụ dưới tạo ra một ma trận:
+\[
+\begin{array}{llll}
+[\mathrm{expr}_{11},&\mathrm{expr}_{12},&\ldots&\mathrm{expr}_{1n};\\
+\mathrm{expr}_{21},&\mathrm{expr}_{22},&\ldots&\mathrm{expr}_{2n};\\
+\vdots&\vdots&&\vdots\\
+\mathrm{expr}_{m1},&\mathrm{expr}_{m2},&\ldots&\mathrm{expr}_{mn}]
+\end{array}
+\]
+Theo dõi quá trình tạo ma trận từ các biểu thức vô hướng bằng những toán tử này giúp hiểu rõ hơn. Ví dụ:
+\begin{verbatim}
+[1,2;
+3,4]
+\end{verbatim}
+Trước tiên, mỗi đối số vô hướng được nâng lên thành một ma trận, cho:
+\begin{verbatim}
+[ {{1}}, {{2}};
+{{3}}, {{4}} ]
+\end{verbatim}
+Vì \texttt{[... , ...]} để nối theo chiều thứ hai có độ ưu tiên cao hơn \texttt{[... ; ...]}, dùng để nối theo chiều thứ nhất, bước nối đầu tiên cho:
+\begin{verbatim}
+[ {{1, 2}};
+{{3, 4}} ]
+\end{verbatim}
+
+% Source: printed 75 / PDF 91
+\[2\times2\]
+Cuối cùng, các ma trận hàng được nối lại, cho ma trận mong muốn:
+\begin{verbatim}
+{{1, 2},
+{3, 4}}
+\end{verbatim}
+\[1\times1\]
+Trường hợp riêng chỉ có một đối số vô hướng có thể dùng để tạo một ma trận. Ví dụ:
+\begin{verbatim}
+[1]
+\end{verbatim}
+cho ma trận:
+\begin{verbatim}
+{{1}}
+\end{verbatim}
+
+\section{Các cấu trúc thuật toán}
+Mặc dù phương trình đặc biệt phù hợp để mô hình hóa hệ thống vật lý và thực hiện nhiều nhiệm vụ khác, có những tình huống cần cấu trúc thuật toán không khai báo. Đây thường là trường hợp của thuật toán, tức mô tả thủ tục về cách thực hiện phép tính cụ thể, thường gồm một số câu lệnh phải thực thi theo thứ tự được chỉ định.
+
+\subsection{Phần thuật toán và câu lệnh gán}
+Trong Modelica, câu lệnh thuật toán chỉ có thể xuất hiện trong các phần thuật toán, bắt đầu bằng từ khóa \texttt{algorithm}. Phần thuật toán cũng có thể gọi là \emph{phương trình thuật toán}, vì có thể xem nó là một nhóm phương trình liên quan đến một hoặc nhiều biến, và nó có thể xuất hiện giữa các phần phương trình. Phần thuật toán kết thúc khi xuất hiện một trong các từ khóa \texttt{equation}, \texttt{public}, \texttt{protected}, \texttt{algorithm}, \texttt{end} hoặc \texttt{annotation}.
+\begin{verbatim}
+  algorithm
+    ...
+    <statements>
+    ...
+    <some other keyword>
+\end{verbatim}
+Một phần thuật toán nằm giữa các phần phương trình có thể xuất hiện như dưới đây, trong đó phần thuật toán ví dụ chứa ba câu lệnh gán.
+\begin{verbatim}
+  equation
+    x = y*2;
+    z = w;
+  algorithm
+    x1 := z+x;
+    x2 := y-5;
+    x1 := x2+y;
+  equation
+    u = x1+x2;
+    ...
+\end{verbatim}
+Lưu ý rằng mã trong phần thuật toán, đôi khi gọi là phương trình thuật toán, sử dụng giá trị của một số biến bên ngoài thuật toán. Những biến ấy được gọi là \emph{biến đầu vào} của thuật toán: trong ví dụ này là \texttt{x}, \texttt{y}, \texttt{z}. Tương tự, những biến được thuật toán gán giá trị xác định \emph{đầu ra của thuật toán}: trong ví dụ này là \texttt{x1}, \texttt{x2}. Điều này làm ngữ nghĩa của phần thuật toán khá giống một hàm có thân là phần thuật toán, với các tham số hình thức đầu vào và đầu ra tương ứng với đầu vào và đầu ra vừa mô tả.
+
+% Source: printed 76 / PDF 92
+\subsection{Câu lệnh}
+Ngoài câu lệnh gán đã dùng trong ví dụ trước, Modelica có vài loại câu lệnh ``thuật toán'' khác: câu lệnh \texttt{if-then-else}, vòng lặp \texttt{for}, vòng lặp \texttt{while}, câu lệnh \texttt{return}, v.v. Phép tính tổng dưới đây dùng cả vòng lặp \texttt{while} lẫn câu lệnh \texttt{if}, trong đó \texttt{size(a,1)} trả về kích thước chiều đầu tiên của mảng \texttt{a}. Các phần \texttt{elseif}, \texttt{else} của câu lệnh \texttt{if} là tùy chọn.
+\begin{verbatim}
+  sum := 0;
+  n := size(a,1);
+  while n>0 loop
+    if a[n]>0 then
+      sum := sum + a[n];
+    elseif a[n] > -1 then
+      sum := sum - a[n] -1;
+    else
+      sum := sum - a[n];
+    end if;
+    n := n-1;
+  end while;
+\end{verbatim}
+Cả vòng lặp \texttt{for} và \texttt{while} đều có thể kết thúc ngay bằng cách thực thi một câu lệnh \texttt{break} bên trong vòng lặp. Câu lệnh này chỉ gồm từ khóa \texttt{break} theo sau bởi dấu chấm phẩy.
+
+Hãy xét lại phép tính đa thức đã trình bày trong mục về cấu trúc phương trình lặp lại:
+\begin{verbatim}
+y := a[1] + a[2] * x + a[3] * x^1 + ... + a[n + 1] * x^n;
+\end{verbatim}
+Khi dùng phương trình để mô hình hóa phép tính đa thức, cần đưa vào vectơ phụ \texttt{xpowers} để lưu các lũy thừa khác nhau của \texttt{x}. Hoặc có thể biểu đạt cùng phép tính bằng một thuật toán với vòng lặp \texttt{for} như dưới đây. Không cần thêm vectơ: chỉ cần dùng một biến vô hướng \texttt{xpower} cho lũy thừa \texttt{x} được tính gần nhất.
+\begin{verbatim}
+  algorithm
+    y := 0;
+    xpower := 1;
+    for i in 1:n+1 loop
+      y := y + a[i]*xpower;
+      xpower := xpower*x;
+    end for;
+\end{verbatim}
+
+\subsection{Hàm}
+Hàm là một phần tự nhiên của mọi mô hình toán học. Một số hàm toán học như \texttt{abs}, \texttt{sqrt}, \texttt{mod}, \texttt{sin}, \texttt{cos}, \texttt{exp}, v.v. vừa được định nghĩa sẵn trong ngôn ngữ Modelica, vừa có trong thư viện toán chuẩn \texttt{Modelica.Math}. Các toán tử số học \texttt{+}, \texttt{-}, \texttt{*}, \texttt{/} có thể được xem là hàm sử dụng thông qua cú pháp toán tử thuận tiện. Vì vậy, việc có các hàm toán học do người dùng định nghĩa trong Modelica là tự nhiên. Thân hàm Modelica là một phần thuật toán chứa mã thuật toán thủ tục, thực thi khi hàm được gọi. Tham số hình thức được chỉ định bằng từ khóa \texttt{input}, còn kết quả được biểu thị bằng từ khóa \texttt{output}. Điều này khiến cú pháp định nghĩa hàm khá gần với định nghĩa lớp \texttt{block} trong Modelica.
+
+Hàm Modelica là \emph{hàm toán học}, tức không có tác dụng phụ toàn cục và không có bộ nhớ (ngoại trừ các hàm Modelica không thuần khiết được đánh dấu bằng từ khóa \texttt{impure}). Một hàm Modelica luôn trả về cùng kết quả khi nhận cùng các đối số. Dưới đây, chúng tôi trình bày mã thuật toán tính giá trị đa thức trong một hàm tên \texttt{polynomialEvaluator}.
+
+% Source: printed 77 / PDF 93
+\begin{verbatim}
+  function polynomialEvaluator
+    input Real a[:]; // Array, size defined at function call time
+    input Real x := 1.0; // Default value 1.0 for x
+    output Real y;
+  protected
+    Real xpower;
+  algorithm
+    y := 0;
+    xpower := 1;
+    for i in 1:size(a,1) loop
+      y := y + a[i]*xpower;
+      xpower := xpower*x;
+    end for;
+  end polynomialEvaluator;
+\end{verbatim}
+Hàm thường được gọi với sự tương ứng theo vị trí giữa đối số thực tế và tham số hình thức. Chẳng hạn, trong lời gọi dưới đây, đối số thực tế \texttt{\{1,2,3,4\}} trở thành giá trị của vectơ hệ số \texttt{a}, còn 21 trở thành giá trị của tham số hình thức \texttt{x}. Tham số hình thức của hàm Modelica là chỉ đọc, tức không được gán giá trị trong mã của hàm. Khi gọi hàm bằng sự tương ứng đối số theo vị trí, số đối số thực tế phải bằng số tham số hình thức. Kiểu của các biểu thức đối số thực tế phải tương thích với kiểu khai báo của tham số hình thức tương ứng. Điều này cho phép truyền đối số mảng có độ dài tùy ý đến hàm có tham số hình thức mảng chưa chỉ định độ dài, như tham số hình thức đầu vào \texttt{a} trong hàm \texttt{polynomialEvaluator}.
+\begin{verbatim}
+  p = polynomialEvaluator({1, 2, 3, 4}, 21);
+\end{verbatim}
+Cũng có thể gọi \texttt{polynomialEvaluator} bằng sự tương ứng theo tên giữa đối số thực tế và tham số hình thức, như trong ví dụ tiếp theo. Cách này có ưu điểm khiến mã tự mô tả tốt hơn và linh hoạt hơn đối với cập nhật mã.
+
+Chẳng hạn, nếu mọi lời gọi \texttt{polynomialEvaluator} đều dùng sự tương ứng tham số theo tên, có thể thay đổi thứ tự giữa các tham số hình thức \texttt{a}, \texttt{x}, và đưa thêm tham số hình thức có giá trị mặc định vào định nghĩa hàm mà không gây lỗi biên dịch tại các vị trí gọi. Không cần cung cấp đối số thực tế cho tham số hình thức có giá trị mặc định, trừ khi muốn gán cho nó giá trị khác mặc định.
+\begin{verbatim}
+  p = polynomialEvaluator(a={1, 2, 3, 4}, x=21);
+\end{verbatim}
+Hàm có thể có nhiều kết quả. Chẳng hạn, hàm \texttt{f} dưới đây có ba tham số kết quả, được khai báo thành ba tham số hình thức đầu ra \texttt{r1}, \texttt{r2}, \texttt{r3}.
+\begin{verbatim}
+  function f
+    input Real x;
+    input Real y;
+    output Real r1;
+    output Real r2;
+    output Real r3;
+    ...
+  end f;
+\end{verbatim}
+Trong mã thuật toán, chỉ có thể gọi hàm nhiều kết quả trong các câu lệnh gán đặc biệt như dưới đây, nơi các biến bên trái được gán những kết quả hàm tương ứng.
+\begin{verbatim}
+  (a, b, c) := f(1.0, 2.0);
+\end{verbatim}
+Trong phương trình, một cú pháp tương tự được dùng:
+\begin{verbatim}
+  (a, b, c) = f(1.0, 2.0);
+\end{verbatim}
+Việc thoát khỏi hàm xảy ra khi đến cuối hàm hoặc thực thi câu lệnh \texttt{return} trong thân hàm.
+
+% Source: printed 78 / PDF 94
+\subsection{Nạp chồng toán tử và số phức}
+Nạp chồng hàm và toán tử cho phép có nhiều định nghĩa của cùng hàm hoặc toán tử, nhưng mỗi định nghĩa có một tập kiểu tham số hình thức đầu vào khác nhau. Nhờ đó, chẳng hạn, có thể định nghĩa các toán tử cộng, nhân, v.v. của số phức bằng các toán tử \texttt{+}, \texttt{*} thông thường nhưng với định nghĩa mới, hoặc cung cấp nhiều định nghĩa của hàm giải phương trình ma trận tuyến tính cho các biểu diễn ma trận khác nhau như ma trận đặc thông thường, ma trận thưa, ma trận đối xứng, v.v.
+
+Thực tế, nạp chồng đã được định nghĩa sẵn ở mức hạn chế cho một số toán tử trong Modelica. Chẳng hạn, toán tử cộng (\texttt{+}) có nhiều định nghĩa khác nhau tùy kiểu dữ liệu:
+\begin{enumerate}
+\item \texttt{1+2}: cộng số nguyên của hai hằng \texttt{Integer}, cho kết quả số nguyên, ở đây là 3.
+\item \texttt{1.0+2.0}: cộng số dấu phẩy động của hai hằng \texttt{Real}, cho kết quả số dấu phẩy động, ở đây là 3.0.
+\item \texttt{"ab"+"2"}: nối hai hằng chuỗi, cho kết quả chuỗi, ở đây là \texttt{"ab2"}.
+\item \texttt{\{1,2\}+\{3,4\}}: cộng vectơ số nguyên của hai vectơ hằng số nguyên, cho kết quả vectơ, ở đây là \texttt{\{4,6\}}.
+\end{enumerate}
+Có thể định nghĩa toán tử nạp chồng cho các kiểu dữ liệu do người dùng định nghĩa bằng khai báo \texttt{operator record} và \texttt{operator function}. Sau đây là một phần ví dụ kiểu dữ liệu số phức:
+\begin{verbatim}
+  operator record Complex "Record defining a Complex number"
+
+    Real re "Real part of complex number";
+    Real im "Imaginary part of complex number";
+
+    encapsulated operator 'constructor'
+      import Complex;
+      function fromReal
+        input Real re;
+        output Complex result = Complex(re=re, im=0.0);
+          annotation(Inline=true);
+      end fromReal;
+    end 'constructor';
+
+    encapsulated operator function '+'
+      import Complex;
+      input Complex c1;
+      input Complex c2;
+      output Complex result "Same as: c1 + c2";
+        annotation(Inline=true);
+    algorithm
+      result := Complex(c1.re + c2.re, c1.im + c2.im);
+      end '+';
+  end Complex;
+\end{verbatim}
+Trong ví dụ trên, như thường lệ, chúng ta bắt đầu bằng khai báo phần thực và phần ảo của các trường \texttt{re}, \texttt{im} trong định nghĩa \texttt{operator record Complex}. Sau đó là định nghĩa \emph{hàm tạo} \texttt{fromReal} chỉ có một đối số đầu vào, thay vì hai đầu vào của hàm tạo \texttt{Complex} mặc định được ngầm định nghĩa bởi định nghĩa bản ghi \texttt{Complex}; tiếp theo là định nghĩa toán tử nạp chồng cho \texttt{'+'}.
+
+Có thể dùng các định nghĩa này như thế nào? Hãy xem ví dụ nhỏ sau:
+\begin{verbatim}
+  Real a;
+  Complex b;
+  Complex c = a + b; // Addition of Real number a and Complex number b
+\end{verbatim}
+Điểm thú vị nằm ở dòng thứ ba, chứa phép cộng \texttt{a+b} giữa một số \texttt{Real} \texttt{a} và một số \texttt{Complex} \texttt{b}. Không có toán tử cộng số phức tích hợp, nhưng chúng ta có định nghĩa toán tử nạp chồng trên
+% Source: printed 79 / PDF 95
+cho \texttt{'+'} giữa hai số phức. Phép cộng hai số phức sẽ khớp ngay với định nghĩa này trong quá trình tra cứu.
+
+Tuy nhiên, trường hợp này là phép cộng một số thực với một số phức. May mắn là quá trình tra cứu toán tử hai ngôi nạp chồng cũng xử lý được trường hợp đó nếu định nghĩa bản ghi \texttt{Complex} có một hàm tạo có thể chuyển số thực thành số phức. Ở đây, có một hàm tạo như vậy tên \texttt{fromReal}.
+
+Lưu ý rằng \texttt{Complex} đã được định nghĩa sẵn trong một kiểu bản ghi Modelica tên \texttt{Complex}. Nó được phân phối như một phần của thư viện chuẩn Modelica (MSL), nhưng được định nghĩa ở mức cao nhất bên ngoài MSL. Nó được tham chiếu là \texttt{Complex} hoặc \texttt{.Complex}, và được hầu hết công cụ tự động nạp sẵn, cho phép dùng trực tiếp mà không cần câu lệnh nhập nào (ngoại trừ trong các lớp \texttt{encapsulated}). Có một thư viện \texttt{ComplexMath} với các phép toán số phức.
+
+Sau đây là vài ví dụ sử dụng kiểu định nghĩa sẵn \texttt{Complex}:
+\begin{verbatim}
+   Real a = 2;
+   Complex j = Modelica.ComplexMath.j;
+   Complex b = 2 + 3*j;
+   Complex c = (2*b + a)/b;
+   Complex d = Modelica.ComplexMath.sin(c);
+   Complex v[3] = {b/2, c, 2*d};
+\end{verbatim}
+
+\subsection{Hàm bên ngoài}
+Có thể gọi các hàm được định nghĩa ngoài ngôn ngữ Modelica, hiện thực bằng C hoặc Fortran. Nếu không chỉ định ngôn ngữ bên ngoài, ngôn ngữ hiện thực được giả định là C. Thân hàm bên ngoài được đánh dấu bằng từ khóa \texttt{external} trong khai báo hàm bên ngoài của Modelica.
+\begin{verbatim}
+  function log input
+    Real x;
+    output Real y;
+    external
+  end log;
+\end{verbatim}
+Giao diện hàm bên ngoài hỗ trợ một số đặc tính nâng cao như tham số vào--ra, mảng làm việc cục bộ, thứ tự đối số hàm bên ngoài, chỉ định tường minh cách bố trí bộ nhớ mảng theo hàng hoặc theo cột, v.v. Chẳng hạn, tham số hình thức \texttt{Ares} tương ứng với một tham số vào--ra trong hàm bên ngoài \texttt{leastSquares} dưới đây, có giá trị \texttt{A} làm mặc định đầu vào và một giá trị khác làm kết quả. Có thể điều khiển thứ tự và cách dùng tham số của hàm bên ngoài Modelica. Điều này được dùng dưới đây để truyền tường minh kích thước các chiều mảng cho thủ tục Fortran tên \texttt{dgels}. Một số thủ tục Fortran kiểu cũ như \texttt{dgels} cần các mảng làm việc; điều này được xử lý thuận tiện bằng khai báo biến cục bộ sau từ khóa \texttt{protected}.
+\begin{verbatim}
+  function leastSquares "Solves a linear least squares problem" input
+      Real A[:,:];
+    input Real B[:,:];
+    output Real Ares[size(A,1),size(A,2)] := A;
+    // Factorization is returned in Ares for later use
+    output Real x[size(A,2),size(B,2)];
+  protected
+    Integer lwork = min(size(A,1), size(A,2)) +
+                    max(max(size(A,1), size(A,2)),size(B,2))*32;
+    Real work[lwork];
+    Integer info;
+    String transposed="NNNN"; // Workaround for passing CHARACTER data to
+                              // Fortran routine
+  external "FORTRAN 77"
+\end{verbatim}
+
+% Source: printed 80 / PDF 96
+\begin{verbatim}
+        dgels(transposed, 100, size(A,1), size(A,2), size(B,2), Ares,
+            size(A,1), B, size(B,1), work, lwork, info);
+  end leastSquares;
+\end{verbatim}
+
+\subsection{Xem thuật toán như hàm}
+Khái niệm hàm là một khối xây dựng cơ bản khi định nghĩa ngữ nghĩa hay ý nghĩa của cấu trúc ngôn ngữ lập trình. Một số ngôn ngữ lập trình được định nghĩa hoàn toàn bằng các hàm toán học. Vì vậy, việc tìm hiểu và định nghĩa ngữ nghĩa của các phần thuật toán Modelica bằng hàm là hữu ích. Chẳng hạn, xét phần thuật toán dưới đây, xuất hiện trong một bối cảnh phương trình:
+\begin{verbatim}
+  algorithm
+    y := x;
+    z := 2*y;
+    y := z+y;
+    ...
+\end{verbatim}
+Có thể biến đổi thuật toán này thành một phương trình và một hàm như dưới đây mà không đổi ý nghĩa. Phương trình cho các biến đầu ra của phần thuật toán trước bằng kết quả hàm \texttt{f}. Hàm \texttt{f} có các đầu vào của phần thuật toán làm tham số hình thức đầu vào và các đầu ra làm tham số kết quả. Mã thuật toán của phần thuật toán trở thành thân hàm \texttt{f}.
+\begin{verbatim}
+  (y,z) = f(x);
+  ...
+  function f
+    input Real x;
+    output Real y,z;
+  algorithm
+    y := x;
+    z := 2*y;
+    y := z+y;
+  end f;
+\end{verbatim}
+
+\section{Mô hình hóa sự kiện rời rạc và hệ lai}
+Các hệ thống vật lý vĩ mô nhìn chung tiến triển liên tục theo thời gian, tuân theo các định luật vật lý. Điều này bao gồm chuyển động của các bộ phận trong hệ thống cơ học, mức dòng điện và điện áp trong hệ thống điện, phản ứng hóa học, v.v. Những hệ thống này được gọi là có động lực học liên tục.
+
+Mặt khác, đôi khi có lợi khi xấp xỉ rằng một số thành phần hệ thống thể hiện hành vi rời rạc, tức giá trị biến hệ thống có thể thay đổi tức thời và gián đoạn tại những thời điểm cụ thể.
+
+Trong hệ thống vật lý thực, thay đổi có thể rất nhanh nhưng không tức thời. Ví dụ gồm va chạm trong hệ thống cơ học, như quả bóng nảy gần như đổi hướng tức thời, công tắc trong mạch điện với mức điện áp thay đổi nhanh, van và máy bơm trong nhà máy hóa chất, v.v. Chúng ta nói đến thành phần hệ thống có động lực học thời gian rời rạc. Lý do dùng phép xấp xỉ rời rạc là đơn giản hóa mô hình toán học của hệ thống, khiến mô hình dễ xử lý hơn và thường tăng tốc mô phỏng nhiều bậc độ lớn.
+
+Vì vậy, mô hình Modelica có thể có biến với \emph{mức biến thiên thời gian rời rạc}, tức biến chỉ đổi giá trị tại những thời điểm cụ thể, gọi là \emph{sự kiện}. Có hai loại biến thời gian rời rạc: \emph{biến thời gian rời rạc không theo nhịp đồng hồ}, giữ giá trị không đổi giữa các sự kiện, và \emph{biến thời gian rời rạc theo nhịp đồng hồ}, không được định nghĩa giữa các sự kiện nhịp đồng hồ liên quan; xem Hình 3.22. Ví dụ về biến thời gian rời rạc là biến \texttt{Real} được khai báo với tiền tố \texttt{discrete}, biến đồng hồ và biến theo nhịp đồng hồ,
+% Source: printed 81 / PDF 97
+hoặc biến \texttt{Integer}, \texttt{Boolean}, biến liệt kê, vốn mặc định có thời gian rời rạc và không thể có thời gian liên tục.
+\sourcefigure{3.22}{97}{Các biến thời gian rời rạc $z1$, $z2$ chỉ thay đổi giá trị tại thời điểm sự kiện, trong khi các biến thời gian liên tục như $y$ có thể thay đổi cả giữa các sự kiện lẫn tại sự kiện. Biến thời gian rời rạc không theo nhịp đồng hồ $z1$ còn được định nghĩa giữa các sự kiện, trong khi biến thời gian rời rạc theo nhịp đồng hồ $z2$ chỉ được định nghĩa tại các sự kiện nhịp đồng hồ liên quan. \textit{Ghi chú bản dịch (P3-1):} hình trong PDF tiếng Anh chỉ thể hiện rõ vết $z1$; các vết $y$ và $z2$ không hiện ra dù nhãn của chúng vẫn có trong hình. Cần phân biệt ba loại biến bằng chú thích và phần văn bản ở Mục 3.9. Bản dịch giữ hình gốc, không tự bổ sung các vết còn thiếu.}
+
+Vì phép xấp xỉ thời gian rời rạc chỉ áp dụng được cho một số hệ con, chúng ta thường thu được các mô hình hệ thống gồm thành phần liên tục và rời rạc tương tác với nhau. Hệ thống như vậy gọi là \emph{hệ thống lai}, và kỹ thuật mô hình hóa tương ứng gọi là \emph{mô hình hóa lai}. Việc đưa vào mô hình toán học lai tạo ra khó khăn mới khi giải, nhưng những ưu điểm vượt xa bất lợi.
+
+Modelica cung cấp bốn loại cấu trúc để biểu đạt mô hình lai: biểu thức hoặc phương trình điều kiện để mô tả các mô hình gián đoạn và có điều kiện; phương trình \texttt{when} để biểu đạt những phương trình chỉ đúng tại điểm gián đoạn (chẳng hạn khi một số điều kiện trở thành đúng); cấu trúc đồng bộ theo nhịp đồng hồ; và máy trạng thái theo nhịp đồng hồ. Chẳng hạn, biểu thức điều kiện \texttt{if-then-else} cho phép mô hình hóa hiện tượng bằng các biểu thức khác nhau ở những vùng hoạt động khác nhau, như phương trình mô tả một bộ giới hạn dưới đây.
+\begin{verbatim}
+  y = if v > limit then limit else v;
+\end{verbatim}
+Một ví dụ đầy đủ hơn về mô hình có điều kiện là mô hình diode lý tưởng. Đặc tuyến của diode vật lý thực được mô tả trong Hình 3.23, còn đặc tuyến diode lý tưởng dưới dạng tham số hóa được trình bày trong Hình 3.24.
+\sourcefigure{3.23}{97}{Đặc tuyến diode thực.}
+
+% Source: printed 82 / PDF 98
+\sourcefigure{3.24}{98}{Đặc tuyến diode lý tưởng.}
+
+Vì mức điện áp của diode lý tưởng sẽ tiến đến vô cùng trên đồ thị điện áp--dòng điện thông thường, mô tả tham số hóa thích hợp hơn: cả điện áp \texttt{v} lẫn dòng điện \texttt{i}, giống \texttt{i1}, đều là hàm của tham số \texttt{s}. Khi diode ngắt, không có dòng điện và điện áp âm; khi diode dẫn, không có sụt áp trên diode và dòng điện chạy qua.
+\begin{verbatim}
+model Diode "Ideal diode"
+  extends TwoPin;
+  Real s;
+  Boolean off;
+equation
+  off = s < 0;
+  if off
+    then v=s;
+    else v=0; // conditional equations
+  end if;
+  i = if off then 0 else s;
+end Diode;
+\end{verbatim}
+Phương trình \texttt{when} được đưa vào Modelica để biểu đạt các phương trình tức thời, tức chỉ đúng tại một số thời điểm, chẳng hạn tại các điểm gián đoạn khi những điều kiện cụ thể trở thành đúng, gọi là sự kiện. Cú pháp phương trình \texttt{when} cho trường hợp vectơ điều kiện được trình bày dưới đây. Các phương trình trong phương trình \texttt{when} được kích hoạt khi ít nhất một điều kiện trở thành đúng, và chỉ duy trì kích hoạt tại một thời điểm có thời lượng bằng 0. Cũng có thể dùng một điều kiện duy nhất.
+\begin{verbatim}
+  when {condition1, condition2, ...} then
+     <equations>
+  end when;
+\end{verbatim}
+Quả bóng nảy là một ví dụ tốt về hệ thống lai phù hợp để mô hình hóa bằng phương trình \texttt{when}. Chuyển động của bóng được đặc trưng bởi biến độ cao so với mặt đất và vận tốc thẳng đứng. Bóng chuyển động liên tục giữa các lần nảy, trong khi thay đổi rời rạc xảy ra tại thời điểm nảy, như mô tả trong Hình 3.25. Khi bóng nảy vào mặt đất, vận tốc của nó đổi chiều. Một quả bóng lý tưởng có hệ số đàn hồi 1 và không mất năng lượng khi nảy. Một quả bóng thực tế hơn, như mô hình dưới đây, có hệ số đàn hồi 0.9, khiến nó giữ 90 phần trăm tốc độ sau khi nảy.
+
+% Source: printed 83 / PDF 99
+\sourcefigure{3.25}{99}{Quỹ đạo quả bóng nảy.}
+
+Mô hình quả bóng nảy chứa hai phương trình chuyển động cơ bản liên hệ độ cao và vận tốc, cùng gia tốc do lực hấp dẫn. Tại thời điểm nảy, vận tốc đột ngột đổi chiều và giảm nhẹ, tức vận tốc (sau khi nảy) = \texttt{-c*velocity} (trước khi nảy). Điều này được thực hiện bằng dạng cú pháp đặc biệt \texttt{reinit} của phương trình tức thời để khởi tạo lại: \texttt{reinit(velocity,-c*pre(velocity))}, trong trường hợp này khởi tạo lại biến \texttt{velocity}.
+\begin{verbatim}
+model BouncingBall "Simple model of a bouncing ball"
+  constant Real g = 9.81 "Gravity constant";
+  parameter Real c = 0.9 "Coefficient of restitution";
+  parameter Real radius=0.1 "Radius of the ball";
+  Real height(start = 1) "Height of the ball center";
+  Real velocity(start = 0) "Velocity of the ball";
+equation
+  der(height) = velocity;
+  der(velocity) = -g;
+  when height <= radius then
+    reinit(velocity,-c*pre(velocity));
+  end when;
+end BouncingBall;
+\end{verbatim}
+Lưu ý rằng phương trình trong một phương trình \texttt{when} chỉ hoạt động tại thời điểm các điều kiện của \texttt{when} trở thành đúng, trong khi các phương trình điều kiện trong một phương trình \texttt{if} hoạt động chừng nào điều kiện của \texttt{if} còn đúng.
+
+Nếu mô phỏng mô hình này đủ lâu, bóng sẽ rơi xuyên qua mặt đất. Hành vi mô phỏng kỳ lạ này, gọi là \emph{shattering} hoặc hiệu ứng Zeno, xuất phát từ độ chính xác hạn chế của số dấu phẩy động kết hợp cơ chế phát hiện sự kiện của trình mô phỏng, và xảy ra với một số mô hình (không có tính vật lý) mà các sự kiện có thể xảy ra gần nhau vô hạn. Vấn đề thực sự ở đây là mô hình va chạm không thực tế: quy luật \texttt{new\_velocity = -c * velocity} không đúng với vận tốc rất nhỏ. Một cách sửa đơn giản là đặt điều kiện khi bóng rơi xuyên mặt đất, rồi chuyển sang phương trình phát biểu rằng bóng nằm trên mặt đất. Một giải pháp tốt hơn nhưng phức tạp hơn là chuyển sang mô hình vật liệu thực tế hơn.
+
+\paragraph*{Đồng hồ đồng bộ và máy trạng thái}
+Từ Modelica phiên bản 3.3, hai nhóm đặc tính chính về mô hình hóa thời gian rời rạc và mô hình hóa lai có trong ngôn ngữ: các đồng hồ đồng bộ tích hợp với cấu trúc mô hình hóa dựa trên đồng hồ, và các máy trạng thái đồng bộ dựa trên đồng hồ.
+
+Như mô tả trong Hình 3.22, đồng hồ và giá trị của biến thời gian rời rạc theo nhịp đồng hồ chỉ được định nghĩa tại sự kiện nhịp của đồng hồ liên quan, và không được định nghĩa giữa các nhịp.
+
+Mô hình hóa đồng bộ dựa trên đồng hồ đem lại lợi ích bổ sung cho mô hình hóa hệ thống thời gian thực và hệ thống nhúng, nhờ hiệu năng cao hơn và tránh và/hoặc phát hiện một số loại lỗi.
+
+% Source: printed 84 / PDF 100
+Để đưa ra một ví dụ rất đơn giản, trong mô hình dưới đây biến đồng hồ \texttt{clk} được định nghĩa với khoảng thời gian 0.2 giây. Đồng hồ được dùng để lấy mẫu biến tích hợp \texttt{time}, với kết quả đặt vào \texttt{x} và chỉ được định nghĩa tại nhịp đồng hồ. Cuối cùng, biến \texttt{y} còn được định nghĩa giữa các nhịp nhờ toán tử \texttt{hold}.
+\begin{verbatim}
+model BasicClockedSynchronous
+  Clock clk "A clock variable";
+  discrete Real x "Clocked discrete-time variable";
+  Real y "Unclocked discrete-time variable";
+equation
+  clk = Clock(0.2); // Clock with an interval of 0.2 seconds
+  x = sample(time,clk); // Sample the continuous time at clock ticks
+  y = hold(x)+1; // Hold value is defined also between clock ticks
+end BasicClockedSynchronous;
+\end{verbatim}
+\sourcefigure{3.26}{100}{Mô phỏng mô hình BasicClockedSynchronous, thể hiện biến thời gian rời rạc theo nhịp đồng hồ $x$ và biến thời gian rời rạc không theo nhịp đồng hồ $y$. \textit{Ghi chú bản dịch (P3-2):} nhãn $x$ và $y$ trong đồ thị gốc không khớp với mã ngay phía trên. Theo mã $x=\mathrm{sample}(time,clk)$, các điểm lấy mẫu ở mức 0--0,8 thuộc $x$; theo $y=\mathrm{hold}(x)+1$, đường giữ giá trị ở mức 1--1,8 thuộc $y$. Hình gốc đặt hai nhãn theo thứ tự ngược lại. Bản dịch giữ ảnh và mã của nguồn.}
+
+\section{Các phương tiện mô-đun hóa}
+\subsection{Gói}
+Xung đột tên là một vấn đề lớn khi phát triển mã tái sử dụng được, chẳng hạn thư viện lớp và hàm Modelica tái sử dụng được cho những miền ứng dụng khác nhau. Dù chọn tên lớp và biến cẩn thận đến đâu, rất có thể người khác đang dùng một tên nào đó cho mục đích khác. Vấn đề trầm trọng hơn khi dùng tên mô tả ngắn, vì chúng dễ dùng, khá phổ biến và rất có khả năng được dùng trong mã của người khác.
+
+Một giải pháp thông dụng để tránh trùng tên là gắn tiền tố ngắn vào một tập tên liên quan được nhóm thành một gói. Chẳng hạn, mọi tên trong bộ công cụ X-Windows có tiền tố \texttt{Xt}, và phần lớn định nghĩa trong thư viện giao diện Qt có tiền tố \texttt{Q}. Cách này khá hiệu quả với ít gói, nhưng khả năng trùng tên tăng khi số gói tăng.
+
+Nhiều ngôn ngữ lập trình như Java, Ada và Modelica cung cấp một cách an toàn và có hệ thống hơn để tránh trùng tên thông qua khái niệm \emph{gói}. Gói đơn giản là nơi chứa hoặc không gian tên cho tên lớp, hàm, hằng và những định nghĩa được phép khác. Tên gói được đặt làm tiền tố cho mọi định nghĩa trong gói bằng ký pháp dấu chấm chuẩn. Các định nghĩa có thể được \emph{nhập} vào không gian tên của gói.
+
+% Source: printed 85 / PDF 101
+Modelica định nghĩa khái niệm gói như một sự hạn chế và mở rộng khả năng của khái niệm lớp. Vì vậy, có thể dùng kế thừa để nhập định nghĩa vào không gian tên của gói khác. Tuy nhiên, cách này gây vấn đề về mô hình hóa khái niệm, vì kế thừa để nhập không thực sự là chuyên biệt hóa gói. Thay vào đó, Modelica cung cấp cấu trúc ngôn ngữ \texttt{import} cho gói. Tên kiểu \texttt{Voltage}, cùng mọi định nghĩa khác trong \texttt{Modelica.SIunits}, được nhập trong ví dụ dưới, cho phép dùng không có tiền tố để khai báo biến \texttt{v}. Ngược lại, khai báo biến \texttt{i} dùng tên định danh đầy đủ \texttt{Modelica.SIunits.Ampere} của kiểu \texttt{Ampere}, dù cũng có thể dùng dạng ngắn. Có thể dùng tên dài đầy đủ của \texttt{Ampere} vì nó được tìm thấy qua phép tra cứu lồng nhau chuẩn của thư viện chuẩn Modelica, đặt trong một gói mức cao nhất về mặt khái niệm.
+\begin{verbatim}
+package MyPack
+  import MyTypes.*;
+  import Modelica.SIunits.*;
+
+  class Foo;
+    Voltage v;
+    Modelica.SIunits.Ampere i;
+  end Foo;
+end MyPack;
+\end{verbatim}
+Nhập định nghĩa từ một gói vào một lớp khác như ví dụ trên có bất lợi là đưa thêm định nghĩa mới vào một gói có thể gây trùng tên với định nghĩa trong những gói sử dụng nó. Chẳng hạn, nếu đưa một định nghĩa kiểu tên \texttt{Voltage} vào gói \texttt{MyTypes}, lỗi biên dịch sẽ phát sinh trong gói \texttt{MyPack} vì tên đó cũng được định nghĩa trong \texttt{Modelica.SIunits}.
+
+Một giải pháp khác cho vấn đề tên ngắn, không có bất lợi là có thể phát sinh lỗi biên dịch khi thêm định nghĩa mới vào thư viện, là đưa vào những bí danh ngắn thuận tiện cho tiền tố thay vì tiền tố gói dài. Có thể làm điều này bằng dạng đổi tên của câu lệnh \texttt{import}, như gói \texttt{MyPack} dưới đây, nơi tên gói \texttt{SI} thay cho tên dài hơn nhiều \texttt{Modelica.SIunits}.
+
+Một bất lợi khác của gói trên là kiểu \texttt{Ampere} được tham chiếu bằng phép tra cứu lồng nhau chuẩn thay vì câu lệnh nhập tường minh. Vì thế, trong trường hợp xấu nhất, để tìm mọi phụ thuộc như vậy và những khai báo mà chúng tham chiếu, có thể phải:
+\begin{enumerate}
+\item Đọc quét toàn bộ mã nguồn của gói hiện tại, có thể rất lớn.
+\item Tìm qua mọi gói chứa gói hiện tại, tức ở cao hơn trong cấu trúc phân cấp gói, vì phép tra cứu lồng nhau chuẩn cho phép các kiểu và định nghĩa được sử dụng được khai báo ở bất kỳ nơi nào phía trên vị trí hiện tại trong cấu trúc phân cấp.
+\end{enumerate}
+Thay vào đó, một gói được thiết kế tốt nên nêu \emph{tường minh} mọi phụ thuộc qua câu lệnh \texttt{import}, vốn dễ tìm. Có thể tạo một gói như vậy, chẳng hạn \texttt{MyPack} dưới đây, bằng cách thêm tiền tố \texttt{encapsulated} trước từ khóa \texttt{package}. Điều này ngăn tra cứu lồng nhau vượt ra ngoài ranh giới gói (đáng tiếc có một ngoại lệ là các tên bắt đầu bằng dấu chấm \texttt{.}), bảo đảm mọi phụ thuộc vào gói khác bên ngoài gói hiện tại phải được nêu tường minh bằng câu lệnh \texttt{import}. Gói đóng kín như vậy biểu diễn một đơn vị mã độc lập và tương ứng gần hơn với khái niệm gói trong nhiều ngôn ngữ lập trình khác, chẳng hạn Java hoặc Ada.
+\begin{verbatim}
+encapsulated package MyPack
+  import SI = Modelica.SIunits;
+  import Modelica;
+
+  class Foo;
+   SI.Voltage v;
+    Modelica.SIunits.Ampere i;
+  end Foo;
+  ...
+end MyPack;
+\end{verbatim}
+
+% Source: printed 86 / PDF 102
+\subsection{Annotation}
+Annotation trong Modelica là thông tin thêm gắn với một mô hình Modelica. Thông tin bổ sung này được các môi trường Modelica sử dụng, chẳng hạn để hỗ trợ tài liệu hoặc chỉnh sửa mô hình đồ họa. Phần lớn annotation không ảnh hưởng đến việc thực thi mô phỏng, tức vẫn phải thu được cùng kết quả ngay cả khi bỏ annotation, nhưng có ngoại lệ. Cú pháp annotation như sau:
+\begin{verbatim}
+  annotation(annotation_elements)
+\end{verbatim}
+trong đó \texttt{annotation\_elements} là danh sách phần tử annotation ngăn cách bằng dấu phẩy, có thể là mọi loại biểu thức tương thích với cú pháp Modelica. Sau đây là lớp điện trở với annotation đi kèm cho biểu diễn biểu tượng điện trở dùng trong trình chỉnh sửa mô hình đồ họa:
+\begin{verbatim}
+model Resistor
+  ...
+  annotation(Icon(coordinateSystem(preserveAspectRatio = true,
+  extent = {{-100,-100},{100,100}}, grid = {2,2}),
+  graphics = {
+    Rectangle(extent = {{-70,30},{70,-30}}, lineColor = {0,0,255},
+    fillColor = {255,255,255},
+      fillPattern = FillPattern.Solid),
+    Line(points = {{-90,0},{-70,0}}, color = {0,0,255}),
+    Line(points = {{70,0},{90,0}}, color = {0,0,255}),
+    Text(extent = {{-144,-40},{142,-72}}, lineColor = {0,0,0},
+    textString = "R=\%R"),
+  ...
+  ));
+end Resistor;
+\end{verbatim}
+Một ví dụ khác là annotation định nghĩa sẵn \texttt{choices}, dùng để sinh menu cho giao diện người dùng đồ họa:
+\begin{verbatim}
+annotation(choices(choice=1 "P", choice=2 "PI", choice=3 "PID"));
+\end{verbatim}
+Annotation \texttt{Documentation} được dùng cho tài liệu mô hình, như ví dụ về mô hình \texttt{Capacitor} sau:
+\begin{verbatim}
+    annotation(
+      Documentation(info = "<HTML>
+        <p>
+         The linear capacitor connects the branch voltage <i>v</i> with
+            the
+         branch current <i>i</i> by <i>i = C * dv/dt</i>.
+         The Capacitance <i>C</i> is allowed to be positive, zero, or
+            negative.
+        </p>
+       </HTML>
+     )
+\end{verbatim}
+Annotation hàm bên ngoài \texttt{arrayLayout} có thể được dùng để chỉ định tường minh cách bố trí mảng, chẳng hạn nếu khác thứ tự mặc định \texttt{rowMajor} và \texttt{columnMajor} của các ngôn ngữ bên ngoài C và Fortran 77 tương ứng.
+
+Đây là một trong những trường hợp hiếm gặp annotation ảnh hưởng đến kết quả mô phỏng, vì annotation bố trí mảng sai rõ ràng sẽ có hệ quả đối với tính toán ma trận. Ví dụ:
+\begin{verbatim}
+  annotation(arrayLayout = "columnMajor");
+\end{verbatim}
+
+\subsection{Quy ước đặt tên}
+Bạn có thể đã nhận thấy một phong cách đặt tên lớp và biến trong các ví dụ của chương này. Thực vậy, những quy ước đặt tên cụ thể dưới đây đang được tuân thủ. Những quy ước ấy đã được
+% Source: printed 87 / PDF 103
+áp dụng trong thư viện chuẩn Modelica, khiến mã dễ đọc hơn và phần nào giảm nguy cơ xung đột tên. Các ví dụ trong sách phần lớn tuân theo những quy ước này, và chúng được khuyến nghị cho mã Modelica nói chung:
+\begin{itemize}
+\item Tên kiểu và lớp (nhưng thường không phải hàm) luôn bắt đầu bằng chữ hoa, chẳng hạn \texttt{Voltage}.
+\item Tên biến bắt đầu bằng chữ thường, chẳng hạn \texttt{body}, ngoại trừ một số tên một chữ cái như \texttt{T} cho nhiệt độ.
+\item Tên gồm nhiều từ có chữ cái đầu mỗi từ viết hoa, với từ đầu tiên theo các quy tắc trên, chẳng hạn \texttt{ElectricCurrent} và \texttt{bodyPart}.
+\item Dấu gạch dưới chỉ được dùng ở cuối tên, hoặc cuối một từ trong tên, thường để biểu thị chỉ số dưới hoặc trên, chẳng hạn \texttt{body\_low\_up}.
+\item Tên ưu tiên cho thể hiện đầu nối trong các mô hình (chưa hoàn chỉnh) là \texttt{p}, \texttt{n} cho đầu nối dương và âm trong thành phần điện, và các biến thể tên chứa \texttt{a}, \texttt{b}, chẳng hạn \texttt{flange\_a}, \texttt{flange\_b}, cho những loại đầu nối khác vốn giống nhau và thường có trong thành phần hai phía.
+\end{itemize}
+Để biết thêm chi tiết về quy ước đặt tên, xem tài liệu bên trong gói.
+
+\section{Thư viện chuẩn Modelica}
+Phần lớn sức mạnh của mô hình hóa bằng Modelica đến từ việc dễ tái sử dụng lớp mô hình. Các lớp liên quan trong những lĩnh vực cụ thể được nhóm thành gói để dễ tìm hơn.
+
+Một gói đặc biệt tên \texttt{Modelica} là một gói định nghĩa sẵn được chuẩn hóa, cùng ngôn ngữ Modelica do Hiệp hội Modelica phát triển và duy trì. Gói này còn được gọi là \emph{Thư viện chuẩn Modelica}, viết tắt MSL. Nó cung cấp hằng, kiểu, lớp đầu nối, mô hình chưa hoàn chỉnh và lớp mô hình thành phần từ nhiều miền ứng dụng, được nhóm thành các gói con của gói \texttt{Modelica}, gọi là các thư viện chuẩn Modelica.
+
+Dưới đây là một phần của tập hợp thư viện chuẩn Modelica ngày càng phát triển hiện có:
+\begin{itemize}
+\item \texttt{Modelica.Constants}: các hằng thông dụng của toán học, vật lý, v.v.
+\item \texttt{Modelica.Icons}: bố trí đồ họa của các định nghĩa biểu tượng dùng trong nhiều gói.
+\item \texttt{Modelica.Math}: định nghĩa các hàm toán học thông dụng.
+\item \texttt{Modelica.SIUnits}: định nghĩa kiểu với tên và đơn vị tiêu chuẩn SI.
+\item \texttt{Modelica.Electrical}: các mô hình thành phần điện thông dụng.
+\item \texttt{Modelica.Blocks}: khối đầu vào/đầu ra dùng trong sơ đồ khối.
+\item \texttt{Modelica.Mechanics.Translational}: thành phần cơ học tịnh tiến một chiều.
+\item \texttt{Modelica.Mechanics.Rotational}: thành phần cơ học quay một chiều.
+\item \texttt{Modelica.Mechanics.MultiBody}: thư viện MBS, mô hình cơ học đa vật thể ba chiều.
+\item \texttt{Modelica.Thermal}: thành phần cho hiện tượng nhiệt, dòng nhiệt, v.v.
+\item \ldots
+\end{itemize}
+Các thư viện bổ sung có trong những miền ứng dụng như nhiệt động lực học, thủy lực, hệ thống điện năng, truyền thông dữ liệu, v.v.
+
+Có thể sử dụng tự do Thư viện chuẩn Modelica theo giấy phép mã nguồn mở cho cả mục đích phi thương mại và thương mại. Tài liệu đầy đủ cũng như mã nguồn của các thư viện có trên trang web Modelica.
+
+Cho đến nay, các mô hình được trình bày đã được xây dựng từ thành phần thuộc một miền ứng dụng duy nhất. Tuy nhiên, một lợi thế chính của Modelica là dễ xây dựng mô hình đa miền, chỉ bằng cách kết nối thành phần từ các thư viện thuộc những miền ứng dụng khác nhau. Động cơ DC (dòng điện một chiều) được mô tả trong Hình 3.27 là một trong những ví dụ đơn giản nhất minh họa khả năng này.
+
+% Source: printed 88 / PDF 104
+\sourcefigure{3.27}{104}{Mô hình đa miền DCMotorCircuit với các thành phần cơ học, điện và khối tín hiệu.}
+Mô hình cụ thể này chứa thành phần từ ba miền: cơ học, điện và khối tín hiệu, tương ứng với các thư viện \texttt{Modelica.Mechanics}, \texttt{Modelica.Electrical} và \texttt{Modelica.Blocks}.
+
+Các lớp mô hình từ thư viện đặc biệt dễ sử dụng và kết hợp khi dùng trình chỉnh sửa mô hình đồ họa, như trong Hình 3.28, nơi mô hình động cơ DC đang được xây dựng. Cửa sổ bên trái thể hiện thư viện \texttt{Modelica.Mechanics.Rotational}, từ đó có thể kéo thả biểu tượng vào cửa sổ trung tâm khi thiết kế mô hình bằng đồ họa.
+\sourcefigure{3.28}{104}{Chỉnh sửa bằng đồ họa mô hình động cơ điện DC, với một phần cấu trúc phân cấp thành phần mô hình bên phải và các biểu tượng thư viện chuẩn Modelica trong cửa sổ bên trái. \textit{Chú giải giao diện thêm của bản dịch:} \emph{Libraries Browser}: trình duyệt thư viện; \emph{Variables Browser}: trình duyệt biến; \emph{Diagram View}: khung nhìn sơ đồ. Tên thành phần mô hình trong giao diện được giữ nguyên.}
+
+\section{Hiện thực và thực thi Modelica}
+Để hiểu rõ hơn cách Modelica hoạt động, có ích khi xem quá trình điển hình chuyển dịch và thực thi một mô hình Modelica, phác họa trong Hình 3.29. Lưu ý rằng đây là quá trình điển hình mà phần lớn công cụ Modelica sử dụng. Có những cách thực thi Modelica khác, một số
+% Source: printed 89 / PDF 105
+đang ở giai đoạn nghiên cứu, thường giữ lại nhiều hơn cấu trúc hướng đối tượng ở các giai đoạn chuyển dịch và thực thi sau.
+
+Trước tiên, mã nguồn Modelica được phân tích cú pháp và chuyển thành một biểu diễn nội bộ, thường là cây cú pháp trừu tượng. Biểu diễn này được phân tích, kiểm tra kiểu, thực hiện kế thừa và mở rộng lớp, sửa đổi và tạo thể hiện; phương trình \texttt{connect} được chuyển thành phương trình chuẩn, v.v. Kết quả của quá trình phân tích và chuyển dịch là một tập phẳng các phương trình, hằng, biến và định nghĩa hàm. Không còn dấu vết của cấu trúc hướng đối tượng ngoài ký pháp dấu chấm trong tên.
+
+Sau khi làm phẳng, mọi phương trình được sắp xếp tô-pô theo các phụ thuộc luồng dữ liệu giữa chúng. Với phương trình vi phân--đại số tổng quát (DAE), đây không chỉ là sắp xếp mà còn thao tác phương trình để chuyển ma trận hệ số sang dạng tam giác dưới theo khối, gọi là phép biến đổi BLT. Sau đó, một mô-đun tối ưu hóa chứa các thuật toán đơn giản hóa đại số, phương pháp giảm chỉ số bằng ký hiệu, v.v. loại bỏ phần lớn phương trình, chỉ giữ một tập tối thiểu cuối cùng sẽ được giải số; xem thêm chương về các phương pháp xấp xỉ số trong sách này.
+
+Tiếp theo, những phương trình độc lập ở dạng tường minh được chuyển thành câu lệnh gán. Điều này có thể thực hiện vì các phương trình đã được sắp xếp và thứ tự thực thi để tính giá trị phương trình đã được thiết lập, kết hợp với các bước lặp của bộ giải số. Nếu xuất hiện một tập phương trình liên thông mạnh, tập này được biến đổi bằng bộ giải ký hiệu, thực hiện một số biến đổi đại số để đơn giản hóa phụ thuộc giữa các biến. Đôi khi nó có thể giải một hệ phương trình vi phân nếu hệ có nghiệm ký hiệu. Cuối cùng, mã C được sinh ra và liên kết với bộ giải phương trình số để giải hệ phương trình còn lại, đã được rút gọn mạnh.
+
+Các giá trị ban đầu xấp xỉ được lấy từ định nghĩa mô hình hoặc do người dùng chỉ định tương tác. Nếu cần, người dùng còn chỉ định giá trị tham số. Bộ giải số cho phương trình vi phân--đại số (hoặc trong trường hợp đơn giản, phương trình vi phân thường) tính giá trị biến trong khoảng mô phỏng được chỉ định $[t_0,t_1]$. Kết quả mô phỏng hệ thống động là một tập hàm của thời gian, như \texttt{R2.v(t)} trong mô hình mạch đơn giản. Có thể hiển thị những hàm đó dưới dạng đồ thị và/hoặc lưu vào tệp.
+\sourcefigure{3.29}{105}{Các giai đoạn điển hình của việc chuyển dịch và thực thi một mô hình Modelica.}
+
+Trong phần lớn trường hợp (nhưng không phải luôn luôn), hiệu năng của mã mô phỏng sinh ra (bao gồm bộ giải) tương tự mã C viết tay. Modelica thường hiệu quả hơn mã C viết trực tiếp, vì hệ thống sử dụng thêm các cơ hội tối ưu hóa ký hiệu so với những gì một lập trình viên có thể xử lý thủ công.
+
+% Source: printed 90 / PDF 106
+\subsection{Chuyển dịch thủ công mô hình mạch đơn giản}
+Hãy trở lại mô hình mạch đơn giản đã được mô tả trong Hình 3.7, nhưng để thuận tiện cho bạn đọc cũng được trình bày lại dưới đây trong Hình 3.30. Chuyển dịch mô hình này bằng tay giúp hiểu quá trình.
+\sourcefigure{3.30}{106}{Mô hình SimpleCircuit một lần nữa, với các nút kết nối N1, N2, N3, N4 và các dây 1 đến 7 được gắn nhãn tường minh.}
+
+Lớp, thể hiện và phương trình được chuyển thành một tập phẳng các phương trình, hằng và biến (xem phương trình trong Bảng 3.1), theo các quy tắc sau:
+\begin{enumerate}
+\item Với mỗi thể hiện lớp, thêm một bản sao của mọi phương trình của thể hiện này vào toàn bộ hệ phương trình vi phân--đại số (DAE) hoặc hệ phương trình vi phân thường (ODE). Cả hai phương án đều có thể, vì trong một số trường hợp DAE có thể biến đổi thành ODE.
+\item Với mỗi kết nối giữa các thể hiện trong mô hình, thêm phương trình kết nối vào hệ DAE sao cho các biến thế được đặt bằng nhau và tổng các biến dòng bằng 0.
+\end{enumerate}
+Phương trình \texttt{v=p.v-n.v} được định nghĩa bởi lớp \texttt{TwoPin}. Lớp \texttt{Resistor} kế thừa \texttt{TwoPin}, bao gồm phương trình này. Lớp \texttt{SimpleCircuit} chứa biến \texttt{R1} kiểu \texttt{Resistor}. Vì vậy, chúng ta đưa phương trình được tạo thể hiện cho \texttt{R1}, là \texttt{R1.v=R1.p.v-R1.n.v}, vào hệ phương trình.
+
+Dây có nhãn 1 được biểu diễn trong mô hình bằng \texttt{connect(AC.p, R1.p)}. Các biến \texttt{AC.p}, \texttt{R1.p} có kiểu \texttt{Pin}. Biến \texttt{v} là \emph{biến thế} biểu diễn điện thế. Vì vậy, phương trình bằng nhau \texttt{R1.p.v=AC.p.v} được sinh ra. Phương trình bằng nhau luôn được sinh khi nối các biến thế.
+
+Lưu ý rằng một dây khác (nhãn 4) được gắn vào cùng chân \texttt{R1.p}. Điều này được biểu diễn bằng một phương trình \texttt{connect} bổ sung: \texttt{connect(R1.p.R2.p)}. Biến \texttt{i} được khai báo là biến dòng. Do đó, phương trình \texttt{AC.p.i+R1.p.i+R2.p.i=0} được sinh ra. Phương trình tổng bằng 0 luôn được sinh khi nối các biến dòng, tương ứng với định luật thứ hai của Kirchhoff.
+
+Tập phương trình đầy đủ (xem Bảng 3.1) được sinh từ lớp \texttt{SimpleCircuit} gồm 32 phương trình vi phân--đại số. Chúng bao gồm 32 biến, cùng thời gian và một số tham số, hằng.
+
+% Source: printed 91 / PDF 107
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|p{0.04\linewidth}|p{0.36\linewidth}|p{0.08\linewidth}|p{0.40\linewidth}|}
+\hline
+AC & \texttt{0 = AC.p.i+AC.n.i} & L & \texttt{0 = L.p.i+L.n.i}\\
+ & \texttt{AC.v = Ac.p.v-AC.n.v} & & \texttt{L.v = L.p.v-L.n.v}\\
+ & \texttt{AC.i = AC.p.i} & & \texttt{L.i = L.p.i}\\
+ & \texttt{AC.v = AC.VA* sin(2* AC.PI* AC.f* time);} & & \texttt{L.v = L.L* der(L.i)}\\
+\hline
+R1 & \texttt{0 = R1.p.i+R1.n.i} & G & \texttt{G.p.v = 0}\\
+ & \texttt{R1.v = R1.p.v-R1.n.v} & & \\
+ & \texttt{R1.i = R1.p.i} & & \\
+ & \texttt{R1.v = R1.R* R1.i} & & \\
+\hline
+R2 & \texttt{0 = R2.p.i+R2.n.i} & Dây & \texttt{R1.p.v = AC.p.v // wire 1}\\
+ & \texttt{R2.v = R2.p.v-R2.n.v} & & \texttt{C.p.v = R1.n.v // wire 2}\\
+ & \texttt{R2.i = R2.p.i} & & \texttt{AC.n.v = C.n.v // wire 3}\\
+ & \texttt{R2.v = R2.R* R2.i} & & \texttt{R2.p.v = R1.p.v // wire 4}\\
+ & & & \texttt{L.p.v = R2.n.v // wire 5}\\
+ & & & \texttt{L.n.v = C.n.v // wire 6}\\
+ & & & \texttt{G.p.v = AC.n.v // wire 7}\\
+\hline
+C & \texttt{0 = C.p.i+C.n.i} & Dòng tại nút & \texttt{0 = AC.p.i+R1.p.i+R2.p.i // N1}\\
+ & \texttt{C.v = C.p.v-C.n.v} & & \texttt{0 = C.n.i+G.p.i+AC.n.i+L.n.i // N2}\\
+ & \texttt{C.i = C.p.i} & & \texttt{0 = R1.n.i + C.p.i // N3}\\
+ & \texttt{C.i = C.C* der(C.v)} & & \texttt{0 = R2.n.i + L.p.i // N4}\\
+\hline
+\end{tabular}
+\caption{Các phương trình trích xuất từ mô hình mạch đơn giản: một hệ DAE ẩn.}
+\end{table}
+
+Bảng 3.2 cho 32 biến trong hệ phương trình, trong đó 30 là biến đại số vì đạo hàm của chúng không xuất hiện. Hai biến \texttt{C.v}, \texttt{L.i} là biến động vì đạo hàm của chúng có trong phương trình. Trong ví dụ đơn giản này, các biến động là biến trạng thái, vì DAE rút gọn thành ODE.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\texttt{R1.p.i}&\texttt{R1.n.i}&\texttt{R1.p.v}&\texttt{R1.n.v}&\texttt{R1.v}\\\hline
+\texttt{R1.i}&\texttt{R2.p.i}&\texttt{R2.n.i}&\texttt{R2.p.v}&\texttt{R2.n.v}\\\hline
+\texttt{R2.v}&\texttt{R2.i}&\texttt{C.p.i}&\texttt{C.n.i}&\texttt{C.p.v}\\\hline
+\texttt{C.n.v}&\texttt{C.v}&\texttt{C.i}&\texttt{L.p.i}&\texttt{L.n.i}\\\hline
+\texttt{L.p.v}&\texttt{L.n.v}&\texttt{L.v}&\texttt{L.i}&\texttt{AC.p.i}\\\hline
+\texttt{AC.n.i}&\texttt{AC.p.v}&\texttt{AC.n.v}&\texttt{AC.v}&\texttt{AC.i}\\\hline
+\texttt{G.p.i}&\texttt{G.p.v}&&&\\\hline
+\end{tabular}
+\caption{Các biến trích xuất từ mô hình mạch đơn giản.}
+\end{table}
+
+\subsection{Biến đổi sang dạng không gian trạng thái}
+Hệ phương trình vi phân--đại số ẩn (hệ DAE) trong Bảng 3.1 cần được tiếp tục biến đổi và đơn giản hóa trước khi áp dụng bộ giải số. Bước tiếp theo là nhận diện các loại biến trong hệ DAE. Có bốn nhóm sau:
+\begin{enumerate}
+\item Mọi biến hằng là tham số mô hình, nên dễ thay đổi giữa các lần mô phỏng và được khai báo với tiền tố từ khóa \texttt{parameter}, được tập hợp vào vectơ tham số $p$. Mọi hằng khác có thể được thay bằng giá trị của chúng, nên không còn xuất hiện như hằng có tên.
+\item Các biến được khai báo với thuộc tính \texttt{input}, tức có tiền tố từ khóa \texttt{input}, xuất hiện trong các thể hiện ở mức phân cấp cao nhất, được tập hợp vào vectơ đầu vào $u$.
+\item Các biến có đạo hàm xuất hiện trong mô hình (biến động), tức toán tử \texttt{der( )} được áp dụng cho chúng, được tập hợp vào vectơ trạng thái $x$.
+\item Mọi biến khác được tập hợp vào vectơ $y$ gồm các biến đại số, tức đạo hàm của chúng không có trong mô hình.
+\end{enumerate}
+Với mô hình mạch đơn giản, bốn nhóm biến này là:
+\[
+p=\{\mathtt{R1.R},\mathtt{R2.R},\mathtt{C.C},\mathtt{L.L},\mathtt{AC.VA},\mathtt{AC.f}\}
+\]
+\[u=\{\mathtt{AC.v}\}\]
+
+% Source: printed 92 / PDF 108
+\[x=\{\mathtt{C.v},\mathtt{L.i}\}\]
+\begin{verbatim}
+y = { R1.p.i, R1.n.i, R1.p.v, R1.n.v, R1.v, R1.i, R2.p.i, R2.n.i,
+      R2.p.v, R2.n.v, R2.v, R2.i, C.p.i, C.n.i, C.p.v, C.n.v,
+      C.i, L.n.i, L.p.v, L.n.v, L.v, AC.p.i, AC.n.i, AC.p.v,
+      AC.n.v, AC.i, AC.v, G.p.i, G.p.v }
+\end{verbatim}
+Chúng ta muốn biểu đạt bài toán thành hệ phương trình vi phân thường (ODE) nhỏ nhất có thể (trong trường hợp tổng quát là hệ DAE) và tính giá trị mọi biến khác từ nghiệm của bài toán tối thiểu này. Hệ phương trình tốt nhất nên ở dạng không gian trạng thái tường minh như dưới đây.
+\begin{equation}\dot{x}=f(x,t)\tag{3.12}\end{equation}
+Tức là đạo hàm theo thời gian $\dot{x}$ của vectơ trạng thái $x$ bằng một hàm của vectơ trạng thái $x$ và thời gian. Dùng phương pháp giải số lặp cho hệ phương trình vi phân thường này, ở mỗi bước lặp, đạo hàm của vectơ trạng thái được tính từ vectơ trạng thái tại thời điểm hiện tại. Với mô hình mạch đơn giản, ta có:
+\begin{equation}
+\begin{aligned}
+\dot{x}&=\{C.v,L.i\},\quad u=\{AC.v\}\\
+&\text{(với các hằng: }\mathtt{R1.R},\mathtt{R2.R},\mathtt{C.C},\mathtt{L.L},\mathtt{AC.VA},\mathtt{AC.f},\mathtt{AC.PI}\text{)}
+\end{aligned}\tag{3.13}
+\end{equation}
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C3-1).} Trong bản gốc, vế trái của (3.13) được in là $\dot{x}$. Theo định nghĩa vectơ trạng thái ngay phía trên và (3.14), vế trái ở đây phải là $x$; $\dot{x}$ là vectơ gồm các đạo hàm của hai biến. Bản dịch giữ nguyên công thức đã in.
+\end{quote}
+
+\begin{equation}\dot{x}=\{\mathbf{der}(C.v),\mathbf{der}(L.i)\}\tag{3.14}\end{equation}
+
+\subsection{Phương pháp giải}
+Chúng ta sẽ dùng một phương pháp giải số lặp. Trước hết, giả sử có giá trị ước lượng của vectơ trạng thái $x=\{C.v,L.i\}$ tại $t=0$, khi mô phỏng bắt đầu. Dùng một xấp xỉ số cho đạo hàm $\dot{x}$ (tức $\mathbf{der}(x)$) tại thời điểm $t$, chẳng hạn:
+\begin{equation}\mathbf{der}(x)=(x_{t+h}-x_t)/h\tag{3.15}\end{equation}
+cho một xấp xỉ của $x$ tại thời điểm $t+h$:
+\begin{equation}x_{t+h}=x_t+\mathbf{der}(x)\times h\tag{3.16}\end{equation}
+Theo cách này, giá trị vectơ trạng thái $x$ được tính tiến một bước thời gian ở mỗi lần lặp, miễn là có thể tính $\mathbf{der}(x)$ tại thời điểm hiện tại trong thời gian mô phỏng. Tuy nhiên, có thể tính đạo hàm $\mathbf{der}(x)$ của vectơ trạng thái từ $\dot{x}=f(x,t)$, tức bằng cách chọn các phương trình liên quan đến $\mathbf{der}(x)$ và tách bằng đại số các biến trong vectơ $x$ theo những biến khác, như dưới đây:
+\begin{equation}\mathbf{der}(C.v)=C.i/C.C\tag{3.17}\end{equation}
+\begin{equation}\mathbf{der}(L.i)=L.v/L.L\tag{3.18}\end{equation}
+Cần những phương trình khác trong hệ DAE để tính các ẩn \texttt{C.i}, \texttt{L.v} trong các phương trình trên. Bắt đầu với \texttt{C.i}, dùng một số phương trình khác nhau cùng các phép thế đơn giản và thao tác đại số, chúng ta suy ra các phương trình (3.19) đến (3.21) dưới đây.
+\begin{equation}
+\begin{aligned}
+C.i&=R1.v/R1.R\\
+\text{dùng: }C.i&=C.p.i=-R1.n.i=R1.p.i=R1.i=R1.v/R1.R
+\end{aligned}\tag{3.19}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+R1.v&=R1.p.v-R1.n.v=R1.p.v-C.v\\
+\text{dùng: }R1.n.v&=C.p.v=C.v+C.n.v=C.v+AC.n.v\\
+&=C.v+G.p.v=C.v+0=C.v
+\end{aligned}\tag{3.20}
+\end{equation}
+
+% Source: printed 93 / PDF 109
+\begin{equation}
+\begin{aligned}
+R1.p.v&=AC.p.v=AC.VA*\sin(2*AC.f*AC.PI*t)\\
+\text{dùng: }AC.p.v&=AC.v+AC.n.v=AC.v+G.p.v\\
+&=AC.VA\times\sin(2\times AC.f\times AC.PI\times t)+0
+\end{aligned}\tag{3.21}
+\end{equation}
+Tương tự, chúng ta suy ra các phương trình (3.22), (3.23) dưới đây:
+\begin{equation}
+\begin{aligned}
+L.v&=L.p.v-L.n.v=R1.p.v-R2.v\\
+\text{dùng: }L.p.v&=R2.n.v=R1.p.v-R2.v\\
+\text{và }L.n.v&=C.n.v=AC.n.v=G.p.v=0
+\end{aligned}\tag{3.22}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+R2.v&=R2.R\times L.p.i\\
+\text{dùng: }R2.v&=R2.R\times R2.i=R2.R\times R2.p.i\\
+&=R2.R\times(-R2.n.i)=R2.R\times L.p.i=R2.R\times L.i
+\end{aligned}\tag{3.23}
+\end{equation}
+Tập hợp năm phương trình lại:
+\begin{equation}
+\begin{aligned}
+C.i&=R1.v/R1.R\\
+R1.v&=R1.p.v-C.v\\
+R1.p.v&=AC.VA\times\sin(2\times AC.f\times AC.PI\times t)\\
+L.v&=R1.p.v-R2.v\\
+R2.v&=R2.R\times L.i
+\end{aligned}\tag{3.24}
+\end{equation}
+Bằng cách sắp xếp các phương trình (3.24) theo thứ tự phụ thuộc dữ liệu và chuyển chúng thành câu lệnh gán---có thể làm vậy vì mọi giá trị biến giờ đây đều tính được theo thứ tự---chúng ta thu được tập câu lệnh gán sau, cần tính ở mỗi lần lặp khi đã cho các giá trị \texttt{C.v}, \texttt{L.i}, $t$ tại cùng lần lặp:
+\begin{verbatim}
+    R2.v := R2.R * L.i;
+    R1.p.v := AC.VA * sin(2 * AC.f * AC.PI * time);
+    L.v := R1.p.v - R2.v;
+    R1.v := R1.p.v - C.v;
+    C.i := R1.v/R1.R;
+
+    der(L.i) := L.v/L.L;
+    der(C.v) := C.i/C.C;
+\end{verbatim}
+Sau đó có thể chuyển những câu lệnh gán này thành mã trong một ngôn ngữ lập trình, chẳng hạn C, và thực thi cùng bộ giải ODE thích hợp, thường dùng xấp xỉ đạo hàm tốt hơn và cách tiến bước tinh vi hơn phương pháp đơn giản vừa mô tả, vốn được gọi là \emph{phương pháp tích phân Euler}. Các biến đổi đại số và quy trình sắp xếp mà chúng ta phần nào phải vất vả làm bằng tay với ví dụ mạch đơn giản có thể được thực hiện hoàn toàn tự động, được gọi là \emph{phân hoạch BLT}, tức chuyển ma trận hệ số của hệ phương trình thành dạng tam giác dưới theo khối (Bảng 3.3).
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|p{0.48\linewidth}|*{7}{c|}}
+\hline
+ &\texttt{R2.v}&\texttt{R1.p.v}&\texttt{L.v}&\texttt{R1.v}&\texttt{C.i}&\texttt{L.i}&\texttt{C.v}\\\hline
+\texttt{R2.v = R2.R* L.i}&1&0&0&0&0&0&0\\\hline
+\texttt{R1.p.v = AC.VA* sin(2* AC.f* AC.PI* time)}&0&1&0&0&0&0&0\\\hline
+\texttt{L.v = R1.p.v - R2.v}&1&1&1&0&0&0&0\\\hline
+\texttt{R1.v = R1.p.v - C.v}&0&1&0&1&0&0&0\\\hline
+\texttt{C.i = R1.v/R1.R}&0&0&0&0&1&0&0\\\hline
+\texttt{der(L.i) = L.v/L.L}&0&0&1&0&0&1&0\\\hline
+\texttt{der(C.v) = C.i/C.C}&0&0&0&0&1&0&1\\\hline
+\end{tabular}
+\caption{Dạng tam giác dưới TBlock của ví dụ SimpleCircuit.}
+\end{table}
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C3-2).} Bản gốc ghi 0 tại giao điểm của hàng $C.i=R1.v/R1.R$ và cột \texttt{R1.v} trong Bảng 3.3. Phương trình này phụ thuộc vào \texttt{R1.v}; theo cách biểu diễn sự phụ thuộc trong các hàng còn lại, ô này phải là 1. Bản dịch giữ nguyên bảng đã in.
+\end{quote}
+
+
+% Source: printed 94 / PDF 110
+26 biến đại số còn lại trong hệ phương trình của mô hình mạch đơn giản, không thuộc hệ ODE lõi tối thiểu gồm 7 biến đã giải ở trên, có thể được tính khi thuận tiện tại những lần lặp cần giá trị của chúng; việc này không cần thiết để giải hệ ODE lõi.
+
+Cần nhấn mạnh rằng ví dụ mạch đơn giản rất sơ đẳng. Các mô hình mô phỏng thực tế thường chứa hàng chục nghìn phương trình, phương trình phi tuyến, mô hình lai, v.v. Các phép biến đổi ký hiệu và rút gọn hệ phương trình do trình biên dịch Modelica thực hiện phức tạp hơn nhiều những gì đã trình bày trong ví dụ này, chẳng hạn bao gồm giảm chỉ số phương trình và tách hệ con phương trình (tearing).
+\begin{verbatim}
+simulate(SimpleCircuit,stopTime=5)]
+plot(C.v, xrange={0,5})
+\end{verbatim}
+\sourcefigure{3.31}{110}{Mô phỏng mô hình SimpleCircuit với đồ thị điện áp C.v trên tụ điện.}
+
+\section{Khả năng tương tác giữa các công cụ qua Functional Mockup Interface}
+Mặc dù Modelica là một ngôn ngữ mô hình hóa tổng quát bao quát phần lớn miền ứng dụng, vẫn có nhiều công cụ mô hình hóa và mô phỏng đã được xác lập trong những miền ứng dụng khác nhau. Công nghiệp có nhu cầu lớn về khả năng tương tác và trao đổi mô hình giữa công cụ. Tiêu chuẩn Functional Mockup Interface (FMI, \url{www.fmi-standard.org}) được phát triển để đáp ứng nhu cầu đó. Nó cho phép xuất mô hình đã biên dịch thành mã C kết hợp những mô tả dựa trên XML, có thể được nhập và mô phỏng trong các công cụ khác, cả công cụ Modelica lẫn công cụ không dùng Modelica. Tiêu chuẩn còn hỗ trợ đồng mô phỏng giữa các công cụ và đã được một số nhà cung cấp công cụ hỗ trợ.
+
+\section{Tổng kết}
+Chương này đã trình bày tổng quan nhanh những khái niệm và cấu trúc ngôn ngữ quan trọng nhất trong Modelica. Chúng ta cũng đã định nghĩa những khái niệm quan trọng như mô hình hóa toán học hướng đối tượng và mô hình hóa vật lý phi nhân quả, cùng trình bày ngắn gọn các khái niệm và cấu trúc ngôn ngữ Modelica để định nghĩa thành phần, kết nối và đầu nối. Chương kết thúc bằng một ví dụ chuyên sâu về việc chuyển dịch và thực thi một mô hình đơn giản.
+
+% Source: printed 95 / PDF 111
+\section{Tài liệu và đọc thêm}
+Chương này đã giới thiệu ngắn gọn Modelica và mô hình hóa dựa trên phương trình. Có thể tìm thấy phần trình bày đầy đủ hơn nhiều về Modelica, các ứng dụng và công nghệ phía sau công cụ mô phỏng Modelica trong [13].
+
+Lịch sử gần đây của các ngôn ngữ mô hình hóa toán học được mô tả khá chi tiết trong [14], trong khi một số phần của lịch sử cổ xưa về việc con người phát minh và sử dụng phương trình có trong [122], và hình định luật thứ hai của Newton bằng tiếng Latin có trong [144]. Công trình sớm về mô phỏng kết hợp liên tục/rời rạc được mô tả trong [233], tiếp theo là [65]. Tổng quan rất toàn diện về các phương pháp số và ký hiệu cho mô phỏng có trong [68]. Công trình mô phỏng đầu tiên của tác giả này, liên quan đến giải phương trình Schrödinger cho một trường hợp cụ thể, được mô tả trong [113].
+
+Các phiên bản hiện tại của một số công cụ Modelica được mô tả tại \url{www.modelica.org}, bao gồm OpenModelica, Wolfram SystemModeler (trước năm 2012 gọi là MathModelica) và Dymola, nghĩa là Dynamic modelling Laboratory. Một số ngôn ngữ tiền thân của Modelica được mô tả trong các công bố sau, bao gồm Dymola, nghĩa là Dynamic modelling Language [88, 89], Omola [203, 9], ObjectMath [119, 299, 120], NMF [248], Smile [93], v.v.
+
+Speed-Up, công cụ mô phỏng dựa trên phương trình sớm nhất, được trình bày trong [251], còn Simula-67, ngôn ngữ lập trình hướng đối tượng đầu tiên, được mô tả trong [35]. Đặc tả ngôn ngữ CSSL đầu tiên được mô tả trong [258], còn hệ thống ACSL trong [209]. Hệ thống Hibliz cho cách tiếp cận mô hình hóa đồ họa phân cấp được trình bày trong [89]. Các hệ thống thành phần phần mềm được trình bày trong [12, 260].
+
+Hệ thống Simulink cho mô hình hóa hướng khối được mô tả trong [201], còn ngôn ngữ và công cụ MATLAB được mô tả trong [202].
+
+Sổ tay điện tử DrModelica với các ví dụ và bài tập trong sách này được lấy cảm hứng từ DrScheme [102], DrJava [8], Mathematica [306], một sách điện tử liên quan để dạy toán [80], cùng môi trường MathModelica (đổi tên thành Wolfram SystemModeler năm 2012) [117, 229, 110]. Phiên bản DrModelica đầu tiên được mô tả trong [185, 186].
+
+Phiên bản sổ tay của OpenModelica tên OMNotebook được mô tả trong [103, 11]. Các ứng dụng và mở rộng của khái niệm sổ tay này được trình bày trong [250, 210, 271].
+
+Các bài báo và sách tổng quát về Modelica: [204, 117, 90]; một chuỗi 17 bài viết (bằng tiếng Đức), trong đó [225] (Otter 1999) là bài đầu tiên; [270, 114, 91, 107, 111, 112].
+
+Kỷ yếu của các hội nghị sau, cùng một số hội nghị không liệt kê ở đây, chứa nhiều bài báo liên quan đến Modelica: International Modelica Conference [105, 226, 106, 255, 172, 18, 64, 75]; chuỗi hội thảo Equation-Based Object-Oriented Languages and Tools (EOOLT) [116, 115, 118, 66, 217]; Scandinavian Simulation Conference, chẳng hạn [104], và một số hội nghị sau trong chuỗi này; hai hội nghị chuyên đề lần lượt tập trung vào y sinh [109] và vấn đề an toàn [108].
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Tạo một lớp \texttt{Add} tính tổng hai tham số là các số \texttt{Integer} có giá trị cho trước.
+\item Tạo một thể hiện của lớp \texttt{Dog}, ghi đè tên mặc định bằng \texttt{"Timmy"}.
+\begin{verbatim}
+class Dog
+  constant Real legs = 4;
+  parameter String name = "Scott";
+end Dog;
+\end{verbatim}
+\item Các thuật ngữ \texttt{partial}, \texttt{class} và \texttt{extends} có nghĩa gì?
+\item Xét lớp \texttt{Bicycle} dưới đây.
+\begin{verbatim}
+record Bicycle
+  Boolean hasWheels = true;
+  Integer nrOfWheels = 2;
+end
+\end{verbatim}
+% Source: printed 96 / PDF 112
+Định nghĩa một bản ghi \texttt{ChildrensBike} kế thừa lớp \texttt{Bicycle} và dành cho trẻ em. Gán giá trị cho các biến.
+\item Viết một lớp \texttt{Birthyear} tính năm sinh từ năm hiện tại và tuổi của một người. Chỉ ra các phương trình khai báo và phương trình thông thường. Viết một thể hiện của lớp \texttt{Birthyear} trên. Lớp này, gọi là \texttt{MartinsBirthyear}, phải tính năm sinh của Martin, 29 tuổi; đặt tên biến là \texttt{martinsBirthyear}. Chỉ ra phương trình sửa đổi. Kiểm tra câu trả lời, chẳng hạn bằng cách viết như dưới đây:\footnote{Trong OpenModelica, biểu thức \texttt{val(martinsBirthday.birthYear,0)} có nghĩa là giá trị \texttt{birthYear} tại \texttt{time=0}, khi mô phỏng bắt đầu. Cũng có thể lấy giá trị nội suy tại các thời điểm đã mô phỏng khác. Biểu thức hằng như \texttt{33+5} và lời gọi hàm cũng có thể được tính tương tác.}
+\begin{verbatim}
+val(martinsBirthday.birthYear,0)
+\end{verbatim}
+\item Xét lớp \texttt{Ptest} dưới đây:
+\begin{verbatim}
+class Ptest
+  parameter Real x;
+  parameter Real y;
+  Real z;
+  Real w;
+equation
+  x + y = z;
+end Ptest;
+\end{verbatim}
+Lớp này có gì sai? Có thiếu gì không?
+\item Tạo lớp \texttt{Average} tính trung bình hai số nguyên bằng một phần thuật toán. Tạo một thể hiện của lớp và truyền vào vài giá trị. Mô phỏng, rồi kiểm tra kết quả của lớp thể hiện bằng cách viết:
+\begin{verbatim}
+  instanceVariable.classVariable.
+\end{verbatim}
+\item Viết lớp \texttt{AverageExtended} tính trung bình bốn biến (\texttt{a}, \texttt{b}, \texttt{c}, \texttt{d}). Tạo một thể hiện của lớp và truyền vào vài giá trị. Mô phỏng, rồi kiểm tra kết quả của lớp thể hiện như gợi ý trong câu hỏi trên.
+\item Dùng phương trình \texttt{if}, viết một lớp \texttt{Lights} đặt biến \texttt{switch} (số nguyên) bằng 1 nếu đèn bật và bằng 0 nếu đèn tắt.
+\item Dùng phương trình \texttt{when}, viết một lớp \texttt{LightSwitch} ban đầu tắt và bật tại thời điểm 5. \emph{Gợi ý:} \texttt{sample(start, interval)} trả về \texttt{true} và kích hoạt sự kiện thời gian tại các thời điểm; \texttt{rem(x, y)} trả về phần dư số nguyên của \texttt{x/y}, sao cho \texttt{div(x,y) * y + rem(x, y) = x}.
+\end{enumerate}
+
+\section*{Lời cảm ơn}
+Công việc này được Vinnova hỗ trợ trong dự án ITEA3 OPENCPS và dự án RTISIM. Hỗ trợ từ Chính phủ Thụy Điển được nhận thông qua dự án ELLIIT, cùng hỗ trợ từ Liên minh châu Âu trong dự án H2020 INTO-CPS. Việc phát triển OpenModelica được Open Source Modelica Consortium hỗ trợ.
+
+\paragraph*{Truy cập mở}
+Chương này được cấp phép theo các điều khoản của Giấy phép quốc tế Creative Commons Ghi công 4.0 (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, chuyển thể, phân phối và sao chép trên mọi phương tiện hoặc định dạng, miễn là ghi công phù hợp cho tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons và cho biết nếu đã thực hiện thay đổi.
+
+Các hình ảnh hoặc tư liệu bên thứ ba khác trong chương này được bao gồm trong giấy phép Creative Commons của chương, trừ khi có chỉ dẫn khác trong dòng ghi công của tư liệu đó. Nếu tư liệu không nằm trong giấy phép Creative Commons của chương và mục đích sử dụng của bạn không được pháp luật cho phép hoặc vượt quá phạm vi sử dụng được cho phép, bạn cần xin phép trực tiếp từ chủ sở hữu bản quyền.

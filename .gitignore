@@ -1,0 +1,53 @@
+# Generated books, diagnostics, and local build tools
+/output/
+/tmp/
+/review/
+/tools/vendor/
+/.local-archives/
+
+# Release binaries belong in GitHub Releases; retain their public receipt.
+/release/*
+!/release/release-manifest.json
+
+# Publisher PDF and extraction intermediates are local inputs.
+/source/*
+!/source/manifest.json
+!/source/asset-inventory.json
+
+# Commit the actual typesetting artwork and its provenance.
+/assets/*
+!/assets/clean/
+!/assets/*.json
+!/assets/cover-donald-giannatti-unsplash.jpg
+
+# Python environments and caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# TeX intermediates
+*.aux
+*.log
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+
+# Local credentials and editor/OS files
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+*.swp
+*.swo

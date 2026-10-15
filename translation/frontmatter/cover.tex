@@ -1,0 +1,41 @@
+% Typeset independently; the photographic asset is credited on the next page.
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \begin{scope}
+    \clip (current page.south west) rectangle (current page.north east);
+    \node[inner sep=0pt] at (current page.center)
+      {\includegraphics[height=\paperheight]{../assets/cover-donald-giannatti-unsplash.jpg}};
+  \end{scope}
+  \fill[covernavy,opacity=.38] (current page.north west)
+    rectangle ([yshift=-134mm]current page.north east);
+  \fill[covernavy,opacity=.94] (current page.south west)
+    rectangle ([yshift=48mm]current page.south east);
+  \node[anchor=north west,align=left,text=white,text width=166mm,inner sep=0pt]
+    at ([xshift=22mm,yshift=-20mm]current page.north west)
+    {\sffamily\fontsize{10.5}{14}\selectfont
+     Paulo Carreira \enspace\textperiodcentered\enspace Vasco Amaral \enspace\textperiodcentered\enspace Hans Vangheluwe\\
+     {\fontsize{9}{12}\selectfont Biên tập bản gốc}};
+  \draw[covergold,line width=1.2pt]
+    ([xshift=22mm,yshift=-47mm]current page.north west) --
+    ([xshift=56mm,yshift=-47mm]current page.north west);
+  \node[anchor=north west,align=left,text=white,text width=170mm,inner sep=0pt]
+    at ([xshift=22mm,yshift=-57mm]current page.north west)
+    {\sffamily\bfseries\fontsize{33}{39}\selectfont
+      Cơ sở\\mô hình hóa\\đa mô thức\par};
+  \node[anchor=north west,align=left,text=white,text width=160mm,inner sep=0pt]
+    at ([xshift=22mm,yshift=-104mm]current page.north west)
+    {\sffamily\fontsize{18}{23}\selectfont cho các hệ thống thực-ảo};
+  \node[anchor=north west,align=left,text=white,text width=165mm,inner sep=0pt]
+    at ([xshift=22mm,yshift=38mm]current page.south west)
+    {\sffamily\bfseries\fontsize{11.5}{15}\selectfont Bản dịch máy tiếng Việt\\[2mm]
+     {\normalfont\sffamily\fontsize{9}{12}\selectfont Chuyển ngữ từ ấn bản tiếng Anh năm 2020}};
+  \node[anchor=south west,text=covergold,inner sep=0pt]
+    at ([xshift=22mm,yshift=12mm]current page.south west)
+    {\sffamily\fontsize{9}{12}\selectfont ẤN BẢN TIẾNG VIỆT\enspace\textperiodcentered\enspace 2026};
+  \node[anchor=south east,text=white,inner sep=0pt]
+    at ([xshift=-22mm,yshift=12mm]current page.south east)
+    {\sffamily\fontsize{7}{9}\selectfont Ảnh: Donald Giannatti / Unsplash};
+\end{tikzpicture}
+\mbox{}
+\end{titlepage}

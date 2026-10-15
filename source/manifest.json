@@ -1,0 +1,77 @@
+{
+  "title": "Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems",
+  "doi": "10.1007/978-3-030-43946-0",
+  "edition_year": 2020,
+  "source_sha256": "bcb1771d9936504d1e1c29fd7572888da170f67c8a6e77a55ef34eb6e542c5c9",
+  "pdf_pages": 298,
+  "printed_page_1_pdf_page": 17,
+  "source_supplied_by_user": "978-3-030-43946-0.pdf; original publisher download supplied by the user",
+  "license": "CC BY 4.0; supplied book/chapter notices include interior third-party material unless a separate credit states otherwise; no exclusion found among reused interior assets",
+  "chapters": [
+    {
+      "chapter": 1,
+      "printed_start": 1,
+      "printed_end": 14,
+      "pdf_start": 17,
+      "pdf_end": 30
+    },
+    {
+      "chapter": 2,
+      "printed_start": 15,
+      "printed_end": 44,
+      "pdf_start": 31,
+      "pdf_end": 60
+    },
+    {
+      "chapter": 3,
+      "printed_start": 45,
+      "printed_end": 96,
+      "pdf_start": 61,
+      "pdf_end": 112
+    },
+    {
+      "chapter": 4,
+      "printed_start": 97,
+      "printed_end": 125,
+      "pdf_start": 113,
+      "pdf_end": 141
+    },
+    {
+      "chapter": 5,
+      "printed_start": 127,
+      "printed_end": 153,
+      "pdf_start": 142,
+      "pdf_end": 168
+    },
+    {
+      "chapter": 6,
+      "printed_start": 155,
+      "printed_end": 176,
+      "pdf_start": 169,
+      "pdf_end": 190
+    },
+    {
+      "chapter": 7,
+      "printed_start": 177,
+      "printed_end": 208,
+      "pdf_start": 191,
+      "pdf_end": 222
+    },
+    {
+      "chapter": 8,
+      "printed_start": 209,
+      "printed_end": 258,
+      "pdf_start": 223,
+      "pdf_end": 272
+    },
+    {
+      "chapter": 9,
+      "printed_start": 259,
+      "printed_end": 271,
+      "pdf_start": 273,
+      "pdf_end": 285
+    }
+  ],
+  "source_file": "original.pdf",
+  "workflow_status_location": "../translation/progress.json"
+}

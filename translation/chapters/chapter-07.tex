@@ -1,0 +1,1055 @@
+% Source: printed 177 / PDF 191
+\chapter{Mạng Petri: Một ngôn ngữ hình thức để đặc tả và kiểm chứng các hệ thống sự kiện đồng thời, không tất định}
+\chapterauthors{Didier Buchs, Stefan Klikovits và Alban Linard}
+\begin{quote}\small
+Didier Buchs --- Faculty of Science, Computer Science Department, University of Geneva, Thụy Sĩ; e-mail: \url{didier.buchs@unige.ch}.\\
+Stefan Klikovits --- Faculty of Science, Computer Science Department, University of Geneva, Thụy Sĩ; e-mail: \url{stefan.klikovits@unige.ch}.\\
+Alban Linard --- Faculty of Science, Computer Science Department, University of Geneva, Thụy Sĩ; e-mail: \url{alban.linard@unige.ch}.\\
+© Các tác giả 2020. P. Carreira và cộng sự (biên tập), \emph{Foundations of Multi-Paradigm Modelling for Cyber-Physical Systems}.\\
+\url{https://doi.org/10.1007/978-3-030-43946-0_7}
+\end{quote}
+
+\section*{Tóm tắt}
+Nghiên cứu các hệ thống đồng thời và song song là một lĩnh vực nghiên cứu đầy thách thức trong cộng đồng hệ thống thực-ảo. Chương này cung cấp một phần giới thiệu thực dụng về việc tạo và phân tích các mô hình hệ thống như vậy bằng hệ hình thức mạng Petri phổ biến. Mạng Petri là một hệ hình thức có sức thuyết phục nhờ tính đơn giản và khả năng áp dụng. Chúng tôi đưa ra tổng quan về những khái niệm mạng Petri quan trọng nhất, các kỹ thuật phân tích và các cách tiếp cận kiểm tra mô hình. Cuối cùng, chúng tôi minh họa việc sử dụng mạng Petri mức cao để biểu diễn các cấu trúc dữ liệu và chức năng phức tạp, đồng thời trình bày một cách tiếp cận nghiên cứu mới cho phép sử dụng mạng Petri bên trong các Đơn vị mô phỏng chức năng (Functional Mock-up Unit) và các mô hình hệ thống thực-ảo.
+
+\section*{Mục tiêu học tập}
+Sau khi đọc chương này, chúng tôi kỳ vọng bạn có thể:
+\begin{itemize}
+\item Sử dụng các mẫu mạng Petri thông dụng để mô hình hóa các quá trình đồng thời.
+\item Hiểu ngữ nghĩa mạng Petri dưới dạng các hệ thống chuyển trạng thái.
+\item Sử dụng kiểm tra mô hình để kiểm tra có hệ thống các thuộc tính bất biến và khả năng đạt tới của mô hình mạng Petri.
+\end{itemize}
+
+\section{Giới thiệu}
+Ngay từ những ngày đầu của ngành tính toán, mô hình hóa và kiểm chứng chương trình đã là một chủ đề quan trọng. Ngày nay chủ đề này còn thiết yếu hơn vì máy tính hiện diện khắp nơi trong đời sống. Máy tính phát triển mạnh trong mọi loại môi trường, và một số ứng dụng của chúng có ý nghĩa sống còn. Thật vậy, ngày càng nhiều sinh mạng phụ thuộc vào độ tin cậy của các hệ thống trên máy bay, các ứng dụng tín hiệu đường sắt và phần mềm thiết bị y tế, chẳng hạn.
+
+Vì tầm quan trọng của vấn đề, nhiều nỗ lực đã được đầu tư để bảo đảm chất lượng phần mềm. Về mặt tổ chức, các kỹ thuật quản lý dự án đã được xây dựng cho quy trình phát triển phần mềm, chẳng hạn RUP (Rational Unified Process) [174], mô hình thác nước [244], mô hình xoắn ốc [40], B-method [189], v.v. Gần đây nhất, những phương pháp luận ``linh hoạt'' như SCRUM [261] đang chiếm ưu thế trong
+% Source: printed 178 / PDF 192
+ngành [249]. Tuy nhiên, các khuôn khổ phát triển phần mềm chỉ có thể cải thiện chất lượng phần mềm đến một mức độ nhất định. Thực tế, bản thân chúng không thể đưa ra những bảo đảm đầy đủ cho các hệ thống quan trọng, vì hiệu quả của chúng chỉ dựa trên bằng chứng thực nghiệm [249].
+
+Điểm chung của những cách tiếp cận này là tất cả đều yêu cầu mô tả hệ thống làm gì mà không quy định cách làm. Mô tả đó được gọi là \emph{đặc tả} (specification). Tùy quy trình phát triển được sử dụng, đặc tả có thể phi hình thức (chẳng hạn SCRUM), bán hình thức (chẳng hạn RUP) hoặc hình thức (chẳng hạn B-method). Có một đặc tả đúng là điều tối quan trọng đối với chất lượng phần mềm. Một mặt, đặc tả được sử dụng để kiểm tra nhóm phát triển có hiểu các yêu cầu hay không, trả lời câu hỏi ``Chúng ta có đang xây dựng đúng thứ cần xây dựng không?''. Quá trình này gọi là \emph{thẩm định}. Mặt khác, nó được sử dụng để kiểm tra phần mềm hoàn chỉnh có làm đúng điều dự kiến hay không: ``Chúng ta có đang xây dựng thứ đó đúng cách không?''. Chúng tôi gọi bước này là \emph{kiểm chứng}.
+
+Một cách rất đơn giản để kiểm chứng là \emph{kiểm thử}. Trong kiểm thử phần mềm, ta sử dụng đặc tả để suy ra những hành vi kỳ vọng ở phần mềm. Với mỗi hành vi được kỳ vọng, ta viết một kiểm thử. Kiểm thử là một thủ tục cho phần mềm hoặc một phần của nó hoạt động, rồi cho biết hành vi quan sát được có đúng như kỳ vọng theo đặc tả hay không. Vì vậy, kiểm thử có thể chứng minh phần mềm có lỗi. Tuy nhiên, chứng minh không có lỗi phức tạp hơn nhiều. Điều đó đòi hỏi viết một kiểm thử cho mỗi hành vi có thể có của phần mềm. Số lượng hành vi ngay cả của phần mềm đơn giản cũng cực kỳ lớn, nghĩa là kiểm thử không khả thi để chứng minh không có lỗi. Dẫu vậy, có những loại phần mềm không thể được phép sai lệch khỏi đặc tả vì sinh mạng hoặc sức khỏe con người phụ thuộc vào chúng. Nhu cầu này đã tạo ra một tập hợp kỹ thuật kiểm chứng có thể bảo đảm không có lỗi trong một hệ thống nhất định: \emph{kiểm chứng hình thức}.
+
+Các kỹ thuật kiểm chứng hình thức, còn gọi là \emph{phương pháp hình thức} (formal methods), có thể bảo đảm hệ thống không có lỗi trong phạm vi mô hình hóa của nó. Có nhiều phương pháp hình thức, từ \emph{chứng minh định lý} đến \emph{kiểm tra mô hình} (model checking). Những kỹ thuật này nhằm xây dựng một chứng minh toán học hình thức về tính đúng đắn của chương trình. Tất nhiên, điều này yêu cầu đặc tả cũng được mô tả hình thức. Nó còn yêu cầu bản thân chương trình có ngữ nghĩa được đặc tả hình thức. Trong các mục này, chúng tôi tập trung vào giai đoạn mô hình hóa và biến thể kiểm tra mô hình của các phương pháp hình thức.
+
+Mô hình hóa hình thức các hệ thống phức tạp đòi hỏi những ngôn ngữ thích hợp với loại hệ thống ta quan tâm, đồng thời phải được xác định cùng một số cơ chế cấu trúc hóa. Trong chương này, chúng tôi chủ yếu mô tả các ngôn ngữ cung cấp tính năng liên quan đến hệ thống động và kiểu dữ liệu. Về các cơ chế cấu trúc hóa, chúng tôi đề nghị tham khảo những công bố về các mở rộng của mạng đại số như CO-OPN [32] và LLAMAS [197]. Chúng tôi không mô tả chúng thêm vì chúng không hoàn toàn cần thiết để hiểu những khái niệm cơ bản đằng sau các phương pháp hình thức.
+
+\section{Mô hình hóa tính đồng thời}
+Mô hình hóa tính đồng thời đòi hỏi những kỹ thuật hình thức được điều chỉnh chuyên biệt. Trong số nhiều kỹ thuật hiện có, có thể thấy tất cả đều sử dụng những cấu trúc để mô tả tường minh hoặc ngầm định các sự kiện, trạng thái và cơ chế đồng bộ hóa. Hơn nữa, ngữ nghĩa của kỹ thuật phải thể hiện các hành vi khác nhau của hệ thống được mô hình hóa, vì tính song song và tính đồng thời vốn đưa tính không tất định của hoạt động vào hệ thống. Một trong những hệ hình thức nổi tiếng nhất là mạng Petri, được giới thiệu xuyên suốt chương này. Tuy nhiên, điều quan trọng là hiểu rằng phần lớn các nguyên lý được giải thích có thể chuyển sang những loại mô hình khác, như đại số quá trình [207], Statecharts [135] và các loại tương tự.
+
+Để giải thích bản chất của mô hình hóa bằng mạng Petri, chúng tôi sử dụng ví dụ động cơ ô tô xuyên suốt bài viết. Hệ thống mô tả một động cơ đốt trong rất đơn giản gồm bàn đạp, động cơ, bộ chế hòa khí và bình nhiên liệu. Hệ thống được xây dựng từ một số thành phần cơ bản, tương tự các ô-tô-mát được sử dụng trong một số công cụ mô hình hóa [277]. Chúng ta sẽ thấy cách kết hợp mọi thành phần thành một mạng Petri duy nhất mô tả toàn bộ hệ thống.
+
+Mặc dù có thể sử dụng mô hình các ô-tô-mát truyền thông cho những bài toán như vậy, mạng Petri làm tường minh truyền thông giữa các thành phần, trong khi truyền thông thường ngầm định và vì thế không rõ ràng khi sử dụng ô-tô-mát. Chẳng hạn, lựa chọn truyền thông đồng bộ hay bất đồng bộ là một thuộc tính ở cấp độ siêu mô hình trong ô-tô-mát, thay vì một lựa chọn tường minh.
+
+Như vậy, ta có khả năng mô hình hóa hệ thống bằng mạng Petri một cách cô đọng. Những hệ thống này gồm một số thực thể không tất định truyền thông đồng bộ hoặc bất đồng bộ.
+
+% Source: printed 179 / PDF 193
+\subsection{Mạng Petri}
+Mạng Petri [237] là một ngôn ngữ mô hình hóa hình thức bằng đồ họa chuyên dùng để biểu diễn các quá trình đồng thời, bao gồm truyền thông và đồng bộ hóa giữa chúng. Mạng Petri gồm bốn khái niệm cơ bản: \emph{vị trí} (place), \emph{chuyển tiếp} (transition), \emph{cung} (arc) và \emph{thẻ} (token). Vị trí, biểu diễn bằng hình tròn, mô hình hóa các quá trình và nơi chứa tài nguyên của hệ thống, chẳng hạn bình nhiên liệu; chuyển tiếp, biểu diễn bằng hình chữ nhật, được sử dụng để mô hình hóa sự tiến triển của hệ thống, chẳng hạn khởi động động cơ. Vị trí và chuyển tiếp được nối bằng cung. Cung mô tả bao nhiêu thẻ, biểu diễn bằng chấm lớn, được lấy khỏi một vị trí trước khi thực thi chuyển tiếp và bao nhiêu thẻ được đặt vào vị trí sau đó. Ta thường gọi những cung này là \emph{tiền điều kiện} và \emph{hậu điều kiện} của chuyển tiếp. Thẻ được sử dụng để mô hình hóa tài nguyên, chẳng hạn xăng trong ví dụ, hoặc điều khiển, chẳng hạn động cơ bật hay tắt. Lưu ý rằng mạng Petri cổ điển chỉ sử dụng một loại thẻ, nghĩa là điều khiển quá trình và tài nguyên đều được biểu diễn như nhau, điều có thể gây nhầm lẫn cho người mới bắt đầu. Tuy nhiên, đặc điểm này đem lại tính linh hoạt cao và khiến mạng Petri trở thành một hệ hình thức rất mạnh.
+
+Hình~7.1 trình bày ví dụ mạng Petri biểu diễn đơn giản hành vi của bàn đạp ga, động cơ và bình nhiên liệu trong ô tô. Nó biểu diễn các quá trình và tài nguyên thành vị trí, chẳng hạn \texttt{up}, \texttt{off}, \texttt{fuel} hoặc \texttt{filled}. Mạng Petri cũng chứa các chuyển tiếp như \texttt{press}, \texttt{stop} hoặc \texttt{empty}. Dễ thấy lượng nhiên liệu được mô hình hóa bằng số thẻ trong vị trí \texttt{fuel}, nhưng việc điều khiển động cơ cũng được xử lý bằng một thẻ riêng nằm ở vị trí \texttt{on} hoặc \texttt{off}. Việc thực thi một chuyển tiếp, chẳng hạn \texttt{start}, sẽ \emph{tiêu thụ} thẻ từ các trạng thái tiền điều kiện (\texttt{off}) và tạo thẻ trong các trạng thái hậu điều kiện (\texttt{on} trong ví dụ).
+
+Các nhóm, tức những khung lớn, dành cho bàn đạp, bình nhiên liệu, động cơ và bộ chế hòa khí không ảnh hưởng đến ngữ nghĩa hệ thống mà chỉ giúp mô tả hệ thống.
+
+\sourcefigure{7.1}{193}{Một mạng Petri biểu diễn chức năng tăng tốc được đơn giản hóa của ô tô.}
+
+Mỗi vị trí chứa một số thẻ dương, mặc định là 0, mô tả có bao nhiêu quá trình hoặc tài nguyên ở trạng thái này. Chúng tôi gọi số thẻ trong một vị trí là \emph{đánh dấu} (marking) của nó. Tổ hợp các đánh dấu của mọi vị trí trong mạng Petri cũng được gọi là \emph{đánh dấu} của mạng Petri và mô tả trạng thái toàn bộ hệ thống.
+
+Do có ngữ nghĩa đã được nghiên cứu kỹ, mạng Petri có thể được mô phỏng hoặc sử dụng cho phân tích tĩnh hay động. Tính đơn giản khiến việc chuyển chúng sang những dạng khác rất dễ dàng. Chẳng hạn, Hình~7.2 trình bày đánh dấu của mạng Petri trong Hình~7.1 được mã hóa bằng ngôn ngữ lập trình Lua\footnote{\url{https://lua.org}}. Vì vậy, mạng Petri này có thể được nhúng
+% Source: printed 180 / PDF 194
+và sử dụng trong một ứng dụng phần mềm. Chúng tôi sử dụng ngôn ngữ Lua xuyên suốt bài viết để minh họa cách hiện thực hóa và sử dụng mạng Petri trong thực tế. Đánh dấu của mạng Petri là một cấu trúc gán số thẻ tương ứng cho từng vị trí. Đánh dấu ban đầu là đánh dấu được mô tả lúc đầu trong mạng Petri.
+
+\sourcefigure{7.2}{194}{Khai báo một đánh dấu mạng Petri bằng mã Lua. Hàm \texttt{new} của mô-đun \texttt{Marking} ở bên trái được sử dụng để tạo một ánh xạ biểu diễn đánh dấu mạng Petri. Mã bên phải minh họa việc sử dụng hàm này để tạo một đánh dấu mới. Lưu ý chỉ cần chỉ định những vị trí chứa thẻ, vì các thẻ còn lại được khởi tạo mặc định bằng 0.}
+% Source code 7.2, transcribed verbatim from the printed figure.
+% function Marking.new(t)
+%   return {
+%     up = t.up or 0,
+%     down = t.down or 0,
+%     fuel = t.fuel or 0,
+%     off = t.off or 0,
+%     on = t.on or 0,
+%     filled = t.filled or 0,
+%     maximum = t.maximum or 0,
+%   }
+% end
+% initial = Marking.new {
+%   up = 1,
+%   fuel = 7,
+%   off = 1,
+%   maximum = 2,
+% }
+
+Trạng thái mạng Petri, được biểu diễn bằng đánh dấu, được thay đổi bằng cách ``bắn'' (fire) các chuyển tiếp. Để mô tả sự tiến triển hệ thống hiệu quả hơn, ta sử dụng các đánh dấu và các phép toán trên chúng để biểu đạt hành vi mạng Petri. Vì sự thuận tiện, ta xác định những toán tử sau trên đánh dấu: so sánh, cộng và trừ. Toán tử so sánh so sánh số thẻ trong từng vị trí của hai toán hạng để kiểm tra bằng nhau hoặc xem một toán hạng nhỏ hơn/lớn hơn toán hạng còn lại. Các toán tử cộng và trừ thực hiện cộng hoặc trừ số thẻ của các toán hạng theo từng vị trí. Những toán tử này cho phép mô tả cô đọng ngữ nghĩa bắn chuyển tiếp. Hình~7.3 cung cấp hiện thực các toán tử bằng Lua.
+
+Như đã nói, sự tiến triển của mạng Petri được thực hiện bằng cách bắn các chuyển tiếp. Việc bắn này tuân theo một quy tắc đơn giản: một chuyển tiếp có thể được bắn nếu nó \emph{được cho phép} (enabled). Một chuyển tiếp được gọi là được cho phép khi và chỉ khi có đủ thẻ ở tất cả các vị trí đầu vào, tức các vị trí nối đến chuyển tiếp. Khi một chuyển tiếp được bắn, nó loại thẻ khỏi các vị trí tiền điều kiện và bổ sung thẻ mới vào các vị trí hậu điều kiện. Điều quan trọng là hiểu rằng thẻ không ``di chuyển'' từ vị trí này sang vị trí khác, mà được \emph{tiêu thụ} và những thẻ mới, khác với thẻ cũ, được tạo ra. Số thẻ tiêu thụ và tạo ra được xác định bằng chú thích trên cung. Theo quy ước, chú thích cung có trọng số 1 thẻ được bỏ đi để dễ đọc.
+
+Để minh họa việc bắn chuyển tiếp, có thể xét chuyển tiếp \texttt{empty} trong ví dụ động cơ ô tô ở trên. Chuyển tiếp tiêu thụ một thẻ từ vị trí \texttt{filled} và một thẻ nữa từ vị trí \texttt{on}. Vì vậy, nó có thể được bắn nếu mỗi vị trí \texttt{filled} và \texttt{on} chứa \emph{ít nhất} một thẻ. Sau khi được bắn, chuyển tiếp tạo một thẻ trong vị trí \texttt{maximum} và một thẻ nữa trong vị trí \texttt{on}. Hình~7.4 trình bày mã Lua mô tả việc bắn các chuyển tiếp \texttt{press} và \texttt{empty}. Đầu tiên mã kiểm tra các vị trí đầu vào có chứa đủ thẻ hay không. Nếu điều kiện này được đáp ứng, mã thực hiện bắn bằng cách trừ các cung tiền điều kiện và cộng các cung hậu điều kiện vào đánh dấu mạng Petri. Nếu không thể bắn chuyển tiếp, hàm trả về \texttt{nil}, giá trị Lua tương đương \texttt{NULL} hoặc giá trị null.
+
+\subsection{Các mẫu mạng Petri thông dụng}
+Mạng Petri biểu đạt truyền thông và đồng bộ hóa tốt hơn hệ hình thức ô-tô-mát truyền thống vì chúng làm tường minh các khái niệm này. Tuy nhiên, tương tự ô-tô-mát, mạng Petri có nhược điểm đã nêu là không phân biệt quá trình và tài nguyên. Người mô hình hóa phải làm rõ vai trò của từng vị trí, chẳng hạn bằng quy ước đặt tên hoặc màu sắc. Để giới thiệu một số cách mô hình hóa thông dụng, chúng tôi trình bày vài mẫu chuẩn trong các mạng Petri của Hình~7.5:
+\begin{itemize}
+\item Hình~7.5a biểu diễn việc tạo hai quá trình $(q,r)$ từ một quá trình $(p)$, hoặc giải phóng một tài nguyên $(r)$ từ một quá trình $(p,q)$.
+% Source: printed 181 / PDF 195
+\item Hình~7.5b biểu diễn đồng bộ hóa hai quá trình $(q,r)$ hoặc việc một quá trình $(q,p)$ chiếm một tài nguyên $(r)$.
+\item Hình~7.5c biểu diễn một lựa chọn cho quá trình $p$, có thể đi theo nhánh $q$ hoặc nhánh $q$.
+\item Hình~7.5d biểu diễn việc gom các quá trình hoặc tài nguyên $(q,r)$ thành một $(p)$. Khi $q$ và $r$ loại trừ lẫn nhau, nó cũng có thể biểu diễn sự kết thúc của một điều kiện cho quá trình $p$.
+\end{itemize}
+
+\sourcefigure{7.3}{195}{Các toán tử cộng, trừ, bằng và nhỏ hơn hoặc bằng được sử dụng để thao tác trên đánh dấu mạng Petri. Sự tiến triển của mạng Petri có thể được biểu đạt bằng những toán tử này. Liệt kê 8: Toán tử cộng; Liệt kê 9: Toán tử bằng; Liệt kê 10: Toán tử trừ; Liệt kê 11: Toán tử nhỏ hơn hoặc bằng.}
+% Listing 8: Addition operator; exact source code, including source syntax.
+% function Marking.__add(l, r)
+%   return {
+%     up = l.up + r.up,
+%     down = l.down + r.down,
+%     fuel = l.fuel + r.fuel,
+%     off = l.off + r.off,
+%     on = l.on + r.on,
+%     filled = l.filled + r.filled,
+%     maximum = l.maximum + r.maximum,
+%   }
+% end
+% Listing 9: Equality operator
+% function Marking.__eq(l, r)
+%   return l.up == r.up
+%     and l.down == r.down,
+%     and l.fuel == r.fuel,
+%     and l.off == r.off,
+%     and l.on == r.on,
+%     and l.filled == r.filled,
+%     and l.maximum == r.maximum,
+% end
+% Listing 10: Subtraction operator
+% function Marking.__sub(l, r)
+%   return {
+%     up = l.up - r.up,
+%     down = l.down - r.down,
+%     fuel = l.fuel - r.fuel,
+%     off = l.off - r.off,
+%     on = l.on - r.on,
+%     filled = l.filled - r.filled,
+%     maximum = l.maximum - r.maximum,
+%   }
+% end
+% Listing 11: Less-than-or-equals op.
+% function Marking.__le(l, r)
+%   return l.up <= r.up
+%     and l.down <= r.down,
+%     and l.fuel <= r.fuel,
+%     and l.off <= r.off,
+%     and l.on <= r.on,
+%     and l.filled <= r.filled,
+%     and l.maximum <= r.maximum,
+% end
+\sourcefigure{7.4}{195}{Các ví dụ mã Lua minh họa hiện thực chuyển tiếp. Liệt kê 12: Mã của chuyển tiếp \texttt{press}; Liệt kê 13: Mã của chuyển tiếp \texttt{empty}.}
+% Listing 12: Code of the press transition; exact printed source.
+% function press(marking)
+%   if marking >= { up = 1 } then
+%     return marking
+%       - { marking.up = 1 }
+%       + { marking.down = 1 }
+%   else
+%     return nil
+%   end
+% end
+% Listing 13: Code of the empty transition; exact printed source.
+% function empty(marking)
+%   if marking >= { filled = 1,
+%                   on = 1 }
+%   then
+%     return marking
+%       - { marking.filled = 1,
+%           marking.on = 1 }
+%       + { marking.maximum = 1,
+%           marking.on = 1 }
+%   else
+%     return nil
+%   end
+% end
+
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-1).} Các đoạn mã trong Hình 7.3--7.4 có lỗi cú pháp ngay trong bản gốc: chuỗi so sánh nối bằng \texttt{and} không được có các dấu phẩy đã in, và trường trong biểu thức tạo bảng phải có dạng \texttt{up = 1}, không phải \texttt{marking.up = 1}. Bản dịch giữ nguyên mã của tác giả. Khi hiện thực để chạy, cần sửa các lỗi này và gắn bảng siêu dữ liệu cho những toán tử trên đánh dấu. Xem cú pháp Lua ở Mục 3.4.9 và cơ chế bảng siêu dữ liệu ở Mục 2.4 của \url{https://www.lua.org/manual/5.3/manual.html}.
+\end{quote}
+
+% Source: printed 182 / PDF 196
+\sourcefigure{7.5}{196}{Bốn mẫu mạng Petri thông dụng này có thể được sử dụng để biểu đạt các khái niệm khác nhau về phân nhánh, hợp nhất, lựa chọn hoặc đồng bộ hóa luồng điều khiển, cũng như tiêu thụ, tạo, chiếm và giải phóng tài nguyên. (a) Phân nhánh luồng điều khiển hoặc tạo tài nguyên; (b) Đồng bộ hóa hoặc chiếm tài nguyên; (c) Lựa chọn luồng điều khiển; (d) Điểm đồng bộ hóa luồng điều khiển.}
+
+\subsection{Cú pháp và ngữ nghĩa hình thức}
+Vì đã giới thiệu mạng Petri như một phương pháp hình thức, chúng tôi thấy cần cung cấp cú pháp và ngữ nghĩa trong một bối cảnh hình thức hơn. Mong bạn đọc kiên nhẫn đi qua mục này, vì hiểu các khái niệm đó sẽ cần thiết cho những khía cạnh phức tạp hơn của mạng Petri. Đổi lại, chúng tôi hứa trình bày ngắn gọn và chỉ giới thiệu những phần thiết yếu. Cũng cần nhắc rằng các định nghĩa hình thức này có thể được sử dụng trực tiếp để tạo các công cụ quản lý, mô phỏng và phân tích mô hình.
+
+Về mặt hình thức, mạng Petri là một \emph{đồ thị có hướng hai phía có nhãn}, tức một đồ thị có thể chia các đỉnh thành hai tập hữu hạn rời nhau $P$ và $T$, với $P\cap T=\emptyset$, sao cho mọi cạnh đều có hướng và nối một đỉnh của $P$ với một đỉnh của $T$ (tiền điều kiện), hoặc một đỉnh của $T$ với một đỉnh của $P$ (hậu điều kiện). Đồ thị này có nhãn số tự nhiên trên các đỉnh của $P$ (đánh dấu vị trí), không có nhãn trên các đỉnh của $T$ (chuyển tiếp), và nhãn số dương trên cạnh (số thẻ được tiêu thụ hoặc tạo ra).
+
+Vì vậy, một mạng Petri được mô tả bằng bộ $\langle P,T,pre,post,m_0\rangle$. Tập hợp mọi đánh dấu có thể có được ký hiệu $M=P\to\mathbb{N}$. Nó chứa mọi hàm có thể có gắn thẻ với các vị trí của mạng Petri. Đánh dấu ban đầu $m_0$ là một phần tử của $M$ ánh xạ mọi vị trí tới số thẻ ban đầu của chúng. Các hàm $pre:T\to M$ và $post:T\to M$ biểu diễn giá trị cung và được gọi là tiền điều kiện và hậu điều kiện của các chuyển tiếp. Với mỗi chuyển tiếp, chúng trả về một đánh dấu tương ứng với các giá trị của cung đầu vào và cung đầu ra của chuyển tiếp. Lưu ý rằng dạng hàm của chúng ngầm định ở dạng curry, vì có thể viết lại thành $pre:T\to(P\to\mathbb{N})$ và $post:T\to(P\to\mathbb{N})$.
+
+Các toán tử số học và so sánh $(+,-,=,\leqslant)$ được giới thiệu ở mục trước được xác định hình thức trên đánh dấu như sau. Ta yêu cầu với mọi $m_l,m_r\in M$:
+\[
+\begin{aligned}
+m_l+m_r&=\forall p\in P,\ (m_l+m_r)(p)\mapsto m_l(p)+m_r(p),\\
+m_l-m_r&=\forall p\in P,\ (m_l-m_r)(p)\mapsto m_l(p)-m_r(p),\\
+m_l=m_r&\equiv\forall p\in P,\ m_l(p)=m_r(p),\\
+m_l\leqslant m_r&\equiv\forall p\in P,\ m_l(p)\leqslant m_r(p),
+\end{aligned}
+\]
+trong đó $a\mapsto x$ biểu thị $x$ là giá trị ảnh của $a$.
+
+Trong chương này, chúng tôi mô tả sự tiến triển và hành vi mạng Petri bằng các quy tắc Ngữ nghĩa thao tác có cấu trúc (Structured Operational Semantics, SOS), như ví dụ trong Phương trình~(7.1). Xin nhắc rằng một quy tắc SOS gồm hội của các tiền đề ở phía trên gạch ngang và một kết luận ở phía dưới. Quy tắc nói rằng nó có thể được áp dụng, tức phép biến đổi kết luận được thực thi, khi các tiền đề được thỏa mãn. Cả tiền đề và kết luận đều là những biểu thức, thường gọi là ``vị từ trên hạng thức'' (term predicate).
+\begin{equation}
+rule:\frac{tpred_1\land tpred_2\ldots\land tpred_n}{tpred}\tag{7.1}
+\end{equation}
+
+Mỗi chuyển tiếp mạng Petri mô tả những diễn tiến có thể có của hệ thống. Về mặt hình thức, nó là một quan hệ giữa các trạng thái mạng Petri, tức các đánh dấu. Vì vậy, hành vi được mô tả như một phép biến đổi đánh dấu mạng Petri. Các
+% Source: printed 183 / PDF 197
+kết luận của quy tắc SOS mô tả việc bắn chuyển tiếp được viết $m\xrightarrow{t}m'$, trong đó $m$ và $m'$ là các đánh dấu mạng Petri, còn $t$ là một chuyển tiếp. $m\xrightarrow{t}m'$ nói rằng đánh dấu hiện tại $m$ của hệ thống dẫn đến $m'$ khi bắn $t$.
+
+Theo tư duy kiểm tra mô hình, cũng có thể nói quy tắc SOS phát biểu rằng với hai đánh dấu $m$ và $m'$ cho trước, bắn $t$ là đúng nếu mọi tiền đề đều đúng. Ngữ nghĩa bắn một chuyển tiếp được cho bởi quy tắc tổng quát trong Phương trình~(7.2).
+\begin{equation}
+transition_t:\frac{pre(t)\leqslant m}{m\xrightarrow{t}m-pre(t)+post(t)}\tag{7.2}
+\end{equation}
+
+\paragraph{Ví dụ}
+Xét chuyển tiếp \texttt{release} trong Hình~7.1. Ngữ nghĩa của nó được biểu diễn bằng quy tắc sau:
+\[
+\texttt{release}:\frac{(\texttt{down}\mapsto1)\leqslant m}{m\xrightarrow{\texttt{release}}m-(\texttt{down}\mapsto1)+(\texttt{up}\mapsto1)}.
+\]
+Xin nhớ rằng để một đánh dấu $m$ lớn hơn hoặc bằng một đánh dấu khác, mọi đánh dấu vị trí riêng lẻ đều phải lớn hơn hoặc bằng. Để tiền đề cụ thể này hợp lệ, mọi vị trí trong $m$ phải có đánh dấu lớn hơn hoặc bằng $(\texttt{down}\mapsto1)$, tức mọi vị trí phải có ít nhất 0 thẻ, ngoại trừ \texttt{down} cần ít nhất 1 thẻ. Khi và chỉ khi điều này đúng, bắn chuyển tiếp sẽ dẫn đến một đánh dấu mới bằng cách loại một thẻ khỏi \texttt{down} và bổ sung một thẻ vào \texttt{up}. $\square$
+
+Các chuỗi chuyển tiếp cũng có ngữ nghĩa đơn giản: bắt đầu từ một trạng thái ban đầu, những chuyển tiếp trong chuỗi được áp dụng lần lượt. Về mặt hình thức, chuỗi chuyển tiếp, ký hiệu $T^*$, được định nghĩa quy nạp như các danh sách. Lưu ý rằng mỗi chuyển tiếp $t\in T$ cũng có thể xem là một chuỗi chuyển tiếp có độ dài 1. Do đó $T\subseteq T^*$. Ngoài ra, ta sử dụng toán tử nối $(.)$ sao cho $\forall t\in T,\forall s\in T^*,\ t.s\in T^*$, tức mỗi phép nối chuyển tiếp là một chuyển tiếp theo sau bởi một chuỗi chuyển tiếp. Lưu ý chuỗi $s$ có thể là một chuyển tiếp đơn. Ngữ nghĩa này được cho bởi Phương trình~(7.2) và Phương trình~(7.3).
+\begin{equation}
+sequence:\frac{m\xrightarrow{t}m',\ m'\xrightarrow{s}m''}{m\xrightarrow{t.s}m''}\tag{7.3}
+\end{equation}
+
+Hình~7.6 trình bày mã Lua tính một chuỗi chuyển tiếp. Bản thân mỗi chuyển tiếp là một hàm, như những hàm đã xác định cho \texttt{press} và \texttt{empty}.
+\sourcefigure{7.6}{197}{Mã Lua xử lý thực thi một chuỗi chuyển tiếp trên một đánh dấu ban đầu. Lưu ý \texttt{transitions} là danh sách các hàm chuyển tiếp đã được xác định ở trên. Hàm \texttt{ipairs} là một bộ lặp có thứ tự trên các phần tử của \texttt{transitions}.}
+% Source code 7.6:
+% function sequence(marking, transitions)
+%   for _, transition in ipairs(transitions) do
+%     marking = transition(marking)
+%     if not marking then
+%       return nil
+%     end
+%   end
+%   return marking
+% end
+
+% Source: printed 184 / PDF 198
+\subsection{Suy diễn dựa trên quy tắc}
+Như đã thấy, ta có thể tạo những quan hệ mới từ các quy tắc hiện có, như đối với các chuỗi trong Phương trình~(7.3). Chúng tôi gọi đặc điểm này là \emph{bao đóng bắc cầu}. Tuy nhiên, để tính những quan hệ mới dựa trên các quy tắc SOS hiện có, cần biết chính xác cách tính các vị từ trên hạng thức của một quy tắc, vì tiền đề của một quy tắc có thể được sử dụng như kết luận của một quy tắc khác.
+
+Quá trình này, gọi là suy diễn, dựa trên ba nguyên lý: khớp quy tắc, thể hiện hóa biến và rút gọn vị từ. Những nguyên lý này đòi hỏi định nghĩa các phép toán bổ sung trên hạng thức hàm, tức các biểu thức chỉ chứa việc áp dụng hàm, và vị từ trên hạng thức, tức các vị từ áp dụng trên những hạng thức hàm.
+
+Những nguyên lý này liên quan đến việc sử dụng biến. Các phép toán quản lý những giá trị mà biến có thể nhận phải được xác định đầy đủ.
+
+Một phép gán, hay \emph{phép thế} (substitution), được xác định như một hàm $\sigma\in\Sigma$, trong đó $\Sigma$ là tập hợp các hàm bộ phận từ biến đến hạng thức, hoặc $\bot$ nếu không có hạng thức nào gắn với biến. Chẳng hạn, một phép thế $\sigma$ có thể thay biến $a$ bằng hạng thức $\texttt{down}\mapsto1$, hoặc bằng $\bot$ nếu biến $a$ không được xác định. Phép thế được mở rộng để áp dụng trên hạng thức thay vì chỉ trên biến: với mọi hạng thức $t$, $\sigma(t)$ trả về hạng thức $t$ trong đó mọi biến được xác định trong $\sigma$ đã được thay bằng hạng thức tương ứng trong $\sigma$. Chẳng hạn, nếu lấy hạng thức $pre(x)$ và áp dụng phép thế $\sigma(x)=\texttt{release}$, ta thấy $\sigma(pre(x))=pre(\texttt{release})$.
+
+Khớp (matching) là việc muốn đồng nhất hai hạng thức $t_1,t_2$ theo một phép thế $\sigma$. Điều này có nghĩa việc khớp kiểm tra có tồn tại một phép thế $\sigma$ sao cho $\sigma(t_1)=\sigma(t_2)$ hay không. Chẳng hạn, phép thế $\sigma=\{x\mapsto\texttt{release},y\mapsto\texttt{release}\}$ có thể được sử dụng để khớp $pre(x)=pre(y)$.
+
+Chúng tôi giới thiệu một ví dụ đơn giản xác định vị từ so sánh trên số tự nhiên. Theo các quy tắc trong Phương trình~(7.4), $a,b\in\mathbb{N}$ là các biến trên số tự nhiên.
+\begin{equation}
+R1:\frac{a\leqslant b}{a\leqslant b+1}\qquad
+R2:\frac{a\leqslant b}{a+1\leqslant b+1}\qquad
+R3:\frac{}{0\leqslant0}\tag{7.4}
+\end{equation}
+
+Chúng tôi giả định bạn đọc quen với các phép toán dựa trên phép cộng số tự nhiên. Việc đưa ra chính các định nghĩa của chúng có thể là một bài tập cho bạn đọc. Suy diễn được tính bằng một hàm $Infer$ đặc biệt. $Infer(R)$ được xác định như quá trình suy diễn cho một tập hợp quy tắc $R$. Trong trường hợp cụ thể này, $Infer$ được xác định là $Infer(\{R1,R2,R3\})$ và ta sử dụng $Infer$ để tính những suy diễn có thể có trên vị từ $\leqslant$.
+
+Trong những suy diễn như vậy, các quy tắc được áp dụng chồng lên nhau, với sự tương ứng là khả năng khớp một tiền đề với kết luận của một quy tắc khác đặt ở phía trên. Những suy diễn đúng phải hữu hạn và phải dựa trên một trường hợp cơ sở, tức một quy tắc không có tiền đề, ở đây là $R3$.
+
+\paragraph{Ví dụ}
+Những ví dụ sau minh họa các suy diễn có thể có dựa trên các quy tắc $R1$, $R2$ và $R3$. Bằng cách áp dụng một quy tắc có kết luận khớp hạng thức đã cho, có thể tìm một tiền đề rồi dùng nó để khớp với quy tắc khác. Điều này nghĩa là ta thường làm từ dưới lên và cố tìm những quy tắc khớp đưa ta gần hơn đến $R3$.
+
+Ở bên trái, ta cố suy diễn $1\leqslant2$. Ta thấy $1\leqslant2$ có thể là kết luận của quy tắc $R1$, từ đó suy ra tiền đề của quy tắc phải là $1\leqslant1$. Sử dụng quy tắc $R2$ với $1\leqslant1$ làm kết luận, ta thấy tiền đề của quy tắc là $0\leqslant0$. Giờ có thể áp dụng $R3$, vốn không có tiền đề, và đã suy diễn thành công $1\leqslant2$.
+
+Mặt khác, có thể xem ví dụ bên phải. Mục tiêu ở đây là suy diễn $4\leqslant2$ đúng. Lần áp dụng đầu tiên của $R2$ đưa ta đến $3\leqslant1$, và lần áp dụng $R2$ tiếp theo đến tiền đề $2\leqslant0$. Tại điểm này, không thể áp dụng thêm quy tắc nào. Điều này nghĩa là theo các quy tắc đã xác định, ta không thể đạt đến trường hợp cơ sở và $4\leqslant2$ phải sai.
+
+Lưu ý rằng trong cả hai trường hợp có thể áp dụng những quy tắc khác với các quy tắc thực tế đã dùng. Ở bên trái có thể đổi thứ tự và áp dụng $R2$ trước $R1$. Ở bên phải cũng có thể dùng $R1$ thay vì $R2$. Trong mỗi trường hợp, ta vẫn đạt cùng kết luận. Nhìn chung, suy diễn có thể được thực hiện theo bất kỳ thứ tự nào bằng bất kỳ quy tắc áp dụng được nào. Bí quyết là dùng những quy tắc nhanh chóng dẫn đến điểm kết thúc, tức một xung đột hoặc trường hợp cơ sở.
+
+% Source: printed 185 / PDF 199
+\[
+\begin{array}{cc}
+R1\dfrac{R2\dfrac{R3\dfrac{}{0\leqslant0}}{1\leqslant1}}{1\leqslant2}
+&
+R2\dfrac{R2\dfrac{R?\dfrac{???}{2\leqslant0}}{3\leqslant1}}{4\leqslant2}
+\end{array}
+\]
+
+Theo những nguyên lý đã đưa ra, có thể nói $Infer(R)$ là tập hợp nhỏ nhất bao gồm kết quả của mọi phép thế có thể có trên mọi kết luận của tất cả quy tắc không có tiền đề:
+\[
+\sigma(post(r))\in Infer(R)\quad\text{nếu }pre(r)=\emptyset,\quad\forall r\in R,\ \forall\sigma\in\Sigma
+\]
+và tất cả các kết luận sau phép thế của các quy tắc khi tồn tại một phép thế sao cho một tiền đề quy tắc nằm trong tập hợp:
+\[
+\begin{aligned}
+\sigma(\phi(post(r)))\in Infer(R)\quad&\text{nếu }\phi(pre(r))=\phi(d),\\
+&\forall r\in R,\ \sigma\in\Sigma\ \exists\phi\in\Sigma,\ \forall d\in Infer(R),
+\end{aligned}
+\]
+trong đó $pre(r)$ là tiền đề và $post(r)$ là kết luận của quy tắc.
+
+Quy tắc cuối này được gọi là modus ponens; Ví dụ~7.2.3 trình bày một suy diễn như vậy cho một chuỗi chuyển tiếp. Khi đó $Infer(R)$ được thu được bằng cách áp dụng quy tắc modus ponens đến điểm bất động. Với những quy tắc có tử số dương, không có phủ định mà chỉ có hội, tập hợp này luôn tồn tại theo định lý điểm bất động Knaster--Tarski [264]. Tuy nhiên, tập hợp có thể vô hạn.
+
+\paragraph{Ví dụ}
+Xét chuỗi \texttt{press.release} trong Hình~7.1. Ngữ nghĩa của chuỗi được biểu diễn bằng suy diễn đơn giản sau sử dụng các quy tắc SOS của \texttt{press} và \texttt{release}. Ta thấy kết luận của quy tắc, tức bắn \texttt{press.release} và tạo đánh dấu mới, có hai tiền đề: (1) kết luận của quy tắc \texttt{press}, và (2) kết luận của quy tắc \texttt{release}. Mỗi tiền đề thuộc một quy tắc SOS có các tiền đề riêng phải được thỏa mãn để quy tắc áp dụng được.
+\[
+\frac{
+\begin{gathered}
+\dfrac{(\texttt{up}\mapsto1)\leqslant m}{m\xrightarrow{\texttt{press}}m'=m+(\texttt{up}\mapsto1)-(\texttt{down}\mapsto1)}
+\\[1ex]
+\dfrac{(\texttt{down}\mapsto1)\leqslant m'}{m'\xrightarrow{\texttt{release}}m''=m'+(\texttt{down}\mapsto1)-(\texttt{up}\mapsto1)}
+\end{gathered}
+}{m\xrightarrow{\texttt{press.release}}m''}
+\]
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-2).} Ví dụ suy diễn \texttt{press.release} trong bản gốc đảo dấu các cập nhật thẻ so với (7.2), Hình 7.1 và quy tắc \texttt{release} đã cho. Theo các tiền điều kiện và hậu điều kiện ấy, \texttt{press} phải cho $m'=m-(\texttt{up}\mapsto1)+(\texttt{down}\mapsto1)$, còn \texttt{release} phải cho $m''=m'-(\texttt{down}\mapsto1)+(\texttt{up}\mapsto1)$. Bản dịch giữ nguyên suy diễn đã in.
+\end{quote}
+
+
+\subsection{Đồ thị khả năng đạt tới}
+Ta đã thấy áp dụng một chuyển tiếp vào đánh dấu mạng Petri tạo ra một đánh dấu mới. Để nghiên cứu sự tiến triển hệ thống hiệu quả hơn, có thể thử biểu diễn các chuyển tiếp và các đánh dấu được tạo ra bằng một ô-tô-mát. Trạng thái của ô-tô-mát là các đánh dấu và chuyển tiếp của ô-tô-mát tương ứng với chuyển tiếp mạng Petri. Chúng tôi gọi ô-tô-mát như vậy là \emph{đồ thị khả năng đạt tới} (reachability graph) của mạng Petri, vì nó cho thấy các trạng thái hệ thống có thể đạt tới từ một trạng thái ban đầu. Để hiểu đầy đủ định nghĩa ô-tô-mát, cần lưu ý bảng chữ cái đầu vào của ô-tô-mát chính là tập chuyển tiếp mạng Petri.
+
+Lưu ý tùy đánh dấu ban đầu mà mạng Petri có những đồ thị khả năng đạt tới khác nhau, vì những chuyển tiếp khác nhau có thể được cho phép. Để trực quan hóa, chúng tôi trình bày các đồ thị khả năng đạt tới của mạng Petri trong Hình~7.1 ở Hình~7.15, cuối chương. Hai đồ thị tương ứng với những diễn tiến có thể có của hệ thống với 0, 1, 2 và 3 thẻ ban đầu trong \texttt{fuel}, lần lượt trong các Hình~7.15a--7.15d. Có thể thấy rõ những nhóm đánh dấu lặp lại tương ứng với hành vi tương đồng.
+
+Những nhóm nút của đồ thị khả năng đạt tới này khác nhau ở số thẻ sẵn có trong vị trí \texttt{fuel}. Để dễ đọc, chúng tôi sử dụng các sắc xám khác nhau để phân biệt đánh dấu có số thẻ khác nhau ở vị trí \texttt{fuel}, trong đó sáng nhất là 0 và tối nhất là 3. Nhóm cuối ở phía dưới các hình, gần như trắng, biểu diễn hành vi khi \texttt{fuel} rỗng. Dễ thấy những trạng thái có 0 thẻ trong Hình~7.15a được lặp lại trong Hình~7.15b, nhưng lần này với 1 thẻ, thể hiện bằng sắc xám tối hơn. Tương tự, có thể tìm nhóm của Hình~7.15b trong Hình~7.15c, nhưng mỗi trạng thái tối hơn một sắc vì có thêm một thẻ trong trạng thái \texttt{fuel}. Đồ thị khả năng đạt tới của đánh dấu trong Hình~7.1 với bảy thẻ trong \texttt{fuel} có 84 trạng thái. Từ các đồ thị trong Hình~7.15 có thể thấy mạng Petri với 0 thẻ có 4 trạng thái
+% Source: printed 186 / PDF 200
+và với 1 thẻ có 12 trạng thái. Số trạng thái tăng thêm 12 với mỗi thẻ được bổ sung ban đầu vào vị trí \texttt{fuel}.
+
+Ưu điểm của mạng Petri là nhờ biểu diễn tốt hơn các quá trình đồng thời và tài nguyên, chúng có thể nhỏ hơn các ô-tô-mát tương đương nhiều \emph{bậc độ lớn}. Chẳng hạn, [300] đã mô phỏng trạng thái của một số chương trình đa luồng để phát hiện xâm nhập. Mô phỏng được thực hiện trực tiếp trong quá trình thực thi chương trình bằng cách bọc các lời gọi hệ thống, do đó cần biểu diễn hiệu quả và thời gian tính toán hiệu quả. Mục tiêu này đạt được bằng mạng Petri, và sẽ không thể đạt bằng các ô-tô-mát tương đương với tài nguyên sẵn có.
+
+Về mặt hình thức, đồ thị khả năng đạt tới của mạng Petri được xác định bằng một hàm $s:M\to T\to M\cup\{\bot\}$ trả về trạng thái kế tiếp cho bất kỳ đánh dấu và chuyển tiếp nào, hoặc $\bot$ nếu không tồn tại. Hàm này được suy ra từ những quy tắc cơ bản sau:
+\begin{equation}
+\begin{gathered}
+\forall m\in M,t\in T,\\
+\begin{cases}
+\begin{aligned}
+s(m)(t)=\bot\ &\Longleftrightarrow\ \nexists m'\in M,\\
+&\quad m\xrightarrow{t}m'\in Infer(\{transition_{t_i}\mid t_i\in T\}),
+\end{aligned}\\[1ex]
+\begin{aligned}
+s(m)(t)=m'\ &\Longleftrightarrow\\
+&\quad m\xrightarrow{t}m'\in Infer(\{transition_{t_i}\mid t_i\in T\}).
+\end{aligned}
+\end{cases}
+\end{gathered}\tag{7.5}
+\end{equation}
+
+Quan hệ có thể được giới hạn vào tập con các trạng thái đạt tới được từ trạng thái ban đầu $m_0$ của mạng Petri. Tập con này dễ được xác định bằng các chuỗi chuyển tiếp trong Phương trình~(7.3).
+
+Ta xác định \emph{không gian trạng thái} (state space, $SS$) là tập hợp các đánh dấu đạt tới được, bắt đầu từ một đánh dấu ban đầu $m_0$ với tập chuyển tiếp $T$ cho trước:
+\begin{equation}
+SS(T,m_0)=\left\{\begin{aligned}
+m\in M\mid{}&\exists s\in T^*,\\
+&m_0\xrightarrow{s}m\in Infer(\{transition_{t_i}\mid t_i\in T\}\\
+&\qquad\quad\cup\{sequence\})
+\end{aligned}\right\}.\tag{7.6}
+\end{equation}
+Theo quy ước, với một mạng Petri cho trước, tự nhiên có thể xác định ngầm $SS(m_0)=SS(T,m_0)$.
+
+Thuật toán sinh đồ thị khả năng đạt tới đơn giản được cho trong Hình~7.7. Hàm này duyệt các đánh dấu đạt tới được, ban đầu chỉ có \texttt{initial}, và thử áp dụng mọi chuyển tiếp. Hàm trả về tập các đánh dấu đạt tới được, mỗi đánh dấu được chú thích bằng những chuyển tiếp có thể được bắn và đánh dấu kế tiếp tương ứng. Tập \texttt{explored} chứa những đánh dấu đã được khám phá, còn tập \texttt{encountered} chứa những đánh dấu chưa được khám phá hoặc đã được gặp lại sau khi khám phá. Mã minh họa một hiện thực đơn giản duyệt mọi đánh dấu đã thấy để bảo đảm tính duy nhất. Những hiện thực hiệu quả hơn có thể sử dụng bảng băm.
+
+\subsection{Tính đơn điệu}
+Mạng Petri thể hiện một thuộc tính thú vị: tính đơn điệu (monotony). Tính đơn điệu nghĩa là nếu một chuyển tiếp có thể được bắn đối với một đánh dấu, thì nó cũng có thể được bắn đối với bất kỳ đánh dấu nào lớn hơn đánh dấu đang xét. Mở rộng sang đồ thị khả năng đạt tới, tính đơn điệu nghĩa là mọi chuỗi chuyển tiếp tồn tại trong đồ thị khả năng đạt tới của một mạng Petri cũng tồn tại trong các đồ thị khả năng đạt tới của cùng mạng Petri đó với những đánh dấu ban đầu lớn hơn. Nói đơn giản, thêm thẻ vào mạng Petri chỉ có thể bổ sung hành vi mới, chứ không bao giờ ngăn cản những hành vi hiện có.
+
+Về mặt hình thức, tính đơn điệu được xác định bởi Phương trình~(7.7), có thể suy ra từ các quy tắc trong Phương trình~(7.2) và Phương trình~(7.3). Quy tắc này xác định tính đơn điệu cho cả một chuyển tiếp lẫn một chuỗi chuyển tiếp.
+\begin{equation}
+monotony:\frac{m\xrightarrow{t}m'}{m+\delta\xrightarrow{t}m'+\delta}\tag{7.7}
+\end{equation}
+
+Trong ví dụ, tính đơn điệu nghĩa là mọi chuỗi hành động trong động cơ cũng có thể được thực hiện nếu bổ sung thẻ vào bất kỳ trạng thái nào của mạng Petri, chẳng hạn thêm nhiên liệu. Có thể quan sát sự bao hàm các đồ thị khả năng đạt tới trong Hình~7.15 với những đánh dấu ban đầu $\texttt{fuel}=\{0,1,2,3\}$. Chuỗi \texttt{stop.release.start.press} được quan sát nhiều lần với những đánh dấu ban đầu khác nhau, dẫn đến số thẻ khác nhau trong vị trí \texttt{fuel} ở mỗi trường hợp.
+
+% Source: printed 187 / PDF 201
+\sourcefigure{7.7}{201}{Mã nguồn hàm liệt kê các đánh dấu đạt tới được (bên phải). Mã duyệt những đánh dấu đã gặp và tìm mọi trạng thái kế tiếp có thể có bằng cách thử bắn từng chuyển tiếp trên đánh dấu đó, rồi bổ sung những lần thành công vào danh sách đánh dấu đã gặp. Hàm \texttt{unique} bảo đảm mỗi đánh dấu tương ứng với đúng một mục trong bộ nhớ Lua. Nó cần thiết cho việc tra cứu \texttt{explored[marking]} và \texttt{encountered[successor]}.}
+% Source code 7.7:
+% local markings = {}
+% function unique(marking)
+%   for _, m in ipairs(markings) do
+%     if marking == m then
+%       return m
+%     end
+%   end
+%   markings[#markings+1] = marking
+%   return marking
+% end
+% function reachable()
+%   local explored = {}
+%   local encountered = {
+%     [unique(initial)] = true
+%   }
+%   while next(encountered) do
+%     local marking = next(encountered)
+%     encountered[marking] = nil
+%     if not explored[marking] then
+%       explored[marking] = true
+%       for _, transition in ipairs(transitions) do
+%         local successor = transition(marking)
+%         if successor then
+%           successor = unique(successor)
+%           marking[transition] = successor
+%           encountered[successor] = true
+%         end
+%       end
+%     end
+%   end
+%   return explored
+% end
+
+Tóm lại, có thể thấy đồ thị khả năng đạt tới của mạng Petri luôn được chứa trong đồ thị khả năng đạt tới của cùng mạng Petri với đánh dấu ban đầu lớn hơn. Dù đánh dấu của các trạng thái trong chuỗi có thể khác nhau ở mỗi trường hợp, các chuỗi chuyển tiếp được bảo toàn.
+
+Thực tế, vì tính đơn điệu là thuộc tính của mọi mạng Petri, ta có bổ đề sau. Nó phát biểu rằng không gian trạng thái, và do đó đồ thị khả năng đạt tới, được suy ra chỉ từ các chuyển tiếp bằng với không gian trạng thái được suy ra từ các chuyển tiếp cùng quy tắc đơn điệu, có thể xác định là:
+\begin{equation}
+SSM(T,m_0)=\left\{\begin{aligned}
+m\in M\mid{}&\exists s\in T^*,\\
+&m_0\xrightarrow{s}m\in Infer(\{transition_{t_i}\mid t_i\in T\}\\
+&\qquad\quad\cup\{sequence,monotony\})
+\end{aligned}\right\}.\tag{7.8}
+\end{equation}
+Do đó, phát biểu sau đúng:
+\begin{equation}
+SS(T,m_0)=SSM(T,m_0).\tag{7.9}
+\end{equation}
+Ta cũng biết hành vi được bảo toàn khi mở rộng các đánh dấu:
+\begin{equation}
+m\leq m'\Rightarrow SS(T,m)\leq SS(T,m').\tag{7.10}
+\end{equation}
+Trong đó $\leq$ trên đánh dấu so sánh từng đánh dấu một.
+
+\section{Các thuộc tính của mạng Petri}
+Trong mục trước, chúng tôi giới thiệu mạng Petri và các quy tắc khám phá không gian trạng thái đạt tới được từ một đánh dấu ban đầu. Trong mục này, chúng tôi nghiên cứu các thuộc tính mạng Petri thông qua những đại diện của thuộc tính trạng thái và thuộc tính chuyển tiếp.
+
+% Source: printed 188 / PDF 202
+\subsection{Các thuộc tính đánh dấu}
+Các thuộc tính trạng thái, hay theo cách gọi của mạng Petri là \emph{thuộc tính đánh dấu}, có thể được sử dụng để phân tích một cấu hình mạng Petri. Một trong những đại diện phổ biến nhất cho loại thuộc tính này là \emph{cận} (bound). Cận của một vị trí nói đến số thẻ tối thiểu, tức cận dưới, và tối đa, tức cận trên, có thể đạt được trong bất kỳ đánh dấu nào. Số thẻ tối thiểu và tối đa của mọi vị trí thường được gọi là cận của mạng Petri. Điều này nghĩa là cận mạng Petri gồm:
+\begin{itemize}
+\item đánh dấu lớn nhất được chứa trong mọi đánh dấu đạt tới được, là cận dưới;
+\item và đánh dấu nhỏ nhất chứa mọi đánh dấu đạt tới được, là cận trên.
+\end{itemize}
+Về mặt hình thức, có thể xác định cận dưới và cận trên như sau:
+\begin{equation}
+lower=\max(\{m\in M\mid\forall m'\in SS(T,m_0),\ m'\geqslant m\}).\tag{7.11}
+\end{equation}
+\begin{equation}
+upper=\min(\{m\in M\mid\forall m'\in SS(T,m_0),\ m'\leqslant m\}).\tag{7.12}
+\end{equation}
+
+Hình~7.8 trình bày mã tính cận mạng Petri bằng các đánh dấu đạt tới được. Mã hoạt động bằng cách duyệt mọi đánh dấu và tính số thẻ tối thiểu, tối đa cho từng vị trí. Có những thuật toán tính cận mà không sử dụng tập hợp đánh dấu đạt tới được. Thay vào đó, chúng sử dụng thuộc tính cấu trúc của mạng Petri, như thuật toán trong [188].
+
+Cận đặc biệt quan trọng vì thường được sử dụng để phát hiện những phần chết trong mô hình, tức các vị trí không bao giờ có thể chứa thẻ. Tính cận còn có thể phát hiện những vị trí có thể có vô hạn thẻ. Tuy nhiên, vì số thẻ vô hạn về lý thuyết đòi hỏi một đồ thị khả năng đạt tới vô hạn, không thể phát hiện cận như vậy bằng những thuật toán như thuật toán trình bày dưới đây. Để phát hiện cận vô hạn, phải sử dụng \emph{đồ thị khả năng bao phủ} (coverability graph), một dạng điều chỉnh của đồ thị khả năng đạt tới có bổ sung phát hiện các chuỗi lặp. Điều này được giải thích, chẳng hạn, trong [238].
+
+Trong cộng đồng mạng Petri, thuật ngữ \emph{tính bị chặn bởi $k$} ($k$-boundedness) thường được sử dụng, với $k\in\mathbb{N}$ là số tự nhiên. Khái niệm cận này nói đến cận trên ở cấp độ vị trí và giúp mô tả mạng Petri. Ta nói vị trí $p$ bị chặn bởi $k$ khi và chỉ khi nó chứa nhiều nhất $k$ thẻ trong bất kỳ đánh dấu đạt tới được nào, tức $\forall m\in SS(T,m_0),\ m(p)\leqslant k$. Ta cũng có thể gọi mạng Petri bị chặn bởi $k$ khi và chỉ khi mọi vị trí của nó đều bị chặn bởi $k$, tức $\forall p\in P$, $p$ bị chặn bởi $k$.
+
+\sourcefigure{7.8}{202}{Khung mã nguồn của hàm tính các cận mạng Petri.}
+% Source code 7.8:
+% function bounds(marking)
+%   local markings = reachable(marking)
+%   local bound = {
+%     up = { minimum = math.huge, maximum = 0 },
+%     down = { minimum = math.huge, maximum = 0 },
+%     fuel = { minimum = math.huge, maximum = 0 },
+%     off = { minimum = math.huge, maximum = 0 },
+%     on = { minimum = math.huge, maximum = 0 },
+%     filled = { minimum = math.huge, maximum = 0 },
+%     maximum = { minimum = math.huge, maximum = 0 },
+%   }
+%   for marking in pairs(markings) do
+%     bound.up.minimum = math.min(bound.up.minimum, marking.up)
+%     bound.up.maximum = math.max(bound.up.maximum, marking.up)
+%     ...
+%   end
+%   return bound
+% end
+
+% Source: printed 189 / PDF 203
+\subsection{Các thuộc tính chuỗi}
+Trong khi thuộc tính đánh dấu cung cấp thông tin hữu ích về trạng thái hệ thống, chúng không cung cấp thông tin về cách hệ thống tiến triển. Ngược lại, thuộc tính chuỗi biểu đạt khả năng bắn chuyển tiếp trong đồ thị khả năng đạt tới. Một thuộc tính như vậy mô tả \emph{tính sống} (liveness) của một chuyển tiếp. Thuộc tính này gán một mức tính sống $l_i\in\{l_0,l_1,l_2,l_3,l_4\}$ cho mỗi chuyển tiếp mạng Petri để cung cấp thông tin về việc chuyển tiếp có thể được bắn, có thể/sẽ được bắn hay không bao giờ có thể được bắn. Các mức riêng lẻ được xác định như sau:
+\begin{description}
+\item[$l_0$:] chuyển tiếp chết, tức không bao giờ có thể bắn;
+\item[$l_1$:] chuyển tiếp có thể bắn ít nhất một lần trên ít nhất một đường đi của đồ thị khả năng đạt tới;
+\item[$l_2$:] chuyển tiếp gần-sống (quasi-live), tức có thể bắn vô hạn lần trên ít nhất một đường đi của đồ thị khả năng đạt tới;
+\item[$l_3$:] chuyển tiếp sống, tức có thể bắn vô hạn lần trên mọi đường đi của đồ thị khả năng đạt tới;
+\item[$l_4$:] chuyển tiếp luôn có thể bắn.
+\end{description}
+
+Lưu ý các ràng buộc tính sống có thứ tự và nếu một chuyển tiếp sống ở mức $l_k$, nó cũng sống ở mức $l_{k-1}$, trừ $l_0$, là chết. Mức tính sống của chuyển tiếp là thông tin hữu ích để gỡ lỗi mô hình, vì về lý thuyết mức này phải phù hợp với hành vi dự kiến của quá trình sử dụng chuyển tiếp. Trong thực tế, chuyển tiếp sống ở mức $l_0$ gần như không bao giờ nên xuất hiện trong mô hình: tìm thấy chuyển tiếp sống ở mức $l_0$ thường là dấu hiệu rõ ràng của lỗi trong mô hình, vì nếu mô hình đúng thì nó hoàn toàn không nên xuất hiện. Các chuyển tiếp sống ở mức $l_1$ có thể được bắn ít nhất một lần và không có ý nghĩa thật sự đáng chú ý. Chúng có thể xuất hiện trong mọi hành vi, chẳng hạn biểu diễn kịch bản hoặc chương trình có kết thúc. Chuyển tiếp sống ở mức $l_2$ kích hoạt vô hạn lần, do đó được tìm thấy trong hành vi của chương trình không kết thúc, chẳng hạn máy chủ web. Chúng khác chuyển tiếp sống ở mức $l_3$ vì loại sau có thể bắn vô hạn lần trên mọi đường thực thi. Vì vậy, chuyển tiếp sống ở mức $l_2$ thường được dùng trong quá trình lặp có thể kết thúc, còn chuyển tiếp sống ở mức $l_3$ thường được dùng trong quá trình lặp không thể kết thúc. Chuyển tiếp sống ở mức $l_4$ rất hiếm trong thực tế vì biểu diễn một hành động luôn có thể xảy ra. Có thể tìm thấy chúng trong giao diện người dùng, nơi một quá trình ghi nhận đầu vào và do đó có những chuyển tiếp luôn có thể được bắn.
+
+Để tìm mức tính sống của các chuyển tiếp, có thể sử dụng thuật toán trong Hình~7.9. Việc tính toán hoạt động trên tập hợp đánh dấu đạt tới được và sử dụng thêm thông tin về các thành phần liên thông mạnh của đồ thị khả năng đạt tới, được tính bằng thuật toán thành phần liên thông mạnh Tarjan [263]. Thuật toán hoạt động qua một số giai đoạn, xử lý riêng từng chuyển tiếp như sau:
+\begin{enumerate}
+\item ban đầu chuyển tiếp được đặt vừa chết ($l_0$) vừa luôn có thể bắn ($l_4$); các cờ này được bỏ ngay khi chuyển tiếp lần lượt có thể hoặc không thể được bắn trong đồ thị khả năng đạt tới;
+\item bằng cách duyệt các đánh dấu đạt tới được, chuyển tiếp được đặt sống ở mức $l_1$ khi và chỉ khi có một đánh dấu mà tại đó nó có thể được bắn;
+\item cờ $l_2$ được đặt bằng các thành phần liên thông mạnh của đồ thị khả năng đạt tới: chuyển tiếp sống ở mức $l_2$ nếu một thành phần chứa đánh dấu mà tại đó chuyển tiếp có thể được bắn và vẫn ở trong thành phần;
+\item cờ $l_3$ được đặt tương tự bằng các thành phần liên thông mạnh: chuyển tiếp được đặt sống ở mức $l_3$ khi và chỉ khi nó sống ở mức $l_2$ và có thể được bắn trong một thành phần không có chuyển tiếp đi ra, gọi là thành phần cuối.
+\end{enumerate}
+
+\subsection{Bất biến}
+Mục tiêu thực sự của mô hình hóa thường là lập luận về những bài toán nhất định. Bất biến (invariant) là một cách thuận tiện để lập luận về mạng Petri độc lập với đánh dấu thực tế của nó.
+
+Lập luận bằng bất biến là một phần của phân tích cấu trúc mạng Petri. Nhìn chung, người ta phân biệt bất biến vị trí (P-invariant) và bất biến chuyển tiếp (T-invariant). Trong khi loại trước hữu ích để phát hiện khóa chết [214], T-invariant phục vụ mô hình hóa các chương trình lôgic [215] và mệnh đề Horn [187], như đã nêu trong [199].
+
+Mục tiêu của việc tạo bất biến là thiết lập các chứng minh dựa trên chúng. Nhìn chung, chứng minh dựa trên bất biến có một phần thuật toán gồm việc tính các bất biến, và một phần thiên về phân tích hơn do con người viết để mô tả lập luận cần thiết cho việc xây dựng chứng minh. Có rất nhiều chứng minh có thể thực hiện bằng bất biến, từ các chứng minh dựa trên trạng thái như loại trừ lẫn nhau đến các thuộc tính tính sống. Những chứng minh dựa trên bất biến là lựa chọn thay thế đáng chú ý cho chứng minh dựa trên các thuộc tính lôgic thời gian. Tuy thường kém mạnh hơn, chúng vẫn có thể cung cấp chứng minh tham số dễ dàng hơn. Tuy nhiên, điều này đòi hỏi đóng góp của con người, trong khi chứng minh lôgic thời gian có thể được tự động hóa.
+
+% Source: printed 190 / PDF 204
+\sourcefigure{7.9}{204}{Thuật toán phát hiện mức tính sống.}
+% Source code 7.9, preserving the printed `from` identifier and l3 assignment.
+% function liveness(marking)
+%   local markings = reachable(from)
+%   local components = tarjan(markings)
+%   for _, transition in ipairs(transitions) do
+%     transition.liveness = {
+%       l0 = true,
+%       l1 = false,
+%       l2 = false,
+%       l3 = false,
+%       l4 = true,
+%     }
+%     for marking in pairs(markings) do
+%       if marking[transition] then
+%         transition.liveness.l0 = false
+%         transition.liveness.l1 = true
+%       else
+%         transition.liveness.l4 = false
+%       end
+%     end
+%     for _, component in ipairs(components) do
+%       for marking in pairs(component) do
+%         if marking[transition]
+%         and marking[transition].tarjan.component == component then
+%           transition.liveness.l2 = true
+%         end
+%       end
+%       transition.liveness.l3 = component.is_final and transition.liveness.l2
+%     end
+%   end
+%   return transitions
+% end
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-3).} Trong Hình 7.9, cờ \texttt{l3} bị gán lại ở mỗi thành phần liên thông mạnh, trong khi \texttt{l2} được tích lũy qua nhiều thành phần. Vì vậy, kết quả có thể phụ thuộc vào thứ tự duyệt; một thành phần cuối có thể nhận giá trị \texttt{l3=true} nhờ chuyển tiếp chỉ bắn được trong thành phần trước đó. Mã đã in chưa kiểm tra điều kiện về tính sống trong chính thành phần cuối như phần mô tả yêu cầu. Bản dịch giữ nguyên thuật toán của tác giả.
+\end{quote}
+
+
+\subsection{Định nghĩa hình thức của bất biến}
+Mỗi trạng thái $m\in SS(T,m_0)$ có thể được gắn với một giá trị quan sát. Quan sát là một phần tóm lược của trạng thái, chỉ chứa thông tin liên quan đến những thuộc tính được kiểm chứng. Cho một tập hợp quan sát $O$, các quan sát được thu bằng những hàm $\omega:M\to O$ trả về một quan sát cho bất kỳ đánh dấu nào có thể có trong $M$; $\omega$ là một bất biến khi và chỉ khi trả về cùng một quan sát cho mọi trạng thái đạt tới được của hệ thống. Chẳng hạn, trong Hình~7.1, bàn đạp hoặc ở trên hoặc ở dưới. Trong đánh dấu, điều này nghĩa là luôn có một thẻ ở một vị trí và không có thẻ ở vị trí còn lại. Vì vậy, $\omega:m\mapsto(m(\texttt{up})+m(\texttt{down}))$ là một hàm luôn trả về giá trị 1 cho mọi trạng thái đạt tới được, do đó là một bất biến. Hình thức hơn, $\omega$ là bất biến khi và chỉ khi $\exists o\in O,\forall m\in SS(R,m_0),\omega(m)=o$.
+
+Định nghĩa bất biến ở trên rất tổng quát. Nó có thể được sử dụng nếu người dùng tự xác định bất biến, nhưng không giúp suy ra bất biến từ cấu trúc mạng Petri. Thay vào đó, sẽ đáng quan tâm nếu chỉ xét những hàm là tổ hợp tuyến tính của các quan sát cơ bản trên vị trí.
+
+Thông thường, quan sát cơ bản là hàm trả về đánh dấu của vị trí cho trước với bất kỳ vị trí và đánh dấu nào. Vì vậy, quan sát cơ bản được xác định là hàm $o_e:P\to(M\to\mathbb{N})$ sao cho $\forall m\in M,\forall p\in P,\ o_e(p)(m)=m(p)$. Các quan sát cơ bản này có thể được thể hiện hóa bằng bất kỳ vị trí nào của mạng Petri; chẳng hạn $o_e(\texttt{up})$ là một quan sát. Tập hợp mọi quan sát cơ bản được bao gồm trong các quan sát. Vì sự thuận tiện, ta xem viết tên vị trí là tương đương với quan sát cơ bản của vị trí đó. Do đó, ta cũng dùng \texttt{up} để chỉ hàm trả về đánh dấu của vị trí này: $m\mapsto m(\texttt{up})$.
+
+Các quan sát có thể được kết hợp thành tổ hợp tuyến tính của quan sát. Với các quan sát bất kỳ $o_1,\ldots,o_n\in O$ và các hằng số $c_1,\ldots,c_n\in\mathbb{N}$, có thể xây dựng một quan sát tính $c_1*o_1+\ldots+c_n*o_n$, chẳng hạn $1*o_e(\texttt{up})+1*o_e(\texttt{down})$, không hiển thị những vị trí có hệ số 0. Vì vậy, tập hợp quan sát được xác định bởi các tổ hợp tuyến tính của quan sát cơ bản:
+% Source: printed 191 / PDF 205
+\[
+O=\left\{\sum_{p\in P}(c_p*o_e(p))\ \middle|\ \forall p\in P,c_p\in\mathbb{N}\right\}.
+\]
+
+Theo định nghĩa này, nếu $\omega_1$ và $\omega_2$ là bất biến thì $\omega_1+\omega_2$ cũng là bất biến. Phép cộng hai bất biến $\omega_1+\omega_2:M\to O$ được xác định là $\forall m\in M,\ (\omega_1+\omega_2)(m)=\omega_1(m)+\omega_2(m)$. Ngoài ra, nếu $\omega$ là bất biến thì $\forall k\in\mathbb{N},\ k*\omega$ là bất biến. Phép nhân bất biến với một hằng số được xác định là $\forall m\in M,\ (k*\omega)(m)=k*\omega(m)$. Để tính bất biến, cần tìm tổ hợp tuyến tính phù hợp của các quan sát cơ bản. Có thể sử dụng thuật toán Farkas nổi tiếng để tìm bất biến, như được giải thích ở tiểu mục tiếp theo.
+
+\subsection{Tính P-invariant}
+Có thể tìm các P-invariant bằng thuật toán Farkas [97]. Thuật toán Farkas là một quá trình lặp thao tác trên cấu trúc tương ứng với ma trận liên thuộc của mạng Petri. Vì giới hạn không gian, chúng tôi không cung cấp hiện thực thuật toán mà mô tả chức năng cơ bản bằng văn bản.
+
+Nguyên lý của nó là biểu diễn và thao tác trên một ma trận trong đó cột biểu diễn chuyển tiếp mạng Petri, còn hàng biểu diễn đánh dấu vị trí hoặc tổ hợp tuyến tính của đánh dấu vị trí. Thuật toán hoạt động lặp, thực hiện những hành động sau:
+\begin{enumerate}
+\item bổ sung các hàng mới vào ma trận bằng cách xây dựng tổ hợp tuyến tính của những hàng hiện có, với mục tiêu triệt tiêu các cột, tức tạo các cột chỉ chứa số không;
+\item loại bỏ những hàng đã được sử dụng trong phép cộng;
+\item loại bỏ các cột đã triệt tiêu;
+\item loại bỏ mọi hàng đã được biểu đạt thông qua các hàng khác.
+\end{enumerate}
+Quá trình kết thúc khi mọi cột được triệt tiêu. Các nghiệm là tổ hợp tuyến tính của các đánh dấu vị trí có quan sát không đổi, do đó là bất biến.
+
+\paragraph{Ví dụ}
+Dưới đây là ví dụ tính bất biến theo thuật toán đã cho, trên một mạng Petri rất đơn giản trong Hình~7.10.
+\sourcefigure{7.10}{205}{Ví dụ mạng Petri được sử dụng để tính bất biến.}
+
+Các cấu trúc $F_i$ liên tiếp cho thấy tiến triển của thuật toán Farkas. Mỗi $F_i$ là kết quả của một bước tính từ cấu trúc $F_{i-1}$. Cấu trúc đầu tiên $F_0$ là ma trận liên thuộc của mạng Petri, biểu diễn với mỗi vị trí và chuyển tiếp hiệu giữa trọng số trên các cung hậu nối vị trí với chuyển tiếp và trọng số trên các cung tiền cũng nối chúng.
+\[
+F_0=
+\begin{array}{r@{\ }c}
+&\begin{array}{rrr}t_1&t_2&t_3\end{array}\\
+\begin{array}{r}a\\b\\c\\d\end{array}&
+\left[\begin{array}{rrr}-1&1&0\\1&-1&0\\1&-1&1\\-1&1&-1\end{array}\right]
+\end{array}.
+\]
+
+% Source: printed 192 / PDF 206
+Lần lặp đầu tiên là loại bỏ $t_1$. Để làm điều đó, cần tìm tổ hợp tuyến tính các hàng sao cho cột $t_1$ luôn bằng không. Rõ ràng, $a+b$, $c+d$, $a+c$ và $b+d$ đều là những tổ hợp tuyến tính đúng. Không cần biểu diễn các hệ số lớn hơn, như $2*a+2*b$, nên chỉ giữ những tổ hợp tối thiểu. Vì mọi hàng $a,b,c,d$ đã được sử dụng để tính các hàng mới, các hàng $a,b,c,d$ được loại khỏi ma trận trong $F'_1$. Mọi cột chỉ chứa số không cũng được loại trong $F''_1$, vì không hữu ích cho các lần lặp còn lại.
+\[
+\begin{aligned}
+F_1&=\begin{array}{r@{\ }c}
+&\begin{array}{rrr}t_1&t_2&t_3\end{array}\\
+\begin{array}{r}a\\b\\c\\d\\a+b\\c+d\\a+c\\b+d\end{array}&
+\left[\begin{array}{rrr}-1&1&0\\1&-1&0\\1&-1&1\\-1&1&-1\\0&0&0\\0&0&0\\0&0&1\\0&0&-1\end{array}\right]
+\end{array},\\[1ex]
+F'_1&=\begin{array}{r@{\ }c}
+&\begin{array}{rrr}t_1&t_2&t_3\end{array}\\
+\begin{array}{r}a+b\\c+d\\a+c\\b+d\end{array}&
+\left[\begin{array}{rrr}0&0&0\\0&0&0\\0&0&1\\0&0&-1\end{array}\right]
+\end{array},\qquad
+F''_1=\begin{array}{r@{\ }c}
+&t_3\\
+\begin{array}{r}a+b\\c+d\\a+c\\b+d\end{array}&
+\left[\begin{array}{r}0\\0\\1\\-1\end{array}\right]
+\end{array}.
+\end{aligned}
+\]
+
+Vì chỉ còn một chuyển tiếp $t_3$, lần lặp thứ hai là loại nó. Chỉ một tổ hợp tuyến tính có thể làm điều đó: $a+b+c+d$, thu được bằng hai cách, cộng các hàng $a+b$ và $c+d$, hoặc cộng các hàng $a+c$ và $b+d$. Nhưng thuật toán Farkas yêu cầu chỉ sử dụng những hàng không bằng không, nên $a+b$ và $c+d$ không được xét. Như trước, các hàng đã được sử dụng để tính hàng mới, $a+c$ và $b+d$, được loại trong $F_2$'', và cột đã triệt tiêu cũng được loại trong $F''_2$.
+\[
+\begin{aligned}
+F_2&=\begin{array}{r@{\ }c}&t_3\\
+\begin{array}{r}a+b\\c+d\\a+c\\b+d\\a+b+c+d\end{array}&
+\left[\begin{array}{r}0\\0\\1\\-1\\0\end{array}\right]\end{array},\\[1ex]
+F'_2&=\begin{array}{r@{\ }c}&t_3\\
+\begin{array}{r}a+b\\c+d\\a+b+c+d\end{array}&
+\left[\begin{array}{r}0\\0\\0\end{array}\right]\end{array},\qquad
+F''_2=\begin{array}{r@{\ }c}
+\begin{array}{r}a+b\\c+d\end{array}&\left[\begin{array}{c}\vphantom{0}\\\vphantom{0}\end{array}\right]
+\end{array}.
+\end{aligned}
+\]
+
+Sau lần lặp này, không còn cột nào để loại. Các hàng còn lại biểu diễn bất biến của mạng Petri: $a+b$ và $c+d$, được đặt tên để sử dụng sau:
+\[
+\begin{aligned}i_1&=a+b,\\i_2&=c+d.\end{aligned}
+\]
+
+Như đã thảo luận, bất biến là những công thức không thay đổi khi áp dụng lên đánh dấu đạt tới được. Điều này nghĩa là với mọi chuỗi $s$ và các đánh dấu $m,m'$ sao cho $m\xrightarrow{s}m'$, bất biến $i$ áp dụng ở cả hai đầu chuỗi, thậm chí ở từng trạng thái trong chuỗi: $i*m=i*m'$. Trong ví dụ, $i$ là $i_1$ hoặc $i_2$, nói rằng quan sát của $a+b$ và $c+d$ không đổi, độc lập với những chuyển tiếp được bắn.
+
+\subsection{Sử dụng bất biến để chứng minh thuộc tính}
+Có thể chứng minh các thuộc tính mô hình bằng cách khám phá đồ thị khả năng đạt tới. Tuy nhiên, trong phần lớn ứng dụng thực tế, phương pháp này khó sử dụng do vấn đề bùng nổ không gian trạng thái. Tiểu mục trước xác định các bất biến mạng Petri có thể tính mà không cần tạo toàn bộ đồ thị khả năng đạt tới. Thực tế, có thể tính bất biến mà thậm chí không phải chỉ định đánh dấu ban đầu. Tiểu mục này phác họa sức mạnh của bất biến bằng cách minh họa sử dụng chúng để chứng minh thuộc tính mô hình. Cách thông thường để thực hiện những chứng minh này là thiết lập bất biến rồi phân tích từng trường hợp trạng thái có thể có của mạng Petri. Khi lập luận, ta sử dụng sự kiện rằng các bất biến được tuân thủ trong toàn bộ đồ thị khả năng đạt tới và cả ở đánh dấu ban đầu.
+
+% Source: printed 193 / PDF 207
+Thông thường có thể biểu đạt chứng minh như phân tích trường hợp của đồ thị khả năng đạt tới mạng Petri. Quá trình chứng minh khi đó dựa trên các bước sau:
+\begin{enumerate}
+\item tính tập hợp bất biến;
+\item áp dụng bất biến lên đánh dấu ban đầu để thu được các quan sát tương ứng;
+\item xác định lập luận số học dựa trên các quan sát, bất biến và phân tích trường hợp; các trường hợp thường là những đánh dấu của không gian trạng thái tuân thủ các bất biến.
+\end{enumerate}
+
+Sử dụng các bất biến từ Ví dụ~7.3.1, có thể chứng minh nguyên lý loại trừ lẫn nhau của $a$ và $b$ trong mạng Petri ở trên. Các bước lập luận cho chứng minh này như sau:
+\begin{enumerate}
+\item Áp dụng thuật toán Farkas trên ma trận liên thuộc cho các bất biến mạng Petri: $i_1=a+b$ và $i_2=c+d$.
+\item Tiếp theo, tính các giá trị bất biến bằng đánh dấu ban đầu $m_0=\{a=1,b=0,c=0,d=1\}$. Từ đó suy ra giá trị $i_1(m_0)=m_0(a)+m_0(b)=1$.
+\item Vì $i_1$ là bất biến, quan sát này phải đúng trên mọi đánh dấu trong đồ thị khả năng đạt tới, tức $\forall m\in M,\ m(a)+m(b)=m_0(a)+m_0(b)=1$.
+\item Biết rằng đánh dấu vị trí không thể âm, $\forall p\in P,\forall m\in M,\ m(p)\geqslant0$, ta có thể suy ra $m(a)\in\{0,1\}$ và $m(b)\in\{0,1\}$.
+\item Cuối cùng, dễ thấy loại trừ lẫn nhau phải đúng, vì nếu $m(a)=1$ và $m(a)+m(b)=1$ thì $m(b)$ phải bằng 0. Tương tự, $m(a)=0\land m(a)+m(b)=1\Rightarrow m(b)=0$.
+\end{enumerate}
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-4).} Ở bước 3, tính bất biến chỉ bảo đảm đẳng thức trên các đánh dấu đạt tới được $m\in SS(T,m_0)$, không phải mọi $m\in M$. Ở câu cuối bước 5, từ $m(a)=0$ và $m(a)+m(b)=1$ phải suy ra $m(b)=1$, thay vì 0 như bản gốc. Hai trường hợp $(m(a),m(b))=(1,0)$ và $(0,1)$ vẫn chứng minh loại trừ lẫn nhau. Bản dịch giữ nguyên các công thức đã in.
+\end{quote}
+
+
+Tuy chứng minh đơn giản này dễ thực hiện bằng tay, có thể sử dụng cùng nguyên lý để tạo những chứng minh cấu trúc phức tạp hơn, bán thủ công. Trong thực tế, những chứng minh như vậy được hỗ trợ bởi các bộ kiểm tra chứng minh mạnh như Coq [30], để kiểm chứng rằng chứng minh viết tay là đúng. Mô tả chi tiết kỹ thuật này vượt quá phạm vi cuốn sách, nhưng chúng tôi khuyến khích bạn đọc tham khảo các công bố chuyên về chủ đề này.
+
+\section{Các kỹ thuật kiểm tra mô hình}
+Bất biến thường có thể được tính với ít thời gian và bộ nhớ hơn toàn bộ đồ thị khả năng đạt tới mạng Petri. Tuy nhiên, trong một số trường hợp, như tính các thuộc tính nhân quả, chẳng hạn ``nếu sự kiện $A$ xảy ra thì sự kiện $B$ phải xảy ra sau đó'', vẫn cần sinh không gian trạng thái. Tuy phép tính khá trực tiếp, xem thuật toán trong Hình~7.7, kỹ thuật này khó mở rộng vì nhiều mô hình có số trạng thái tăng theo hàm mũ so với kích thước mô hình. Không hiếm khi đồ thị khả năng đạt tới của mô hình có nhiều nút hơn số nguyên tử trong vũ trụ, $10^{82}$.
+
+Kích thước đồ thị khả năng đạt tới mạng Petri thường phụ thuộc vào hai yếu tố: số vị trí và chuyển tiếp trong mạng, và số thẻ ở mỗi vị trí. Chẳng hạn, đồ thị khả năng đạt tới của ví dụ Hình~7.1 tăng theo số thẻ ở vị trí \texttt{fuel}. Nó cũng có thể tăng nếu bổ sung vị trí, chẳng hạn để biểu diễn vài vị trí của bàn đạp như \texttt{up}, \texttt{middle}, \texttt{down}.
+
+Để vẫn có thể tính không gian trạng thái, nghiên cứu đã phát triển nhiều cách tiếp cận nhằm vượt qua sự gia tăng kích thước không gian trạng thái. Dưới đây, chúng tôi phác họa ngắn gọn vài ví dụ.
+\begin{itemize}
+\item \emph{Rút gọn đối xứng} (symmetry reduction) [74] cho phép kiểm tra mô hình trên một hệ thống nhỏ hơn bằng cách phân tích một thành phần đại diện thay vì nhiều thành phần giống nhau. Chẳng hạn, thay vì phân tích hành vi của nhiều cơ sở dữ liệu được định danh bằng tên, rút gọn đối xứng tập trung phân tích hành vi của một cơ sở dữ liệu đã được ẩn tên.
+\item \emph{Rút gọn thứ tự bộ phận} (partial order reduction) [125, 163, 278] dựa trên tính giao hoán của các hành động đồng thời. Khi kiểm tra mô hình hệ thống bất đồng bộ, việc xen kẽ hành động đòi hỏi một thứ tự tùy ý giữa các sự kiện. Để xử lý mọi trường hợp có thể có, phải xét mọi hoán vị thứ tự, dẫn đến bùng nổ theo hàm mũ số vết và trạng thái. Rút gọn thứ tự bộ phận cho phép chỉ kiểm tra một tập con hành vi bằng cách loại các lần thực thi chỉ khác nhau ở thứ tự những chuyển tiếp độc lập. Chỉ có thể áp dụng kỹ thuật này khi thuộc tính muốn kiểm tra không phụ thuộc vào các lần thực thi đã loại.
+\item \emph{Ô-tô-mát Büchi} [296]: Một số công thức lôgic thời gian, cụ thể là lôgic thời gian tuyến tính, được kiểm tra đối với tập hợp các lần thực thi vô hạn của mô hình. Một cách kiểm chứng là biến đổi công thức thành ô-tô-mát chấp nhận những lần thực thi hợp lệ. Những ô-tô-mát đó gọi là ô-tô-mát Büchi. Để
+% Source: printed 194 / PDF 208
+kiểm chứng, mô hình và công thức đều được mã hóa thành ô-tô-mát Büchi chấp nhận những ngôn ngữ biểu diễn các lần thực thi mô hình và những lần thực thi hợp lệ đối với thuộc tính cần kiểm chứng. Khi đó, kiểm tra mô hình là kiểm tra ngôn ngữ các lần thực thi được bao gồm trong ngôn ngữ của thuộc tính.
+\item \emph{Kiểm tra mô hình bị chặn} (Bounded Model Checking, BMC) [33]: Cách tiếp cận này là một dạng ``chế độ suy giảm'' của kiểm tra mô hình chuẩn, vì công thức chỉ được kiểm tra cho những lần thực thi có độ dài tối đa $k$, với $k$ là độ dài chuỗi từ đánh dấu ban đầu. Nếu không phát hiện vấn đề, $k$ được tăng cho đến khi công thức không còn đúng hoặc $k$ đạt cận trên, gọi là \emph{ngưỡng đầy đủ của thiết kế}. Lưu ý không có bảo đảm cho các lần thực thi dài hơn cận trên này. Vì những bài toán dạng này có thể được quy về bài toán tính thỏa mãn mệnh đề, chúng có thể sử dụng các bộ giải SAT hoặc SMT rất hiệu quả.
+\item \emph{Kiểm tra mô hình phân tán} (Distributed Model Checking) [121, 22, 21]: Một vấn đề chính khi kiểm tra mô hình là cạn bộ nhớ. Ý tưởng của kiểm tra mô hình phân tán là phân phối các trạng thái trên nhiều máy tính để tăng tổng bộ nhớ sẵn có. Kỹ thuật này có một nhược điểm: truyền dữ liệu giữa các máy tính là nút thắt. Nhiều thuật toán đã được thiết kế để phân phối trạng thái ``tốt'' sao cho phần lớn chuyển tiếp là cục bộ trên cùng một máy tính. Tuy nhiên, chúng đã đạt giới hạn do sự phát triển của CPU hiện đại, rất hiệu quả. Trong thực tế, kiểm tra mô hình phân tán hiệu quả nhất khi thời gian cần để tính trạng thái kế tiếp dài hơn nhiều thời gian cần để truyền trạng thái.
+\item \emph{Kiểm tra mô hình song song} (Parallel Model Checking) [257, 20]: Với các kiến trúc đa lõi, xu hướng hiện nay là thực hiện kiểm tra mô hình song song thay vì phân tán. Trong cách tiếp cận này, mọi trạng thái được biểu diễn và tính trên cùng một máy tính, nhưng nhiều quá trình thực thi được sử dụng để tăng tốc tính toán. Cách tiếp cận vẫn khó hơn khi mức độ song song tăng, do có thể tranh chấp bộ nhớ trong nơi lưu trữ các trạng thái đã tính. Cùng cách tiếp cận này được sử dụng để kiểm tra mô hình song song trên GPU.
+\item \emph{Kiểm tra mô hình ký hiệu} (Symbolic Model Checking, SMC) [58, 59, 77]: Thay vì biểu diễn tường minh trạng thái và quan hệ chuyển tiếp, cách tiếp cận này chỉ biểu diễn và thao tác các tập trạng thái hoặc tập chuyển tiếp bằng Sơ đồ quyết định (Decision Diagram) [55]. Biểu diễn này đồng thời cho phép dùng chung một số phần giống nhau của trạng thái và giảm tính toán khi áp dụng quan hệ chuyển tiếp, trong những trường hợp tốt nhất có độ phức tạp lôgarit so với kích thước mô hình.
+\end{itemize}
+
+Một số kỹ thuật kết hợp nhiều cách tiếp cận đã được phát triển [92]. Chẳng hạn, rút gọn đối xứng và thứ tự bộ phận cũng thường kết hợp với kỹ thuật rút gọn tĩnh, giảm kích thước đặc tả đối với thuộc tính cần kiểm tra, hoặc với nén trạng thái như trong [96], nơi một số trạng thái được biểu diễn bằng hiệu với trạng thái tiền nhiệm. Tương tự, kiểm tra mô hình song song dễ kết hợp với những cách tiếp cận khác đã thảo luận. Một ngoại lệ là kiểm tra mô hình ký hiệu, vì Sơ đồ quyết định cần một bảng duy nhất và các bộ nhớ đệm tính toán phải được khóa, do đó trở thành nút thắt.
+
+\section{Thao tác dữ liệu trong mạng Petri}
+Các mục trước trình bày việc sử dụng những mô hình mạng Petri đơn giản. Tuy loại mạng Petri này đủ để biểu diễn hệ thống đơn giản, chúng thiếu một số tính năng hữu ích khi xử lý các hệ thống thực-ảo phức tạp, như tính mô-đun, ràng buộc thời gian và thao tác dữ liệu. Những mô hình đơn giản như vậy mã hóa dữ liệu thành số thẻ. Chẳng hạn, mức nhiên liệu được biểu diễn bằng một lượng thẻ nhất định trong vị trí \texttt{fuel}.
+
+Các mạng Petri cơ bản đã giới thiệu thường được gọi là mạng vị trí/chuyển tiếp (Place/Transition, P/T). Như đã thấy, chúng phù hợp để mô hình hóa điều khiển quá trình, đồng bộ hóa và luồng tài nguyên trong hệ thống. Tuy nhiên, trong những tình huống phức tạp hơn, thông tin sử dụng có thể không dễ biểu diễn bằng các thẻ đen đơn giản. Dễ hình dung những hệ thống thực-ảo đòi hỏi truyền thông tin phức tạp hơn. Một mạng P/T mô hình hóa bộ điều khiển máy bay không người lái rất đơn giản có thể có các chuyển tiếp \texttt{up}, \texttt{down}, \texttt{turn left}, \texttt{turn right}, \texttt{move forward} và \texttt{move backward}, tất cả đều sửa đổi trạng thái. Tuy nhiên, nếu bổ sung khả năng thực hiện nhiều hành động cùng lúc, phải bổ sung những chuyển tiếp như \texttt{move up \& forwards}. Số chuyển tiếp trong hệ thống tương đối đơn giản này sẽ tăng theo hàm mũ.
+
+Sẽ hiệu quả hơn nếu biểu diễn trực tiếp thông tin như vậy trong thẻ. Để làm điều đó, cần một thẻ cho chuyển động thẳng đứng có thể biểu đạt đi lên, đi xuống hoặc giữ nguyên; một thẻ khác để đổi hướng, trái, phải hoặc giữ nguyên; và một thẻ thứ ba cho chuyển động tiến/lùi. Khi đó có thể gửi ba thẻ này vào một chuyển tiếp thực hiện hành động tùy theo giá trị thẻ.
+
+% Source: printed 195 / PDF 209
+Tình huống đơn giản này cho thấy cần \emph{mạng Petri mức cao} (High-level Petri Net, HLPN). HLPN được phát triển nhằm gắn giá trị vào thẻ như đã mô tả. Các chuyển tiếp và cung được mở rộng bằng các điều kiện canh (guard), đánh giá giá trị thẻ và xác nhận một cấu hình nhất định.
+
+\subsection{Bộ điều khiển máy bay không người lái}
+Bộ điều khiển máy bay không người lái bằng mạng Petri mức cao mới được trình bày trong Hình~7.11. Thoạt nhìn có thể thấy ba nhóm riêng cho chuyển động thẳng đứng, chuyển động ngang và hướng. Mỗi nhóm chứa một vị trí có một thẻ ban đầu mang giá trị \texttt{stay}. Hành vi các nhóm theo cùng cơ chế. Từ vị trí ban đầu, có thể sử dụng chuyển tiếp để tạo thẻ có những giá trị khác nhau. Tiền điều kiện của chuyển tiếp có điều kiện canh. Điều này nghĩa là nếu giá trị thẻ là \texttt{stay}, chỉ có thể bắn những chuyển tiếp có điều kiện canh đòi hỏi thẻ \texttt{stay}, có hai chuyển tiếp như vậy trong mỗi nhóm. Khi bắn chuyển tiếp, thẻ \texttt{stay} bị tiêu thụ và một thẻ mới được tạo. Chẳng hạn, từ vị trí \texttt{altitude}, có thể bắn chuyển tiếp \texttt{move up} tạo thẻ \texttt{up}, hoặc \texttt{move down} tạo thẻ \texttt{down}. Hành vi này tương ứng với đẩy cần điều khiển trên bộ điều khiển vật lý của máy bay về một trong hai hướng. Có hai chuyển tiếp nữa trong nhóm này, lần lượt được canh bởi \texttt{up} và \texttt{down}. Bắn các chuyển tiếp này tiêu thụ thẻ tương ứng và tạo thẻ \texttt{stay}. Nói cách khác, có thể dùng chúng để ``đặt lại'' thẻ, tức dừng chuyển động theo hướng đó. Trên bộ điều khiển thực, hành vi này tương ứng với nhả cần điều khiển độ cao về vị trí trung lập. Các nhóm biểu đạt chuyển động ngang và hướng có hành vi tương ứng.
+
+Bên cạnh ba nhóm này là chuyển tiếp trung tâm \texttt{move}, chịu trách nhiệm cho dịch chuyển thực sự của máy bay. \texttt{move} tiêu thụ thẻ từ \texttt{vertical}, \texttt{horizontal} và \texttt{orientation}. Điều thú vị là các cung cho những thẻ này không được canh bằng giá trị thẻ cụ thể mà bằng các biến $a,d,m$. Những biến này được gán khi \texttt{move} được bắn và nhận giá trị của các thẻ. Chuyển tiếp còn sử dụng một thẻ từ vị trí \texttt{drone} và một thẻ từ vị trí \texttt{battery}. Lưu ý \texttt{drone} và \texttt{battery} có kiểu thẻ khác nhau, tức có thể chứa các giá trị khác nhau: trong khi \texttt{battery} chứa nhiều thẻ đen cổ điển, vị trí \texttt{drone} chỉ chứa một thẻ bản ghi dữ liệu có giá trị lưu thông tin về \emph{vị trí} hiện tại của máy bay, dưới dạng tọa độ $\langle x,y,z\rangle$, và \emph{góc}, được lưu là góc lệch so với hướng Bắc theo chiều ngược kim đồng hồ\footnote{Tức giá trị 90 biểu diễn hướng Tây, 180 hướng Nam, còn 270 và $-90$ biểu diễn hướng Đông.}.
+
+Bắn \texttt{move} sẽ tiêu thụ ba thẻ chỉ báo chuyển động, một thẻ pin và thẻ máy bay được gán cho biến $s$. Sau đó, nó tạo những thẻ tương đương với các thẻ đã tiêu thụ ở từng vị trí chuyển động, cộng thêm một thẻ mới trong vị trí \texttt{drone}, có giá trị được cập nhật phù hợp với trạng thái mới của máy bay\footnote{Trong hình, việc cập nhật đơn giản được biểu đạt bằng $s+f(a,d,m)$, trong đó giả định có một hàm $f$ cung cấp thay đổi tọa độ $\langle x,y,z\rangle$ và góc hướng tùy theo các thẻ nhóm.}. Tạo những thẻ chuyển động tương đương với thẻ đã tiêu thụ có tác dụng khiến hành vi của máy bay tiếp diễn liên tục cho đến khi được chủ động thay đổi. Trong ví dụ, \texttt{move} tiêu thụ một thẻ \texttt{up} sẽ tạo một thẻ \texttt{up} khác ở vị trí \texttt{altitude}. Vì vậy, khi bắn \texttt{move} lần nữa, máy bay tiếp tục đi lên trừ khi thẻ đã được sửa đổi bằng các chuyển tiếp trong nhóm \texttt{altitude}.
+
+Lưu ý vì không có cách tạo thẻ trong vị trí \texttt{battery}, đây là tài nguyên giới hạn số lần có thể kích hoạt chuyển tiếp trung tâm, và do đó giới hạn chuyển động máy bay.
+
+Bộ điều khiển còn tích hợp một cơ chế an toàn. Cơ chế này được biểu diễn như một điều kiện canh trên chuyển tiếp trung tâm, nói rằng không thể bắn chuyển tiếp nếu tọa độ $z$ của máy bay thấp hơn 50 centimét và thẻ độ cao chỉ định chuyển động xuống, tức có giá trị \texttt{down}.
+
+\subsection{Hình thức hóa mạng Petri mức cao}
+Như đã thấy trong ví dụ, HLPN sử dụng nhiều khái niệm bổ sung như biến và biểu thức. Trong tiểu mục này, chúng tôi tập trung điều chỉnh hệ hình thức mạng Petri hiện có để tích hợp các khái niệm đó.
+
+\paragraph{Biến và biểu thức}
+Để biểu đạt hình thức những khái niệm đã dùng trong ví dụ, cần xác định việc khớp và lọc thẻ. Vì vậy, chúng tôi đưa vào khái niệm biến và biểu thức: xác định tập biến $V$, chẳng hạn $s,a,d,m$, và tập biểu thức trên dữ liệu và biến, ký hiệu $E$.
+% Source: printed 196 / PDF 210
+Vì biến là biểu thức hoặc một phần biểu thức, $V$ là tập con của $E$: $V\subseteq E$. Ta còn xác định hàm $variables:E\to\mathcal{P}(V)$ trả về tập biến được sử dụng bởi một biểu thức.
+
+Nếu biểu thức không chứa biến nào, ta gọi nó là \emph{biểu thức đóng} (ground expression). Tập biểu thức đóng $E^{\emptyset}$ được xác định là $E^{\emptyset}=\{e\mid e\in E\land variables(e)=\emptyset\}$. Để biểu đạt các giá trị cụ thể như \texttt{stay} hoặc \texttt{up}, tập này phải khác rỗng.
+
+\paragraph{Ràng buộc biến}
+Với các công cụ này, giờ có thể biểu đạt ràng buộc biến (binding), chẳng hạn ràng buộc thẻ độ cao với biến $a$. Một ràng buộc $\sigma\in\Sigma$ là hàm bộ phận từ biến đến biểu thức đóng: $\sigma:V\to E^{\emptyset}\cup\{\bot\}$. Xin nhắc rằng phép thế được giới thiệu ở Mục~7.2.4 được ký hiệu $\sigma(e)$. Điều này là áp dụng ràng buộc $\sigma$ lên biểu thức $e\in E$ và thay biến bằng giá trị của chúng trong ràng buộc. Lưu ý phép thế không phải thay mọi biến trong biểu thức. Những biến không xuất hiện trong ràng buộc vẫn ở trong biểu thức. Hình thức hơn:
+\[
+\begin{aligned}
+\forall e\in E,\exists e'\in E^{\emptyset},\quad &e'=\sigma(e)\ \land\\
+variables(e')&=variables(e)\setminus\{v\mid v\in V\land\sigma(v)\neq\bot\}.
+\end{aligned}
+\]
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-5).} Công thức phép thế trong bản gốc yêu cầu $e'\in E^{\emptyset}$, dù đoạn văn cho phép giữ lại biến chưa được ràng buộc. Với phép thế bộ phận, nói chung chỉ có $e'=\sigma(e)\in E$; kết quả thuộc $E^{\emptyset}$ khi mọi biến trong $e$ đều đã được thay bằng biểu thức đóng. Chẳng hạn, nếu $e=x$ và $\sigma(x)=\bot$ thì $\sigma(e)=x$ vẫn chứa biến. Bản dịch giữ nguyên công thức của tác giả.
+\end{quote}
+
+
+\paragraph{Điều kiện canh chuyển tiếp}
+Trong mạng Petri mức cao, điều kiện canh được sử dụng để ngăn chuyển tiếp bắn với giá trị thẻ không mong muốn, qua đó ngăn hành vi không mong muốn. Trong bộ điều khiển máy bay, ta sử dụng điều kiện canh $\neg(a=down\land s.position.x<50)$ để ngăn máy bay đi xuống khi độ cao thấp hơn một ngưỡng nhất định. Về mặt hình thức, điều kiện canh chuyển tiếp là hàm đánh giá thành giá trị Boolean, $\mathbb{B}=\{\top,\bot\}$. Chỉ có thể bắn chuyển tiếp khi và chỉ khi điều kiện canh đánh giá thành $\top$.
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-6).} Phần mô tả trước đó dùng tọa độ $z$ làm độ cao, nhưng công thức và Hình 7.11 trong bản gốc kiểm tra \texttt{s.position.x}. Để điều kiện canh kiểm tra độ cao đúng theo phần mô tả, trường cần kiểm tra phải là \texttt{s.position.z}. Bản dịch giữ nguyên trường \texttt{x} đã in.
+\end{quote}
+
+
+\paragraph{Tích hợp các khái niệm}
+Sử dụng những định nghĩa trên, ta sửa đổi định nghĩa mạng Petri để đưa vào các khái niệm mới. Cụ thể, thay đổi như sau:
+\begin{enumerate}
+\item Bổ sung biểu thức đóng vào các thẻ trong đánh dấu như một cách chứa dữ liệu.
+\item Bổ sung các biểu thức có biến lên cung để lọc thẻ hoặc ràng buộc biến.
+\item Bổ sung các điều kiện canh Boolean trên biểu thức để cho phép lọc thẻ và vô hiệu hóa chuyển tiếp đối với một số giá trị thẻ.
+\end{enumerate}
+
+Về mặt hình thức, HLPN được mô tả bằng các bộ dựa trên cấu trúc mạng P/T đã xác định, nhưng có các trường bổ sung và sửa đổi:
+\[
+\langle V,E,variables,P,T,pre,post,guard,m_0\rangle,
+\]
+trong đó:
+\begin{itemize}
+\item $V,E,variables$ là các tập biến, biểu thức và hàm $variables$ như đã giới thiệu;
+\item $M=P\to\mathcal{M}(E)$ là tập hợp mọi đa tập có thể có trên các biểu thức. Nó thay thế định nghĩa đánh dấu trước đây $(P\to\mathbb{N})$;
+\item $guard:T\times\Sigma\to\mathbb{B}$ xác định những ràng buộc được cho phép cho từng chuyển tiếp;
+\item $m_0:P\to\mathcal{M}(E^{\emptyset})$ gắn mỗi vị trí với một đa tập biểu thức đóng như đánh dấu ban đầu.
+\end{itemize}
+
+Định nghĩa này tương tự định nghĩa P/T trước đây, ngoại trừ việc đưa vào biến và biểu thức cùng định nghĩa đánh dấu mới, trong đó đánh dấu gồm một đa tập biểu thức thay vì một số tự nhiên.
+
+Thực tế, có thể xem mạng P/T cổ điển như một loại đặc biệt của mạng Petri mức cao, trong đó tập biến rỗng $(V=\emptyset)$ và chỉ có một biểu thức $(E=\{\bullet\})$. Lưu ý vì điều kiện canh chuyển tiếp thường được xác định như biểu thức Boolean trên các phép so sánh biểu thức, hàm $guard$ của mạng P/T luôn trả về đúng: $\forall t\in T,\forall\sigma\in\Sigma,\ guard(t,\sigma)=\top$.
+
+Ngữ nghĩa chuyển tiếp $t$ được cho trong Phương trình~(7.13). Nó khác ngữ nghĩa chuyển tiếp trước ở Phương trình~(7.2) bằng cách bổ sung việc thế một ràng buộc trong các hàm $pre$ và $post$.
+\begin{equation}
+transition_t:\frac{\exists\sigma,\ \sigma(pre(t))\leqslant m,\ guard(t,\sigma)=\top}{m\xrightarrow{t}m-\sigma(pre(t))+\sigma(post(t))}\tag{7.13}
+\end{equation}
+
+Sử dụng biểu thức trong HLPN đòi hỏi mở rộng phép thế để bao gồm mọi biểu thức trong ảnh của hàm. Hình thức hơn, $\forall m\in M,\forall p\in P,\ \sigma(m)(p)=\sigma(m(p))$. Phép thế này cũng phải được mở rộng sang đa tập, vì đánh dấu HLPN được xác định như vậy. Áp dụng phép thế lên đa tập được thực hiện bằng cách áp dụng lên từng phần tử: $\forall es\in\mathcal{M}(E),\ \sigma(es)=[\sigma(e)\mid e\in es]$, trong đó $[\ ]$ ký hiệu đa tập theo điều kiện xác định.
+
+% Source: printed 197 / PDF 211
+\sourcefigure{7.11}{211}{Mạng Petri biểu diễn điều khiển máy bay không người lái, sử dụng dữ liệu như thẻ và giá trị cung. Bộ điều khiển gồm ba mô-đun biểu diễn trạng thái các cần điều khiển: một để đi lên hoặc xuống, một để quay trái hoặc phải, một để tiến hoặc lùi. Máy bay di chuyển khi chuyển tiếp \texttt{move} được bắn. Nó nắm bắt trạng thái bộ điều khiển để di chuyển máy bay. Các vị trí được gắn nhãn bằng đa tập thẻ, biểu diễn như $[token_1,\ldots,token_n]$. Mỗi thẻ là dữ liệu có cấu trúc, có thể là thẻ đơn giản $(\bullet)$, một nguyên tử $(stay)$ hoặc một bản ghi hay dữ liệu con với các trường có tên, như $(position=(x=0,y=0,z=0),angle=0)$. $position$ là vị trí tương đối so với vị trí ban đầu của máy bay, còn $angle$ là góc trên mặt phẳng ngang biểu thị độ lệch so với hướng Bắc. Cung được gắn nhãn bằng đa tập thẻ có thể sử dụng biến, chẳng hạn $x$. Các chuyển tiếp ngầm có điều kiện canh luôn trả về $\top$, ngoại trừ chuyển tiếp \texttt{move} có điều kiện canh tường minh $\neg(a=down\land s.position.x<50)$.}
+
+\subsection{Các mạng mức cao khác}
+Trong vài thập kỷ qua, các nhà nghiên cứu đã đưa ra nhiều mở rộng và sửa đổi của hệ hình thức mạng P/T để thuận tiện mô hình hóa các hệ thống phức tạp. Tiểu mục này giới thiệu bốn đại diện của những biến thể phức tạp như vậy của mạng Petri.
+
+% Source: printed 198 / PDF 212
+\paragraph{Mạng Petri màu (Coloured Petri Net, CPN) [158]}
+CPN là một mở rộng của mạng Petri, trong đó mỗi thẻ có thể mang một \emph{màu} nhất định. Mỗi màu là một tập giá trị, tương đương một định nghĩa kiểu. Tập màu phải được chỉ định rõ cho một CPN. Cung được sửa đổi để cho phép chỉ định màu sử dụng trong tiền điều kiện và hậu điều kiện.
+
+Ví dụ máy bay trong Hình~7.11 là một CPN có những màu sau:
+\begin{itemize}
+\item $CVertical=\{up,down,stay\}$;
+\item $CHorizontal=\{forward,backward,stay\}$;
+\item $CDirection=\{left,right,stay\}$;
+\item $CFuel=\{\bullet\}$.
+\end{itemize}
+Đáng tiếc, không phải mọi kiểu dữ liệu đều dễ biểu diễn thành màu; chẳng hạn trạng thái máy bay là một từ điển hoặc bộ. Màu tương ứng chứa mọi tổ hợp vị trí và góc có thể có. Vì tập này vô hạn, với $x,y,z$ và $angle$ là các số hữu tỷ, giải pháp này không sử dụng được trong thực tế và các miền phải được rời rạc hóa và giới hạn.
+
+\paragraph{Mạng đối xứng [71]}
+Mạng đối xứng (symmetric net), trước đây được gọi là ``mạng Petri dạng chuẩn'' (well-formed Petri net), là một loại đặc biệt của mạng Petri màu chỉ sử dụng kiểu dữ liệu đơn giản: các bộ hằng số trong những miền hữu hạn có thứ tự. Vì vậy, cấu trúc dữ liệu rất hạn chế và không dễ biểu diễn dữ liệu có kích thước thay đổi cũng như dữ liệu trong những miền vốn không bị chặn. Các thao tác dữ liệu cũng rất hạn chế: chỉ có thể lấy phần tử kế tiếp hoặc tiền nhiệm của một giá trị và kiểm tra hai giá trị bằng nhau. Không được phép thao tác trên bản thân các bộ.
+
+Dù có những hạn chế này, mạng đối xứng vẫn được sử dụng thành công trong các bài toán thực tế vì cung cấp một hệ hình thức thuận tiện cho phân tích cấu trúc và kiểm tra mô hình hiệu quả. Khả năng biểu đạt hạn chế của những kiểu này làm tăng số thuộc tính có thể kiểm chứng, đặc biệt với phân tích cấu trúc mô hình như tính cận hoặc bất biến.
+
+\paragraph{Mạng Petri đại số (Algebraic Petri Net, APN) [297]}
+Mạng Petri đại số là một dạng đặc biệt của mạng Petri màu cho phép sử dụng các kiểu dữ liệu đại số trừu tượng [87] làm màu. Những kiểu dữ liệu đại số như vậy gồm chữ ký và hệ tiên đề, do đó cho phép người dùng biểu diễn các kiểu dữ liệu tùy chỉnh. Ưu điểm của APN là mọi kiểu dữ liệu được sử dụng đều có một hệ tiên đề chính xác, nên có thể thực hiện chứng minh bằng chứng minh định lý mà không gặp hạn chế hữu hạn thông thường của kiểm tra mô hình. Bằng APN, có thể mô hình hóa và kiểm chứng một cách có hệ thống hơn các hệ thống tham số và chưa được đặc tả đầy đủ.
+
+\paragraph{Mạng Petri có yếu tố thời gian [231]}
+Khái niệm thời gian và mạng Petri khá đối lập: trong khi thời gian quyết định sự xuất hiện của sự kiện trong hệ thống, mạng Petri chỉ xét quan hệ nhân quả của chúng. Một số biến thể mạng Petri đã được xác định với khái niệm thời gian. Ba loại phổ biến nhất là mạng Petri thời gian (Time Petri Net), mạng Petri có yếu tố thời gian (Timed Petri Net), và mạng Petri có cửa sổ thời gian (Petri Net with Time Windows). Trong Time Petri Net, chuyển tiếp được gắn nhãn bằng khoảng thời gian xác định thời điểm có thể bắn chuyển tiếp sau khi nó được cho phép, tức mọi tiền điều kiện được đáp ứng. Trong Timed Petri Net, thời gian cũng được đặt vào thẻ nên thẻ có tuổi, còn chuyển tiếp được gắn nhãn bằng khoảng thời gian xác định độ tuổi mà thẻ có thể bị tiêu thụ. Trong mạng Petri có cửa sổ thời gian, chuyển tiếp được cho những khoảng thời gian, nghĩa là chỉ có thể bắn chuyển tiếp trong khoảng này nhưng không bắt buộc bắn.
+
+Để đơn giản, chương này không xét thời gian trong mạng Petri mà chỉ tập trung vào các quan hệ nhân quả gắn với mạng Petri.
+
+\section{Kết hợp ngữ nghĩa mô hình và mô phỏng}
+Sự gia tăng gần đây của máy tính trong đời sống hằng ngày đặc biệt quan trọng khi mục đích của chúng là phản ứng và tác động lên những thay đổi của môi trường. Chúng tôi gọi những hệ thống này là hệ thống thực-ảo (cyber-physical system, CPS). Chúng gồm một phần phần mềm, chẳng hạn chương trình điều khiển, và phần phần cứng thường gồm cảm biến và cơ cấu chấp hành. Tuy những hệ thống nhỏ hơn, như hệ thống sưởi/chiếu sáng đo sự hiện diện, đã được lắp đặt và sử dụng từ lâu, xu hướng ứng dụng Internet vạn vật, ``hệ thống thông minh'' như ô tô và tàu thế hệ mới, và các hệ thống quy mô lớn nói chung gồm hàng trăm, đôi khi hàng nghìn thành phần, thúc đẩy nhu cầu có phương tiện kiểm chứng và thẩm định chúng.
+
+Vấn đề của những hệ thống rất không đồng nhất này nằm ở việc tìm phương tiện phù hợp để mô hình hóa từng phần hệ thống. Những cách tiếp cận trước đây nhằm tìm một ngôn ngữ hoặc công cụ mô hình hóa duy nhất đã thất bại; ngày nay xu hướng đảo ngược. Nghiên cứu hiện đại tìm cách mô hình hóa từng phần hệ thống bằng hệ hình thức mô hình hóa phù hợp nhất. Sau đó, các thành phần riêng lẻ được kết hợp và mô phỏng cùng nhau. Cách tiếp cận này, gọi là
+% Source: printed 199 / PDF 213
+đồng mô phỏng [126], đã cho những kết quả nghiên cứu hứa hẹn nhưng kèm theo một câu hỏi quan trọng: Nên kết hợp các mô hình được phát triển bằng cú pháp và ngữ nghĩa khác nhau như thế nào?
+
+Một cách tiếp cận nhằm trả lời câu hỏi này là các Đơn vị mô phỏng chức năng (Functional Mock-up Unit, FMU) [36]. Hệ hình thức FMU cung cấp một giao diện đồng nhất, Giao diện mô phỏng chức năng (Functional Mock-up Interface, FMI). Mỗi thành phần được bọc trong FMU riêng và từ đó được thực thi bằng FMI. Đầu vào và đầu ra của các FMU riêng được kết nối với nhau để cho phép truyền thông tin trong hệ thống. Ngữ nghĩa của tổ hợp như vậy được chi phối bởi một \emph{thuật toán chủ} (master algorithm), chịu trách nhiệm chuyển quyền điều khiển đến từng thành phần, chuyển tiếp tín hiệu và lựa chọn kích thước bước thời gian phù hợp với mọi đơn vị trong hệ thống.
+
+Trong mục này, chúng tôi giới thiệu Đơn vị mô phỏng chức năng mạng Petri (Petri Net Functional Mock-up Unit, PNFMU) [180]. Loại FMU mới này bọc một mạng Petri trong FMU để cung cấp quyền truy cập những phép đánh giá và tính toán hiệu quả đã giới thiệu. Bằng mạng Petri, có thể phát hiện khóa chết và những diễn tiến có thể có của hệ thống.
+
+Tiêu chuẩn FMI xác định chặt chẽ các đặc tính của FMU hợp lệ. Tuy nhiên, để tuân thủ tiêu chuẩn, PNFMU cần vượt qua ba thách thức chính:
+\begin{enumerate}
+\item \textbf{Diễn tiến thời gian.} Tương tự máy Mealy hoặc Moore, hệ hình thức mạng Petri không xác định tường minh một khái niệm thời gian. Việc bắn một chuyển tiếp thường được chấp nhận như một đơn vị thời gian. Để khắc phục hạn chế, có thể sử dụng các bộ bọc tuần hoàn hoặc phi tuần hoàn trình bày trong [272]. Ngoài ra, các bộ bọc này cũng được thảo luận trong [83] khi xem xét thích nghi ngữ nghĩa, đem lại khả năng tự động sinh FMU từ một ngôn ngữ chuyên biệt miền giải quyết vấn đề này.
+\item \textbf{Thích nghi đầu vào/đầu ra.} Rõ ràng, kiểu và bản chất đầu vào, đầu ra của một hệ hình thức có thể khác việc gán giá trị đơn giản cho một biến được xác định bởi tiêu chuẩn FMI. Vì vậy, cũng phải thích nghi đầu vào và đầu ra của FMU. Các tác giả [83] đã cung cấp giải pháp bằng ngôn ngữ chuyên biệt miền của họ để khắc phục cả hạn chế này.
+\item \textbf{Tính không tất định.} Trong tiêu chuẩn, các hàm API của FMI được mô hình hóa toán học thành hàm toàn phần [272]. Điều này nghĩa là gọi API của FMU với cùng tham số phải luôn cho cùng kết quả. Một cách tiếp cận ban đầu, tuy đơn giản, để biểu diễn trạng thái mạng Petri là xem nó như một đánh dấu duy nhất. Tuy nhiên, khi mạng Petri có nhiều hơn một chuyển tiếp có thể bắn ở một trạng thái, hàm diễn tiến của API FMI, $doStep$, không thể cho kết quả tất định. Đặc điểm này được minh họa rõ bằng mạng Petri và đồ thị khả năng đạt tới trong Hình~7.12. Trong ví dụ, có thể bắn $t_1$ hoặc $t_2$ từ đánh dấu ban đầu, dẫn đến những diễn tiến hệ thống khác nhau. Phải giải quyết vấn đề này để biểu diễn mạng Petri trong FMU.
+\end{enumerate}
+
+Vì hai chủ đề đầu đã được thảo luận rộng trong các công bố được tham chiếu, ở đây chúng tôi xét tính không tất định của hệ hình thức. Sau khi đã đề cập những vấn đề liên quan đến xem các hệ hình thức như FMU, giờ chúng ta thảo luận việc hình thức hóa PNFMU.
+
+\sourcefigure{7.12}{213}{Một mạng Petri đơn giản và đồ thị khả năng đạt tới của nó. Các đánh dấu được mã hóa như $\langle p_1,p_2,\ldots,p_n\rangle$, trong đó $p_i$ là số thẻ trong các vị trí được sắp theo chỉ số. $\langle1,0,1,0,0\rangle$ mã hóa đánh dấu ban đầu bên trái, biểu thị mỗi vị trí thứ nhất và thứ ba, tức $p_1$ và $p_3$, có một thẻ.}
+
+\subsection{Hình thức hóa PNFMU}
+Nhu cầu sử dụng mạng Petri trong hệ thống FMI gắn chặt với nhu cầu phân tích sự tiến triển hệ thống và khả năng đạt tới các trạng thái có thể có. Để làm điều đó, cần xác định cơ sở hình thức của PNFMU, dựa trên các hình thức hóa FMU trong [272] và [51].
+
+% Source: printed 200 / PDF 214
+Một FMU chuẩn được xác định như cấu trúc
+\[
+F=\langle S,U,Y,D,s_0,set,get,doStep\rangle.
+\]
+Cho mạng Petri $PN=\langle P,T,pre,post,m_0\rangle$, ta xác định PNFMU là bộ
+\[
+PNFMU=\langle S,U,Y,D,s_0,set_{\mathbb{N}},get_{\mathbb{N}},doStep_{\mathbb{N}}\rangle.
+\]
+
+Các trạng thái bên trong $S$ của PNFMU là mọi đánh dấu có thể có của mạng Petri, không chỉ những đánh dấu đạt tới được, tức $reach(s_0)\subseteq S$. $U$ và $Y$ lần lượt là những vị trí mạng Petri có thể ghi và đọc. $D$ vẫn là sự phụ thuộc của đầu ra vào đầu vào, được sử dụng để tránh phụ thuộc vòng khi kết hợp FMU. $s_0$ được đặt thành đánh dấu ban đầu $m_0$.
+
+Khác biệt lớn nhất giữa FMU và PNFMU là loại trước chỉ thao tác trên một trạng thái. Ngược lại, PNFMU được thiết kế để khám phá và thao tác trên đồ thị khả năng đạt tới mạng Petri. Thay đổi này được phản ánh ở ba hàm $set$, $get$ và $doStep$, được điều chỉnh để thao tác trên tập trạng thái như sau:
+
+\begin{description}
+\item[$set:\mathcal{P}(S)\times U\times\mathcal{P}(\mathbb{N})\to\mathcal{P}(S)$]
+thao tác trên tập trạng thái, tức các đánh dấu, sửa đánh dấu của một vị trí nhất định trong mỗi đánh dấu và trả về một tập trạng thái mới. Về trực giác, hàm duyệt các giá trị cần đặt và trả về một trạng thái mới cho mỗi trạng thái được sửa. Tổng cộng hàm trả về $n\times m$ đánh dấu, với $n$ là số trạng thái và $m$ là số giá trị đưa vào hàm. Sử dụng đồ thị khả năng đạt tới ở trên, lời gọi
+\[
+set(\{\langle0,1,1,0,0\rangle,\langle1,0,0,1,0\rangle\},p_5,\{2,4\})
+\]
+trả về tập
+\[
+\begin{gathered}
+\{\langle0,1,1,0,2\rangle,\langle1,0,0,1,2\rangle\},\\
+\{\langle0,1,1,0,4\rangle,\langle1,0,0,1,4\rangle\}.
+\end{gathered}
+\]
+Lưu ý không đánh dấu nào trong bốn đánh dấu trả về đạt tới được từ $s_0$ bằng chuyển tiếp.
+\item[$get:\mathcal{P}(S)\times Y\to\mathcal{P}(\mathbb{N})$]
+thu tập các đánh dấu vị trí của một tập trạng thái. Chẳng hạn,
+\[
+get(\{\langle0,1,1,0,0\rangle,\langle1,0,0,1,0\rangle\},p_3)
+\]
+trả về $\{1,0\}$, trong khi
+\[
+get(\{\langle0,1,1,0,0\rangle,\langle1,0,0,1,0\rangle\},p_5)=\{0\}.
+\]
+\item[$doStep:\mathcal{P}(S)\times\mathbb{N}\to\mathcal{P}(S)\times\mathbb{N}$]
+thực hiện sự tiến triển hệ thống. Cho tập trạng thái và bước thời gian $h\in\mathbb{N}$, $doStep$ trả về độ dài chuỗi dài nhất $h'$, với $0\leq h'\leq h$, có thể được thực thi và các trạng thái đạt được. Lưu ý $doStep$ chỉ thao tác trên những trạng thái đạt tới được từ $s_0$; mọi trạng thái $s\notin S$ không được xét. Hơn nữa, khác FMU chuẩn, $doStep$ của PNFMU được xác định trên số tự nhiên và thất bại nếu $h\notin\mathbb{N}$. $doStep$ được xác định như sau:
+\end{description}
+
+\begin{equation}
+doStep(s,0)=(s,0).\tag{7.14}
+\end{equation}
+\begin{equation}
+doStep(s,1)=\begin{cases}
+(succ,1)&\begin{aligned}
+&\text{với }succ=\{s'\mid\exists t\in T,\\
+&\quad\exists s_i\in(s\cap SS(T,s_0)),\ s_i\xrightarrow{t}s'\}\\
+&\land succ\neq\emptyset,
+\end{aligned}\\[1ex]
+(s,0)&\text{trong trường hợp còn lại.}
+\end{cases}\tag{7.15}
+\end{equation}
+\begin{equation}
+\text{Với }h\geq2:\tag{7.16}
+\end{equation}
+\begin{equation}
+doStep(s,h)=\begin{cases}
+(s,0)&\text{với }(s,0)=doStep(s,1),\\
+(s'',h''+1)&\begin{aligned}
+&\text{với }(s',1)=doStep(s,1)\\
+&\land(s'',h'')=doStep(s',h-1).
+\end{aligned}
+\end{cases}\tag{7.17}
+\end{equation}
+
+Hàm $doStep$ cho mạng Petri ví dụ ở trên được cho bằng các phương trình trên. Để minh họa việc thực thi, dưới đây là bốn bước đầu của $doStep$ cho $pn'$:
+\begin{itemize}
+\item $doStep(\{\langle1,0,1,0,0\rangle\},1)=(\{\langle0,1,1,0,0\rangle\ \langle1,0,0,1,0\rangle\},1)$;
+\item $doStep(\{\langle1,0,1,0,0\rangle\},2)=(\{\langle0,1,0,1,0\rangle\},2)$;
+\item $doStep(\{\langle1,0,1,0,0\rangle\},4)=(\{\langle0,0,0,0,1\rangle\},3)$.
+\end{itemize}
+Bảng~7.1 so sánh định nghĩa các thành phần riêng của FMU và PNFMU.
+
+\subsection{Ví dụ PNFMU}
+Hình~7.13 trình bày một số diễn tiến có thể có của PNFMU bọc mạng Petri trong ví dụ trên. Trong vô hạn chuỗi hành động có thể có, chúng tôi chọn năm vết trình bày thành một cây diễn tiến.
+\begin{itemize}
+\item Trước tiên, nhánh chính ở giữa trình bày diễn tiến $doStep$ của hệ thống. Lưu ý sau lần $doStep$ thứ ba, trạng thái trả về không thay đổi và $h'$ trả về bằng 0. Điều này chỉ ra khóa chết vì không thể tiến triển thêm.
+% Source: printed 201 / PDF 215
+\item Ta quan sát một vết khác chỉ sử dụng các hành động $doStep$. $doStep(s,4)$ cố tìm những trạng thái đạt tới được bằng chuỗi độ dài 3. Tuy nhiên, đồ thị khả năng đạt tới quy định chỉ có thể thực hiện hai bước. Do đó, hành động trả về cuối chuỗi dài nhất đã đạt được, trong trường hợp này là 1, và
+\item Ở nhánh trái, ta thấy tạo hai đánh dấu, trong đó một đánh dấu không nằm trong đồ thị khả năng đạt tới của $m_0$. Vì vậy, lần $doStep$ tiếp theo bỏ qua trạng thái này khi tính toán.
+\item Nhánh phải mô tả diễn tiến sau hành động $set$ trên trạng thái ban đầu. $set$ này tạo một đánh dấu duy nhất không đạt tới được. Vì vậy, hành động $doStep$ trên trạng thái này trả về tập trạng thái rỗng.
+\item Thực thi thêm một $set$ tạo một đánh dấu đạt tới được. Điều này nghĩa là $doStep$ có thể thực hiện và thành công.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{p{0.13\linewidth}p{0.39\linewidth}p{0.39\linewidth}}
+\hline
+Thành phần&FMU&PNFMU\\\hline
+$S$&Tập trạng thái bên trong của $F$.&Tập mọi đánh dấu có thể có; $S$.\\
+$U$&Tập biến đầu vào trên các giá trị $\mathbb{V}$.&Tập vị trí đầu vào; $U\subseteq P$, $\mathbb{V}=\mathbb{N}$.\\
+$Y$&Tập biến đầu ra trên các giá trị $\mathbb{V}$.&Tập vị trí đầu ra; $Y\subseteq P$, $\mathbb{V}=\mathbb{N}$.\\
+$D\subseteq U\times Y$&\multicolumn{2}{p{0.78\linewidth}}{Tập phụ thuộc đầu vào--đầu ra chỉ định đầu ra nào phụ thuộc vào đầu vào nào.}\\
+$s_0\in S$&Trạng thái ban đầu của $F$.&Đánh dấu ban đầu của $PN$; $s_0=m_0$.\\
+$set$&Đặt giá trị một biến đầu vào, trả về trạng thái mới; $set:S\times U\times\mathbb{V}\to S$.&Đặt giá trị vị trí đầu vào trong các trạng thái đã cho, trả về các trạng thái mới; $set:\mathcal{P}(S)\times U\times\mathcal{P}(\mathbb{N})\to\mathcal{P}(S)$.\\
+$get$&Trả về giá trị biến đầu ra; $get:S\times Y\to\mathbb{V}$.&Trả về các giá trị của một vị trí đầu ra trong mọi đánh dấu đã cho; $get:\mathcal{P}(S)\times Y\to\mathcal{P}(\mathbb{N})$.\\
+$doStep$&Thử bước mô phỏng, trả về kích thước bước thực tế và trạng thái mới; $doStep:S\times\mathbb{R}_{\geq0}\to S\times\mathbb{R}_{\geq0}$.&Thử bước mô phỏng, trả về kích thước bước thực tế và các trạng thái mới; $doStep:\mathcal{P}(S)\times\mathbb{N}\to\mathcal{P}(S)\times\mathbb{N}$.\\\hline
+\end{tabular}
+\caption{So sánh các cấu trúc FMU và PNFMU.}
+\end{table}
+
+Dễ thấy rằng bằng PNFMU, có thể nghiên cứu những diễn tiến hệ thống có thể có và phân tích xem thực thi một số chuỗi có dẫn đến một đánh dấu đạt tới được, tức một ``trạng thái tốt'', hay không. Ta cũng có thể tìm các tình huống khóa chết, tức trạng thái mà một $doStep$ trả về 0.
+
+\sourcefigure{7.13}{215}{Một cây trình bày những diễn tiến hệ thống có thể có. Nút là các trạng thái hoặc tập trạng thái, còn cung được chú thích bằng hành động thực hiện, trong đó $s$ là biến lưu các trạng thái trước. Những đánh dấu không nằm trong đồ thị khả năng đạt tới của $s_0$ có màu xám.}
+\begin{quote}
+\small\textbf{Ghi chú bản dịch (C7-7).} Phần mô tả nhánh phải và Hình 7.13 trả về $(\emptyset,0)$ sau \texttt{doStep} trên một đánh dấu không đạt tới được. Tuy nhiên, theo (7.15), khi tập trạng thái kế tiếp rỗng, kết quả phải là $(s,0)$, giữ nguyên tập đầu vào; nếu $s$ không rỗng thì hai kết quả này khác nhau. Đây là sự không nhất quán trong bản gốc giữa ví dụ và định nghĩa hàm. Bản dịch giữ nguyên cả hai để phân biệt rõ nguồn của vấn đề.
+\end{quote}
+
+
+% Source: printed 202 / PDF 216
+\subsection{Kết hợp PNFMU}
+Tiêu chuẩn FMI xác định việc kết hợp FMU rất đơn giản. Đầu ra của một FMU được nối trực tiếp với đầu vào của FMU khác. Việc này thường được thuật toán chủ thực hiện bằng phương thức $set$. Nhìn chung, thuật toán chủ thực hiện cập nhật như vậy qua hai bước: (1) cập nhật mọi giá trị đầu vào FMU; (2) thực hiện diễn tiến hệ thống bằng cách gọi $doStep$ trên từng FMU.
+
+Kết hợp PNFMU phức tạp hơn một chút vì cần xử lý các tập trạng thái. Nhìn chung, có thể phân biệt ba tình huống chính:
+
+\paragraph{Một-một/Một-nhiều}
+Kết nối một PNFMU hiện ở một trạng thái duy nhất với PNFMU khác là khả năng đơn giản nhất. Khi cập nhật, đánh dấu các đầu vào của PNFMU thứ hai được đặt thành những giá trị vị trí đầu ra của PNFMU thứ nhất. Nếu PNFMU thứ hai có nhiều trạng thái, mọi trạng thái được cập nhật.
+
+Như Hình~7.14a biểu diễn, vị trí $p_5$ của $PNFMU_1$ được nối với vị trí $p_0$ của $PNFMU_2$, được vẽ đậm. Tình huống thực thi khá đơn giản. Thật vậy, với mỗi đánh dấu của $PNFMU_2$, số thẻ ở vị trí $p_0$ được đặt bằng số thẻ ở vị trí $p_5$ từ $PNFMU_1$.
+
+\paragraph{Nhiều-một}
+Trường hợp trong Hình~7.14b phức tạp hơn một chút. $PNFMU_1$ có nhiều đánh dấu được nối đến $PNFMU_2$ chỉ có một đánh dấu. Nói cách khác, ở vị trí $p_5$ trong $PNFMU_1$ có hai số thẻ khác nhau, lần lượt là 0 và 1. Do đó, bước cập nhật biến phải tạo một đánh dấu cho mỗi giá trị của biến đầu ra $PNFMU_1$. Trong trường hợp hiện tại, $PNFMU_2$ phải có hai đánh dấu sau cập nhật, một cho $M(p_1)=0$ và một cho $M(p_1)=1$.
+
+\paragraph{Nhiều-nhiều}
+Sau một bước diễn tiến, có thể cả hai PNFMU chứa nhiều hơn một đánh dấu. Thực tế, quan hệ nhiều-nhiều là tổng quát hóa trường hợp nhiều-một. Trường hợp này yêu cầu ghi mọi giá trị đầu ra của một PNFMU vào tất cả đầu vào của PNFMU kia. Về thực chất, tích Descartes của các trạng thái có thể có được tạo ra, trong đó mọi tổ hợp giá trị $PNFMU_1$ được áp dụng cho mọi vị trí đầu vào của $PNFMU_2$.
+
+\sourcefigure{7.14}{216}{Các quan hệ FMU trước và sau cập nhật. (a) Quan hệ một-một/một-nhiều; (b) Quan hệ nhiều-một.}
+
+\subsection{Các cơ chế kết hợp nâng cao}
+Tính mô-đun là một nguyên lý bắt buộc để áp dụng mạng Petri cho hệ thống ở quy mô thực. Các mở rộng mô-đun của mạng Petri cho phép tạo mô hình phức tạp bằng cách kết hợp những thực thể nhỏ hơn. Chúng tạo điều kiện mô hình hóa và kiểm chứng hệ thống lớn bằng cách tiếp cận chia để trị và thúc đẩy tái sử dụng. Tính mô-đun bao gồm nhiều khái niệm như đóng gói, phân cấp và thể hiện hóa. Qua nhiều năm, mạng Petri đã được mở rộng để đưa vào những cơ chế này theo nhiều cách khác nhau. Sự không đồng nhất của các mở rộng và định nghĩa khiến khó lập luận về đặc điểm chung ở mức tổng quát. Một cách tiếp cận đã được đề xuất để chuẩn hóa ngữ nghĩa các hệ hình thức mạng Petri mô-đun, nhằm tập hợp cả những tính năng mô-đun phức tạp nhất trong tài liệu nghiên cứu. Điều này đạt được bằng một hệ hình thức mạng Petri mới, gọi là LLAMAS Language for Advanced Modular Algebraic Nets (LLAMAS) [197]. Có thể hình dung khuôn khổ này mở rộng công việc hiện tại về $PNFMU$ và phục vụ mô tả trừu tượng thuật toán chủ.
+
+% Source: printed 203 / PDF 217
+\section{Công cụ}
+Khối lượng nghiên cứu lớn được đầu tư trong lĩnh vực mạng Petri không chỉ dẫn đến nhiều phát hiện lý thuyết quan trọng mà còn tạo ra các công cụ và phần mềm dùng để mô hình hóa, phân tích và mô phỏng mạng Petri. Trong mục sau, chúng tôi mô tả một số công cụ dùng để phát triển mô hình dựa trên mạng Petri và thực hiện kiểm tra mô hình trên đó. Một số công cụ mô tả dưới đây hiện không còn sẵn có hoặc không thể trực tiếp kiểm tra mô hình mạng Petri. Tuy nhiên, chúng vẫn được giới thiệu vì đóng góp các khái niệm đáng chú ý và là những ứng viên tiềm năng để mở rộng sang hệ hình thức này. Lưu ý vì lĩnh vực được nghiên cứu mạnh, ý tưởng mới thường được trình bày trong các công cụ học thuật, vốn thường dừng ở hiện thực chứng minh ý tưởng và không phát triển thành phần mềm trưởng thành, đáng tin cậy.
+
+\subsection{Công cụ mô hình hóa và kiểm chứng mạng Petri}
+Vì hệ hình thức mạng Petri dựa trên cú pháp đồ họa, các trình biên tập, kết hợp và trực quan hóa mô hình phù hợp là phần quan trọng trong chuỗi công cụ mạng Petri. Qua nhiều năm, nhiều công cụ đã được hiện thực hóa để thực hiện những tác vụ này, nhưng chỉ một số ít tồn tại đủ lâu để được cộng đồng mạng Petri biết đến rộng rãi hoặc được sử dụng trong công nghiệp.
+
+\paragraph{CPN Tools [206] (\url{http://cpntools.org})}
+là một công cụ biên tập, mô phỏng và phân tích mạng Petri mức cao. Nó hỗ trợ mạng Petri cơ bản, mạng Petri có yếu tố thời gian và mạng Petri màu. Nó có trình biên tập đồ họa, bộ mô phỏng và một thành phần phân tích không gian trạng thái.
+
+\paragraph{CPN-AMI [132] (\url{http://move.lip6.fr/software/CPNAMI})}
+là nền tảng mô hình hóa hình thức dựa trên mạng Petri, cụ thể nhắm đến mạng đối xứng. Nó cung cấp giao diện đồ họa để tạo và biên tập mô hình, chạy các công cụ xây trên nền tảng và nhận kết quả. Nền tảng CPN-AMI sử dụng những công cụ do nhiều nhóm nghiên cứu phát triển để phân tích cấu trúc và hành vi mô hình.
+
+Nền tảng có phần mềm tạo mạng Petri bằng đồ họa theo mô-đun hoặc qua giao diện kịch bản. Những công cụ khác cho phép tính thuộc tính cấu trúc như cận, bất biến, siphon, bẫy và tính sống. Nền tảng cũng có thể sinh không gian trạng thái mạng Petri và thực hiện kiểm chứng CTL, LTL bằng nhiều bộ kiểm tra mô hình.
+
+\paragraph{ITS-Tools}
+ITS-TOOLS [267] (\url{http://ddd.lip6.fr/}) là công cụ kế thừa CPN-AMI. Nó cho phép người dùng tạo mô hình bằng ngôn ngữ văn bản hoặc trình biên tập đồ họa cho mạng Petri. Công cụ có thể phân tích hành vi, gồm tính an toàn và kiểm tra mô hình CTL, LTL, trên những mô hình biểu đạt bằng mạng vị trí/chuyển tiếp, mạng đối xứng và Time Petri Net, cùng một số hệ hình thức khác.
+
+\paragraph{AlPiNa \& StrataGEM: Công cụ kiểu dữ liệu đại số và viết lại hạng thức}
+Trong những năm gần đây, nhóm SMV của University of Geneva đã tạo hai công cụ kiểm tra mô hình và biên tập mô hình: Algebraic Petri Nets Analyzer (AlpiNa) [56, 57, 151] và StrataGEM\footnote{\url{https://github.com/mundacho/stratagem}} [190, 39]. AlpiNa là một bộ kiểm tra mô hình chuyên dùng cho mạng Petri đại số. StrataGEM kết hợp khái niệm viết lại hạng thức với hiệu quả của Sơ đồ quyết định để kiểm tra mô hình hiệu quả. Trong khi AlPiNA thích hợp với các đặc tả mức cao bằng mạng Petri, StrataGEM tập trung vào những đặc tả mức thấp.
+
+Hai công cụ này dựa nhiều vào kiểu dữ liệu đại số và kỹ thuật viết lại hạng thức để biểu diễn hệ thống và ngữ nghĩa. Chúng có thể tính các không gian trạng thái lớn và đánh giá thuộc tính khả năng đạt tới, như đã được chứng minh trong Model Checking Contest [171].
+
+\paragraph{SNAKES [230] (\url{https://snakes.ibisc.univ-evry.fr})}
+là thư viện Python cung cấp khuôn khổ xác định và thực thi nhiều loại mạng Petri màu. Tính năng then chốt của SNAKES là sử dụng các đối tượng Python tùy ý làm thẻ và các biểu thức Python chuẩn ở nhiều nơi, chẳng hạn trong điều kiện canh chuyển tiếp hoặc cung.
+
+\paragraph{Renew}
+Renew [62] (\url{http://www.renew.de}) là công cụ hỗ trợ phát triển và thực thi mạng Petri hướng đối tượng, một loại mạng Petri màu đặc biệt. Tính năng chính là tích hợp với ngôn ngữ lập trình Java: mạng Petri có thể được gắn nhãn bằng mã Java, do đó gọi các phương thức Java trong điều kiện canh chuyển tiếp hoặc trên cung.
+
+\paragraph{Nhân mạng Petri (ePNK)}
+[164] (\url{http://www.imm.dtu.dk/~ekki/projects/ePNK/}) là nền tảng phát triển công cụ mạng Petri dựa trên định dạng trao đổi PNML [147]. Ý tưởng chính là hỗ trợ xác định những
+% Source: printed 204 / PDF 218
+loại mạng Petri có thể dễ tích hợp vào công cụ, và cung cấp một trình biên tập đồ họa đơn giản, tổng quát, dùng để biên tập bằng đồ họa mạng thuộc bất kỳ loại nào đã cắm vào.
+
+\paragraph{Tina [29] (\url{http://www.laas.fr/tina})}
+TIme Petri Net Analyser là một bộ công cụ biên tập và phân tích mạng Petri và Time Petri Net. Nó có trình biên tập đồ họa và tập công cụ phân tích cấu trúc, chẳng hạn bất biến; phân tích hành vi, chẳng hạn đồ thị khả năng đạt tới và bao phủ; và kiểm tra mô hình LTL.
+
+\paragraph{TAPAAL [157] (\url{http://www.tapaal.net/})}
+là công cụ mô hình hóa, mô phỏng và kiểm chứng Timed Petri Net. Nó cung cấp trình biên tập đồ họa để vẽ mạng Petri, bộ mô phỏng để thử nghiệm các mạng đã thiết kế, và có thể kiểm tra cận mô hình cũng như kiểm chứng những thuộc tính biểu đạt trong một tập con CTL. TAPAAL có thể chuyển mô hình sang định dạng công cụ UPPAAL. Trong cùng lĩnh vực, Open-Kronos [298] sử dụng cách tiếp cận ô-tô-mát Büchi để kiểm chứng hệ thống thời gian thực.
+
+\paragraph{Kho mạng Petri [146] (\url{http://pnrepository.lip6.fr})}
+là một kho mô hình mạng Petri mới được tạo. Nó gồm mô hình nhập từ nhiều nguồn như Model Checking Contest [170, 169], kho PetriWeb trước đây [127], và bộ chuẩn đánh giá Very Large Petri nets (\url{http://cadp.inria.fr/resources/vlpn/}). Tính năng chính là cung cấp quyền truy cập mô hình và các thuộc tính tương ứng đã được tính thông qua cả giao diện web và API.
+
+Có nhiều công cụ khác để kiểm tra mô hình những hệ thống được đặc tả bằng các hệ hình thức ngoài mạng Petri, chẳng hạn ô-tô-mát hoặc các quá trình truyền thông. Trong đó, những công cụ sau đáng được nhắc đến:
+
+\paragraph{SPIN [149] (\url{http://spinroot.com})}
+là bộ kiểm tra mô hình phần mềm, kiểm chứng các đặc tả viết bằng PROMELA (PROcess MEta LAnguage), thích hợp để biểu diễn hệ thống phân tán bất đồng bộ. Công cụ sử dụng cách tiếp cận ô-tô-mát Büchi để kiểm chứng thuộc tính LTL trên mô hình.
+
+\paragraph{SPOT [192] (\url{https://spot.lrde.epita.fr})}
+là thư viện ô-tô-mát Büchi thay vì bộ kiểm tra mô hình đầy đủ. Nó được thiết kế để ghép nối với một bộ máy có thể tính quan hệ chuyển tiếp của hệ thống nhằm xây dựng bộ kiểm tra mô hình LTL. Thiết kế này cho phép sử dụng nó với mọi loại hệ hình thức. Thư viện hiện thực hóa rất nhiều thuật toán hữu ích liên quan đến kiểm tra mô hình LTL: phân tích cú pháp LTL, đơn giản hóa cú pháp công thức LTL, chuyển sang nhiều dạng ô-tô-mát Büchi, đơn giản hóa ô-tô-mát, và tất nhiên các thuật toán kiểm tra tính rỗng của chúng. Nó được xem là một trong những ứng viên tốt nhất cho kiểm tra mô hình có khả năng vận hành [245].
+
+\paragraph{UPPAAL [27] (\url{http://www.uppaal.com})}
+UPPAAL là môi trường công cụ tích hợp để mô hình hóa, mô phỏng và kiểm chứng các hệ thống nhúng thời gian thực. Những lĩnh vực ứng dụng điển hình gồm bộ điều khiển thời gian thực và các giao thức truyền thông, đặc biệt những trường hợp khía cạnh thời gian có ý nghĩa then chốt.
+
+\paragraph{SCADE [265] (\url{http://www.esterel-technologies.com})}
+là môi trường cấp công nghiệp để phát triển hệ thống nhúng quan trọng. Nó được ghép nối với bộ kiểm tra mô hình và sử dụng trong công nghiệp ở lĩnh vực hệ thống đồng bộ.
+
+Lưu ý danh sách này không đầy đủ và cung cấp danh sách hoàn chỉnh nằm ngoài phạm vi chương. Mục đích là đưa ra tổng quan ngắn gọn về một số công cụ phổ biến hơn để hỗ trợ chọn công cụ phù hợp. Tuy nhiên, lựa chọn phải phụ thuộc vào nhiều tiêu chí như lớp mạng Petri (mạng P/T, mạng Petri màu, Timed Petri Net), loại thuộc tính công cụ cần kiểm tra, hiệu quả yêu cầu và môi trường thực thi. Chúng tôi khuyến khích bạn đọc tham khảo những nguồn khác\footnote{Chẳng hạn \url{https://en.wikipedia.org/wiki/Model_checking}.} để có thêm hướng dẫn cho quá trình quyết định dựa trên thông tin đầy đủ hơn.
+
+\subsection{Đánh giá các kỹ thuật kiểm tra mô hình}
+Cộng đồng mạng Petri tích cực tổ chức và tham gia nhiều cuộc thi kiểm tra mô hình để đánh giá những kỹ thuật và công cụ khác nhau, đồng thời tìm những cách tiếp cận có thể đặc biệt phù hợp với một số lớp và loại mô hình. Dưới đây là một số cuộc thi nổi bật hơn, nhưng lưu ý danh sách không đầy đủ.
+
+\paragraph{Hardware Model Checking Contest [34]}
+được tổ chức lần đầu năm 2007 và hiện gắn với các hội nghị CAV (Computer Aided Verification) và FLOC (Federated Logic Conference). Cuộc thi tập trung kiểm chứng mạch bằng kiểm tra mô hình dựa trên bộ giải SAT. Sự kiện xếp hạng ba công cụ tốt nhất theo một bộ chuẩn đánh giá được chọn.
+
+% Source: printed 205 / PDF 219
+\paragraph{Verified Software Competition [165]}
+diễn ra trong hội nghị Verified Software: Theories, Tools and Experiments (VSTTE). Cuộc thi là diễn đàn để các nhà nghiên cứu thể hiện sức mạnh công cụ bằng cách giải năm bài toán. Mục tiêu chính là đánh giá hiệu quả công cụ chứng minh định lý so với giải SAT. Bắt đầu năm 2010, sự kiện hiện đã trở thành hoạt động hằng năm.
+
+\paragraph{Competition on Software Verification [4]}
+là sự kiện gắn với hội nghị Tools and Algorithms for the Construction and Analysis of Software (TACAS). Nhằm kiểm chứng thuộc tính an toàn của chương trình C, cuộc thi được tổ chức hằng năm từ 2012.
+
+\paragraph{Satisfiability Modulo Theories Competition [54]}
+diễn ra trong khuôn khổ hội nghị CAV. Được tổ chức hằng năm từ 2005, mục tiêu là đánh giá các thủ tục quyết định để kiểm tra tính thỏa mãn của công thức lôgic.
+
+\paragraph{SAT Competitions [159]}
+đề xuất đánh giá hiệu năng các bộ giải SAT. Khởi đầu năm 2002, cuộc thi được tổ chức hai năm một lần từ 2007 và xác định những bộ chuẩn đánh giá mới đầy thách thức ở mỗi kỳ.
+
+\paragraph{Model Checking Contest [169]}
+tại hội nghị Petri Nets nhấn mạnh đặc tả các hệ thống song song, phân tán và phân tích định tính của chúng.
+
+Vấn đề chính của những cuộc thi này là khó lựa chọn thước đo so sánh. So sánh công cụ cho một tập mô hình có vẻ dễ. Rút kết luận từ kết quả công cụ để so sánh các \emph{kỹ thuật} kiểm tra mô hình phức tạp hơn nhiều, vì mỗi công cụ kết hợp nhiều kỹ thuật để đạt hiệu quả. Hơn nữa, hiệu quả kỹ thuật kiểm tra mô hình phụ thuộc nhiều vào đặc điểm của từng mô hình. Chẳng hạn, rút gọn thứ tự bộ phận cho kết quả tốt với hệ thống rất song song có ít đồng bộ hóa, nhưng kém hiệu quả khi mức đồng bộ hóa tăng. Tuy nhiên, vì các kỹ thuật kiểm chứng thường kết hợp với kỹ thuật khác, khó quy rõ hiệu năng tốt cho một kỹ thuật riêng lẻ.
+
+\section{Tổng kết}
+Trong chương này, chúng tôi đã trình bày một cách phát triển các hệ thống thực-ảo có chiều cạnh đồng thời. Đề xuất là trước tiên mô hình hóa hệ thống thành nhiều thực thể cộng tác. Mỗi thực thể có thể được mô hình hóa bằng hệ hình thức thuận tiện nhất cho bài toán được xét. Với hệ thống đồng thời, chúng tôi đề xuất mạng Petri. Chúng tôi giải thích giá trị và khả năng của mạng Petri trong mô hình hóa trừu tượng các hệ thống phức tạp, tức che những chi tiết không hữu ích. Những kỹ thuật mô hình hóa như vậy ẩn các mối quan tâm về phân tán, đặt tên, cơ chế truyền thông và biểu diễn cấu trúc dữ liệu. Chúng tôi cũng cung cấp ngữ nghĩa thông qua hệ thống suy diễn để giải thích chính xác mọi khái niệm sử dụng như trạng thái, đánh dấu và không gian trạng thái. Cần lưu ý khía cạnh then chốt của ngữ nghĩa mạng Petri là những hành vi có khả năng không tất định có thể thể hiện từ một mô hình. Tác động của chiều cạnh này là số trạng thái hệ thống có thể rất lớn. Sau đó, chúng tôi phát triển một số ý tưởng hình thức để phân tích mạng Petri như khám phá đánh dấu và sử dụng bất biến. Trong khi khám phá đánh dấu có rào cản độ phức tạp, việc sử dụng bất biến cần sự can thiệp của con người.
+
+Trong phần còn lại, chúng tôi quan tâm đến ý tưởng quản lý độ phức tạp bằng nguyên lý \emph{chia để trị}. Điều này nghĩa là xét riêng việc mô hình hóa và kiểm chứng thành những đơn vị nhỏ. Thông qua phân rã mô hình, chúng tôi cũng thúc đẩy khả năng tích hợp mô hình hóa không đồng nhất, điều rất quan trọng đối với các hệ thống thực-ảo vốn không đồng nhất.
+
+Cách tiếp cận cũng đáp ứng nhu cầu mô phỏng hệ thống không đồng nhất. Nó dựa trên việc xây dựng các đơn vị chức năng FMU và sự cộng tác của chúng thành hệ thống lớn hơn bằng những thuật toán chủ cụ thể. Vì mạng Petri là hệ hình thức thường dùng để biểu diễn thực thi đồng thời, việc xác định trạng thái của nó thành một tập đánh dấu đã được thảo luận và trình bày hình thức, tránh vi phạm tính tất định của API FMI. Hơn nữa, tiêu chuẩn API được mở rộng bằng các hàm bổ sung khả năng quan sát và chức năng cho PNFMU được xét. Nghiên cứu cho thấy có thể phát hiện khóa chết khi mô phỏng PNFMU bằng API chuẩn, nhưng không biết các đánh dấu thực tế tại đó mạng Petri bị khóa chết. Sau đó, việc kết hợp PNFMU được giới thiệu, nhưng để lại một phần vấn đề diễn tiến thời gian và thích nghi đầu ra/đầu vào ngoài nghiên cứu. Hơn nữa, vì trạng thái PNFMU giờ được xác định thành tập đánh dấu, quan hệ đa trạng thái của việc kết hợp giữa các FMU được trình bày.
+
+% Source: printed 206 / PDF 220
+\sourcefigure{7.15}{220}{Các đồ thị khả năng đạt tới của mạng Petri trong Hình~7.1 với những đánh dấu ban đầu khác nhau. Lưu ý có thể tìm các đồ thị nhỏ hơn như những đồ thị con bên trong đồ thị lớn hơn. Điều này do tính đơn điệu mạng Petri đã thảo luận. Ngoài ra, màu nút biểu thị số thẻ ở vị trí \texttt{fuel}, từ 0 sáng nhất đến 3 tối nhất. (a) 0 thẻ trong \texttt{fuel}; (b) 1 thẻ trong \texttt{fuel}; (c) 2 thẻ trong \texttt{fuel}; (d) 3 thẻ trong \texttt{fuel}. \textit{Khóa đọc thêm của bản dịch:} các tên chuyển tiếp là \texttt{press}, \texttt{release}, \texttt{start}, \texttt{stop}, \texttt{fill} và \texttt{empty}; hai tên nằm sát nhau thuộc các cung riêng, không phải một tên ghép. Các vùng phóng to sau hình giúp đọc nhãn; dùng hình đầy đủ để theo dõi mọi đường nối.}
+\sourceillustration{7.15C}{220}{\textbf{Chi tiết phóng to Hình 7.15 (bản dịch):} vùng trái dưới, gồm (c) và một phần (b) trong cùng vùng cắt. Hình đầy đủ phía trên giữ mọi đường nối.}
+\sourceillustration{7.15D1}{220}{\textbf{Chi tiết phóng to Hình 7.15 (bản dịch):} nửa trên vùng (d). Vùng này chồng lên phần đầu của chi tiết tiếp theo; các đường đi qua biên cắt tiếp tục trong hình đầy đủ.}
+\sourceillustration{7.15D2}{220}{\textbf{Chi tiết phóng to Hình 7.15 (bản dịch):} nửa dưới vùng (d), có phần chồng lên chi tiết trước để đối chiếu các nút. Các đường đi qua biên cắt tiếp tục trong hình đầy đủ.}
+\clearpage
+
+\section{Tài liệu và đọc thêm}
+Để hiểu sâu hơn về mô hình hóa tính đồng thời và mạng Petri, chúng tôi giới thiệu bạn đọc quan tâm những công trình sau. Cuốn sách xuất sắc của Reisig [239] giải thích các kỹ thuật phân tích nền tảng cho mạng Petri. Thông qua những ví dụ được chọn kỹ, sách cũng minh họa cách mô hình hóa một số hệ thống nổi tiếng, có thể hữu ích cho người bắt đầu và mới bước vào lĩnh vực mô hình hóa, phân tích hệ thống động rời rạc. M. Diaz [85] cũng
+% Source: printed 207 / PDF 221
+trình bày các kỹ thuật cơ bản để mô hình hóa bằng mạng Petri. Một số mở rộng của mạng vị trí/chuyển tiếp được giải thích và việc sử dụng thực tế cho các ứng dụng cụ thể được trình bày chi tiết. Cuốn sách này có lẽ đáng quan tâm hơn với người dùng mạng Petri muốn tìm hiểu các lựa chọn mô hình hóa khác nhau như mạng Petri ngẫu nhiên, Timed Petri Net và những kỹ thuật hình thức tương ứng.
+
+Cuối cùng, [26] là tài liệu tham khảo cho những người quan tâm các hướng thú vị, khả thi về mô hình hóa hiệu năng và ước lượng chi phí hệ thống bằng phương pháp định lượng. Các tác giả trình bày những phương pháp hữu ích dựa trên chuỗi Markov và phát triển các kỹ thuật này để phân tích mạng Petri ngẫu nhiên.
+
+\section{Tự đánh giá}
+\begin{enumerate}
+\item Đánh dấu mạng Petri là gì? Đánh dấu ban đầu là gì?
+\item Đồ thị khả năng đạt tới khác đồ thị khả năng bao phủ ở điểm nào?
+\item Bạn có thể liệt kê một số thuộc tính thú vị của mạng Petri liên quan đến trạng thái không? Còn những thuộc tính liên quan đến chuyển tiếp?
+\item Tính đơn điệu biểu đạt điều gì trong bối cảnh mạng Petri?
+\item Bất biến mạng Petri là gì? Bất biến phục vụ mục đích nào? Bạn có thể nêu tên hai loại bất biến và sự khác biệt của chúng không?
+\item Bạn có thể nêu những loại mạng Petri mức cao khác nhau và mục đích của chúng không? Trong những mạng Petri này, bạn có thể cho biết chuyển tiếp nào sống hoặc không sống không?
+\item Với hai mạng Petri này, bạn có thể cho biết chuyển tiếp nào sống và chuyển tiếp nào không sống không?
+\sourceillustration{7.E7}{221}{Sơ đồ cho bài tập 7.}
+\item Trong những mạng Petri này, các vị trí nào bị chặn? Các cận vị trí của mạng Petri này là gì?
+\sourceillustration{7.E8}{221}{Sơ đồ cho bài tập 8.}
+\item Bạn có thể xác định những chuyển tiếp nào sống và những chuyển tiếp nào không sống không?
+\sourceillustration{7.E9}{221}{Sơ đồ cho bài tập 9.}
+\item Với những đánh dấu ban đầu nào của $P_1$, mạng Petri này không có trạng thái chết hoặc có trạng thái chết?
+\sourceillustration{7.E10}{221}{Sơ đồ cho bài tập 10.}
+\end{enumerate}
+
+% Source: printed 208 / PDF 222
+\paragraph{Truy cập mở}
+Chương này được cấp phép theo Giấy phép quốc tế Creative Commons Ghi công 4.0 (\url{http://creativecommons.org/licenses/by/4.0/}), cho phép sử dụng, chia sẻ, phóng tác, phân phối và tái tạo bằng bất kỳ phương tiện hoặc định dạng nào, với điều kiện ghi công thích hợp cho tác giả gốc và nguồn, cung cấp liên kết đến giấy phép Creative Commons, và cho biết nếu có thay đổi.
+
+Hình ảnh hoặc các tài liệu khác của bên thứ ba trong chương này thuộc giấy phép Creative Commons của chương, trừ khi có quy định khác trong dòng ghi công cho tài liệu đó. Nếu tài liệu không thuộc giấy phép Creative Commons của chương và mục đích sử dụng của bạn không được quy định pháp luật cho phép hoặc vượt quá phạm vi sử dụng được phép, bạn cần xin phép trực tiếp chủ sở hữu quyền tác giả.
